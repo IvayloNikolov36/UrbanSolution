@@ -12,6 +12,7 @@ namespace UrbanSolution.Web.Infrastructure.Extensions
         private static readonly IdentityRole[] roles =
         {
             new IdentityRole(AdminRole),
+            new IdentityRole(ManagerRole)
         };
 
         public static async void SeedDatabase(this IApplicationBuilder app)
@@ -31,12 +32,12 @@ namespace UrbanSolution.Web.Infrastructure.Extensions
                     }
                 }
 
-                var user = await userManager.FindByNameAsync("administrator");
+                var user = await userManager.FindByNameAsync(AdminUserName);
                 if (user == null)
                 {
                     user = new User()
                     {
-                        UserName = "administrator", //TODO in constants class
+                        UserName = AdminUserName,
                         Email = "admin@example.com",
                         FullName = "System Administrator",
                         Age = 20
@@ -46,6 +47,20 @@ namespace UrbanSolution.Web.Infrastructure.Extensions
                     await userManager.AddToRoleAsync(user, AdminRole);
                 }
 
+                user = await userManager.FindByNameAsync(ManagerUserName);
+                if (user == null)
+                {
+                    user = new User()
+                    {
+                        UserName = ManagerUserName, 
+                        Email = "manager@example.com",
+                        FullName = "Regional Manager",
+                        Age = 20
+                    };
+
+                    await userManager.CreateAsync(user, DefaultManagerPassword);
+                    await userManager.AddToRoleAsync(user, ManagerRole);
+                }
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using UrbanSolution.Web.Infrastructure
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -6,7 +7,7 @@
     <title>@ViewData["Title"] - Urban Solution</title>
 
     <environment include="Development">
-        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-slate.css" />
         <link rel="stylesheet" href="~/css/site.css" />
     </environment>
     <environment exclude="Development">
@@ -26,13 +27,15 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">UrbanSolution.Web</a>
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Urban Solution</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+                    @if (this.User.IsInRole(WebConstants.AdminRole))
+                    {
+                        <li><a asp-area="Admin" asp-controller="Users" asp-action="Index">Users</a></li>
+                    }
+                    <li><a asp-area="" asp-controller="Users" asp-action="UploadIssue">Upload Issue</a></li>
                 </ul>
                 <partial name="_LoginPartial" />
             </div>
@@ -42,6 +45,25 @@
     <partial name="_CookieConsentPartial" />
 
     <div class="container body-content">
+        @if (TempData.ContainsKey(WebConstants.TempDataSuccessMessageKey))
+        {
+            <div class="alert alert-success">
+                @TempData[WebConstants.TempDataSuccessMessageKey]
+            </div>
+        }
+        @if (TempData.ContainsKey(WebConstants.TempDataErrorMessageKey))
+        {
+            <div class="alert alert-danger">
+                @TempData[WebConstants.TempDataErrorMessageKey]
+            </div>
+        }
+        @if (TempData.ContainsKey(WebConstants.TempDataInfoMessageKey))
+        {
+            <div class="alert alert-info">
+                @TempData[WebConstants.TempDataInfoMessageKey]
+            </div>
+        }
+
         @RenderBody()
         <hr />
         <footer>
