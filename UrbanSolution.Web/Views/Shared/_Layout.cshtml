@@ -31,6 +31,7 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
+                    <li><a asp-area="" asp-controller="Issue" asp-action="Index">Home</a></li>
                     @if (this.User.IsInRole(WebConstants.AdminRole))
                     {
                         <li><a asp-area="Admin" asp-controller="Users" asp-action="Index">Users</a></li>
@@ -45,24 +46,7 @@
     <partial name="_CookieConsentPartial" />
 
     <div class="container body-content">
-        @if (TempData.ContainsKey(WebConstants.TempDataSuccessMessageKey))
-        {
-            <div class="alert alert-success">
-                @TempData[WebConstants.TempDataSuccessMessageKey]
-            </div>
-        }
-        @if (TempData.ContainsKey(WebConstants.TempDataErrorMessageKey))
-        {
-            <div class="alert alert-danger">
-                @TempData[WebConstants.TempDataErrorMessageKey]
-            </div>
-        }
-        @if (TempData.ContainsKey(WebConstants.TempDataInfoMessageKey))
-        {
-            <div class="alert alert-info">
-                @TempData[WebConstants.TempDataInfoMessageKey]
-            </div>
-        }
+        <partial name="_Messages"/>
 
         @RenderBody()
         <hr />

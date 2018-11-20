@@ -17,8 +17,6 @@ namespace UrbanSolution.Data
 
         public DbSet<Comment> Comments { get; set; }
 
-        public DbSet<Region> Regions { get; set; }
-
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -41,11 +39,6 @@ namespace UrbanSolution.Data
                 .HasMany(e => e.Comments)
                 .WithOne(c => c.Target)
                 .HasForeignKey(e => e.TargetId);
-
-            builder.Entity<Region>()
-                .HasMany(r => r.UrbanIssues)
-                .WithOne(ui => ui.Region)
-                .HasForeignKey(e => e.RegionId);
 
             base.OnModelCreating(builder);
         }

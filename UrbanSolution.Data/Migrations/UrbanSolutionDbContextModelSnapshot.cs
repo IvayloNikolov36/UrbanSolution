@@ -129,24 +129,6 @@ namespace UrbanSolution.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("UrbanSolution.Models.Address", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("StreetName")
-                        .IsRequired()
-                        .HasMaxLength(30);
-
-                    b.Property<string>("StreetNumber")
-                        .IsRequired();
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Address");
-                });
-
             modelBuilder.Entity("UrbanSolution.Models.Comment", b =>
                 {
                     b.Property<int>("Id")
@@ -171,19 +153,6 @@ namespace UrbanSolution.Data.Migrations
                     b.HasIndex("TargetId");
 
                     b.ToTable("Comments");
-                });
-
-            modelBuilder.Entity("UrbanSolution.Models.Region", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("RegionName");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Regions");
                 });
 
             modelBuilder.Entity("UrbanSolution.Models.ResolvedIssue", b =>
@@ -219,7 +188,9 @@ namespace UrbanSolution.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("AddressId");
+                    b.Property<string>("AddressStreet")
+                        .IsRequired()
+                        .HasMaxLength(30);
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -228,24 +199,27 @@ namespace UrbanSolution.Data.Migrations
                     b.Property<string>("IssuePictureUrl")
                         .IsRequired();
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(20);
+
                     b.Property<DateTime>("PublishedOn");
 
                     b.Property<string>("PublisherId")
                         .IsRequired();
 
-                    b.Property<int>("RegionId");
+                    b.Property<int>("Region");
 
                     b.Property<int?>("ResolvedIssueId");
+
+                    b.Property<string>("StreetNumber")
+                        .IsRequired();
 
                     b.Property<int>("Type");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AddressId");
-
                     b.HasIndex("PublisherId");
-
-                    b.HasIndex("RegionId");
 
                     b.HasIndex("ResolvedIssueId");
 
@@ -376,19 +350,9 @@ namespace UrbanSolution.Data.Migrations
 
             modelBuilder.Entity("UrbanSolution.Models.UrbanIssue", b =>
                 {
-                    b.HasOne("UrbanSolution.Models.Address", "Address")
-                        .WithMany()
-                        .HasForeignKey("AddressId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("UrbanSolution.Models.User", "Publisher")
                         .WithMany("UrbanIssues")
                         .HasForeignKey("PublisherId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("UrbanSolution.Models.Region", "Region")
-                        .WithMany("UrbanIssues")
-                        .HasForeignKey("RegionId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("UrbanSolution.Models.ResolvedIssue", "ResolvedIssue")
