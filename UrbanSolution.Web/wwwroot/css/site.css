@@ -18,6 +18,7 @@ body {
     line-height: 1.4;
 }
 
+
 /* Make .svg files in the carousel display properly in older browsers */
 .carousel-inner .item img[src$=".svg"] {
     width: 100%;

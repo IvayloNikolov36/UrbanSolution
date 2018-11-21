@@ -17,8 +17,10 @@
         public const string TempDataErrorMessageKey = "ErrorMessage";
         public const string TempDataInfoMessageKey = "InfoMessage";
 
-        public const string UserAddedToRoleSuccess = "User {0} successfully added to role {1}";
-        public const string UserAlreadyInRole = "User {0} has been already {1}";
+        public const string UserAddedToRoleSuccess = "User {0} successfully added to role {1}.";
+        public const string UserRemovedFromRoleSuccess = "User {0} successfully removed from role {1}.";
+        public const string UserIsNotSetToRole = "User {0} is not set to role {1}.";
+        public const string UserAlreadyInRole = "User {0} has been already {1}.";
 
         public const string IssueUploaded = "Successfully uploaded issue.";
     }
