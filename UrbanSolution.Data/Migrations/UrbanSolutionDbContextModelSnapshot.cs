@@ -196,6 +196,8 @@ namespace UrbanSolution.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(300);
 
+                    b.Property<bool>("IsApproved");
+
                     b.Property<string>("IssuePictureUrl")
                         .IsRequired();
 

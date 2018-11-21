@@ -12,6 +12,7 @@
         public const string DefaultManagerPassword = "managerM123";
 
         public const string AdminArea = "Admin";
+        public const string ManagerArea = "Manager";
 
         public const string TempDataSuccessMessageKey = "SuccessMessage";
         public const string TempDataErrorMessageKey = "ErrorMessage";
