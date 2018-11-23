@@ -201,6 +201,10 @@ namespace UrbanSolution.Data.Migrations
                     b.Property<string>("IssuePictureUrl")
                         .IsRequired();
 
+                    b.Property<double>("Latitude");
+
+                    b.Property<double>("Longitude");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(20);
