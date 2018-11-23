@@ -24,5 +24,8 @@
         public const string UserAlreadyInRole = "User {0} has been already {1}.";
 
         public const string IssueUploaded = "Successfully uploaded issue.";
+
+        public const string MapCenterLatitude = "42.138893";
+        public const string MapCenterLongitude = "24.741101";
     }
 }
