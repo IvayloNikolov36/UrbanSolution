@@ -1,0 +1,26 @@
+﻿@model IEnumerable<UrbanIssuesListingServiceModel>
+
+@foreach (var issue in Model)
+{
+    <div class="col-md-3">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title text-center">
+                    <a
+                        asp-area=""
+                        asp-controller="Issue"
+                        asp-action="Details"
+                        asp-route-id="@issue.Id">
+                            @issue.Name
+                    </a>
+                </h3>
+            </div>
+            <div class="panel-body">
+                <img src="@issue.IssuePictureUrl" class="img-responsive">
+                <br />
+                on <em class="text-info">@issue.PublishedOn.ToShortDateString()</em> by <em class="text-info">@issue.Publisher</em>
+            </div>
+        </div>
+    </div>
+}
+

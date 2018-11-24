@@ -1,0 +1,11 @@
+﻿
+<li><a asp-area="" asp-controller="Issue" asp-action="Index">Home</a></li>
+@if (this.User.IsInRole(WebConstants.AdminRole))
+{
+    <li><a asp-area="Admin" asp-controller="Users" asp-action="Index">Users</a></li>
+}
+@if (this.User.IsInRole(WebConstants.ManagerRole))
+{
+    <li><a asp-area="Manager" asp-controller="Issues" asp-action="Index">Not Approved Issues</a></li>
+}
+<li><a asp-area="" asp-controller="Users" asp-action="UploadIssue">Upload Issue</a></li>

@@ -27,5 +27,8 @@
 
         public const string MapCenterLatitude = "42.138893";
         public const string MapCenterLongitude = "24.741101";
+
+        public const string IssueUpdateSuccess = "Successfully updated issue.";
+        public const string IssueDeleteSuccess = "Successfully deleted issue.";
     }
 }

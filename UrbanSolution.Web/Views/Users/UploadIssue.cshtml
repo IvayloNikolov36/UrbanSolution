@@ -1,0 +1,131 @@
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@model UploadIssueViewModel
+@{
+    ViewData["Title"] = "Upload Issue";
+    var apiKey = Configuration.GetSection("Google:MapsApiKey").Value;
+}
+
+<div row class="text-info">
+    <h3 class="text-center">@this.ViewData["Title"]</h3>
+    <hr />
+</div>
+
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <form method="post">
+            <div class="row">
+                <div class="form-group col-xs-6">
+                    <label asp-for="Name"></label>
+                    <div>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group col-xs-6">
+                    <label asp-for="PictureUrl"></label>
+                    <div>
+                        <input asp-for="PictureUrl" class="form-control" />
+                        <span asp-validation-for="PictureUrl" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description"></label>
+                <textarea asp-for="Description" rows="2" class="form-control"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="row">
+                <div class="form-group col-xs-6">
+                    <label asp-for="Region"></label>
+                    <div>
+                        <select asp-for="Region" asp-items="Model.Regions" class="form-control"></select>
+                        <span asp-validation-for="Region" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group col-xs-6">
+                    <label asp-for="IssueType"></label>
+                    <div>
+                        <select asp-for="IssueType" asp-items="Model.IssueTypes" class="form-control"></select>
+                        <span asp-validation-for="IssueType" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-xs-6">
+                    <label asp-for="AddressStreet"></label>
+                    <div>
+                        <input asp-for="AddressStreet" class="form-control" />
+                        <span asp-validation-for="AddressStreet" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group col-xs-6">
+                    <label asp-for="StreetNumber"></label>
+                    <div>
+                        <input asp-for="StreetNumber" class="form-control container-fluid" />
+                        <span asp-validation-for="StreetNumber" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <input type="hidden" id="Latitude" name="Latitude" />
+            <input type="hidden" id="Longitude" name="Longitude" />
+
+            <label>Place the marker to get coordinates of the issue</label>
+            <div class="form-group">
+                <div id="map" style="height: 400px; width: 555px;">
+                </div>
+            </div>
+
+            <span asp-validation-for="Latitude" class="text-danger"></span>
+
+            <br />
+
+            <div class="row" style="text-align: center">
+                <button type="submit" class="btn btn-default">Upload Issue</button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        var map;
+        function initMap() {
+
+            var myLatLng = { lat: @(WebConstants.MapCenterLatitude) , lng: @(WebConstants.MapCenterLongitude) };
+
+            var mapOptions = {
+                zoom: 13,
+                center: myLatLng
+            }
+
+            map = new google.maps.Map(document.getElementById('map'), mapOptions);
+
+            var marker = new google.maps.Marker({
+                position: myLatLng,
+                map: map,
+                draggable: true,
+                title: "Drag me!",
+                label: {
+                    color: 'Green',
+                    fontWeight: 'bold',
+                    text: "Drag me!"
+                }
+            });
+
+            google.maps.event.addListener(marker, 'dragend', function (event) {
+                document.getElementById("Latitude").value = this.getPosition().lat();
+                document.getElementById("Longitude").value = this.getPosition().lng();
+            });
+        }
+    </script>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=@(apiKey)&callback=initMap"
+            async defer>
+    </script>
+}

@@ -1,0 +1,16 @@
+﻿@model IEnumerable<UrbanIssuesListingServiceModel>
+@{
+    ViewData["Title"] = "Urban Issues";
+}
+
+<div row class="text-info">
+    <h2>@this.ViewData["Title"]</h2>
+</div>
+
+<div class="row">
+    @await Html.PartialAsync("_IssuesListingPartial", Model)
+</div>
+
+
+
+

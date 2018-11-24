@@ -1,0 +1,52 @@
+﻿@model AdminUsersListingViewModel
+@{
+    ViewData["Title"] = "Users Administration";
+}
+
+<div row class="text-info text-center">
+    <h2>@this.ViewData["Title"]</h2>
+</div>
+
+<hr />
+
+<table class="table table-bordered table-striped table table-hover">
+    <thead>
+        <tr>
+            <th class="text-center"><strong>Username</strong></th>
+            <th class="text-center"><strong>Email</strong></th>
+            <th class="text-center"><strong>Set Role</strong></th>
+            <th class="text-center"><strong>Remove Role</strong></th>
+        </tr>   
+    </thead>
+    <tbody>
+        @foreach (var user in Model.Users)
+        {
+        <tr>
+            <td class="text-center">@user.UserName</td>
+            <td class="text-center">@user.Email</td>
+            <td>
+                <form asp-controller="Users" asp-action="AddToRole" method="post">
+                    <div class="col-md-8">
+                        <input type="hidden" name="UserId" value="@user.Id" />
+                        <select name="Role" asp-items="Model.AllRoles" class="form-control"></select>
+                    </div>
+                    <div class="col-md-2">
+                        <input class="btn btn-sm btn-primary" type="submit" value="Add" />
+                    </div>
+                </form>
+            </td>
+            <td>
+                <form asp-controller="Users" asp-action="RemoveFromRole" method="post">
+                    <div class="col-md-8">
+                        <input type="hidden" name="UserId" value="@user.Id" />
+                        <select name="Role" asp-items="Model.AllRoles" class="form-control"></select>
+                    </div>
+                    <div class="col-md-2">
+                        <input class="btn btn-sm btn-primary" type="submit" value="Remove" />
+                    </div>
+                </form>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
