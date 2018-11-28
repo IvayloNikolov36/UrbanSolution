@@ -126,7 +126,7 @@ using UrbanSolution.Web.Areas.Admin.Models;
             WriteLiteral("</td>\r\n            <td>\r\n                ");
             EndContext();
             BeginContext(820, 510, false);
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("form", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "119f200d1e394fa0b22c7c923649ac45", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("form", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "4c8b7baa0cb74741b88e2353cb5eb368", async() => {
                 BeginContext(886, 104, true);
                 WriteLiteral("\r\n                    <div class=\"col-md-8\">\r\n                        <input type=\"hidden\" name=\"UserId\"");
                 EndContext();
@@ -141,7 +141,7 @@ WriteAttributeValue("", 998, user.Id, 998, 8, false);
                 WriteLiteral(" />\r\n                        ");
                 EndContext();
                 BeginContext(1036, 77, false);
-                __tagHelperExecutionContext = __tagHelperScopeManager.Begin("select", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "3cf22859dda843f6a2aa45a5e3663c23", async() => {
+                __tagHelperExecutionContext = __tagHelperScopeManager.Begin("select", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "3cf83e9674914b1394104e8454240539", async() => {
                 }
                 );
                 __Microsoft_AspNetCore_Mvc_TagHelpers_SelectTagHelper = CreateTagHelper<global::Microsoft.AspNetCore.Mvc.TagHelpers.SelectTagHelper>();
@@ -190,7 +190,7 @@ __Microsoft_AspNetCore_Mvc_TagHelpers_SelectTagHelper.Items = Model.AllRoles;
             WriteLiteral("\r\n            </td>\r\n            <td>\r\n                ");
             EndContext();
             BeginContext(1385, 518, false);
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("form", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "1a4f71cc653a4c269cd490d42fce0300", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("form", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "b6ff9112895b4835bf0f799ea7d5a23f", async() => {
                 BeginContext(1456, 104, true);
                 WriteLiteral("\r\n                    <div class=\"col-md-8\">\r\n                        <input type=\"hidden\" name=\"UserId\"");
                 EndContext();
@@ -205,7 +205,7 @@ WriteAttributeValue("", 1568, user.Id, 1568, 8, false);
                 WriteLiteral(" />\r\n                        ");
                 EndContext();
                 BeginContext(1606, 77, false);
-                __tagHelperExecutionContext = __tagHelperScopeManager.Begin("select", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "5e582b159c714a35859917b998e7ffb1", async() => {
+                __tagHelperExecutionContext = __tagHelperScopeManager.Begin("select", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "154fa7f86c0b4a31a3d59cedd77be987", async() => {
                 }
                 );
                 __Microsoft_AspNetCore_Mvc_TagHelpers_SelectTagHelper = CreateTagHelper<global::Microsoft.AspNetCore.Mvc.TagHelpers.SelectTagHelper>();

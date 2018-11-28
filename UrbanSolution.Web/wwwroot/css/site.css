@@ -37,5 +37,51 @@ body {
     }
 }
 
+.issues-listing .img-responsive {
+    height: 200px !important;
+    margin: auto 0px;
+}
 
+#wrapper {
+    width: 100%;
+    margin: 0 auto;
+}
+
+img {
+    width: 100%;
+}
+
+.logo {
+    width: 20%;
+    float: left;
+}
+
+.menu-item ul {
+    float: right;
+    list-style: none;
+}
+
+.menu-area {
+    overflow: hidden;
+}
+
+.menu-area ul li{
+    display: inline-block;
+}
+
+.menu-area ul li a {
+    display: inline-block;
+    padding: 10px 15px;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: #000000;
+}
+/*#00ced1*/
+.horizontol-line {
+    border: solid #ddd;
+    border-width: 1px 0 0;
+    clear: both;
+    margin: 22px 0 21px;
+    height: 0;
+}
 

@@ -33,8 +33,18 @@ using UrbanSolution.Services.Models;
 
 #line default
 #line hidden
+#line 5 "C:\Users\Ivaylo\source\repos\UrbanSolution\UrbanSolution.Web\Views\_ViewImports.cshtml"
+using System.Globalization;
+
+#line default
+#line hidden
+#line 6 "C:\Users\Ivaylo\source\repos\UrbanSolution\UrbanSolution.Web\Views\_ViewImports.cshtml"
+using Microsoft.Extensions.Configuration;
+
+#line default
+#line hidden
     [global::Microsoft.AspNetCore.Razor.Hosting.RazorSourceChecksumAttribute(@"SHA1", @"7091c65830b0329e613be026ede8a57552863778", @"/Views/_ViewStart.cshtml")]
-    [global::Microsoft.AspNetCore.Razor.Hosting.RazorSourceChecksumAttribute(@"SHA1", @"711c790c941aa9813b12b221b0d8f882d7bbe9cb", @"/Views/_ViewImports.cshtml")]
+    [global::Microsoft.AspNetCore.Razor.Hosting.RazorSourceChecksumAttribute(@"SHA1", @"9be5e81d224dfaffe42d33523091dd56dc93853f", @"/Views/_ViewImports.cshtml")]
     public class Views__ViewStart : global::Microsoft.AspNetCore.Mvc.Razor.RazorPage<dynamic>
     {
         #pragma warning disable 1998

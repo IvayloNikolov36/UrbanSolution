@@ -24,6 +24,9 @@ namespace UrbanSolution.Web
    
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.AddCors();
+
             services.Configure<CookiePolicyOptions>(options =>
             {               
                 options.CheckConsentNeeded = context => true;
@@ -67,6 +70,13 @@ namespace UrbanSolution.Web
             UserManager<User> userManager, 
             RoleManager<IdentityRole> roleManager)
         {
+
+            app.UseCors(options => 
+                options
+                    .AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader());
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

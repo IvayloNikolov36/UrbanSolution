@@ -1,0 +1,16 @@
+C:\Users\Ivaylo\source\repos\UrbanSolution\UrbanSolution.Services\bin\Debug\netcoreapp2.1\UrbanSolution.Services.deps.json
+C:\Users\Ivaylo\source\repos\UrbanSolution\UrbanSolution.Services\bin\Debug\netcoreapp2.1\UrbanSolution.Services.dll
+C:\Users\Ivaylo\source\repos\UrbanSolution\UrbanSolution.Services\bin\Debug\netcoreapp2.1\UrbanSolution.Services.pdb
+C:\Users\Ivaylo\source\repos\UrbanSolution\UrbanSolution.Services\obj\Debug\netcoreapp2.1\UrbanSolution.Services.csproj.CoreCompileInputs.cache
+C:\Users\Ivaylo\source\repos\UrbanSolution\UrbanSolution.Services\obj\Debug\netcoreapp2.1\UrbanSolution.Services.AssemblyInfoInputs.cache
+C:\Users\Ivaylo\source\repos\UrbanSolution\UrbanSolution.Services\obj\Debug\netcoreapp2.1\UrbanSolution.Services.AssemblyInfo.cs
+C:\Users\Ivaylo\source\repos\UrbanSolution\UrbanSolution.Services\obj\Debug\netcoreapp2.1\UrbanSolution.Services.dll
+C:\Users\Ivaylo\source\repos\UrbanSolution\UrbanSolution.Services\obj\Debug\netcoreapp2.1\UrbanSolution.Services.pdb
+C:\Users\Ivaylo\source\repos\UrbanSolution\UrbanSolution.Services\obj\Debug\netcoreapp2.1\UrbanSolution.Services.csprojAssemblyReference.cache
+C:\Users\Ivaylo\source\repos\UrbanSolution\UrbanSolution.Services\bin\Debug\netcoreapp2.1\Microsoft.AspNetCore.Mvc.ViewFeatures.dll
+C:\Users\Ivaylo\source\repos\UrbanSolution\UrbanSolution.Services\bin\Debug\netcoreapp2.1\UrbanSolution.Data.dll
+C:\Users\Ivaylo\source\repos\UrbanSolution\UrbanSolution.Services\bin\Debug\netcoreapp2.1\UrbanSolution.Models.dll
+C:\Users\Ivaylo\source\repos\UrbanSolution\UrbanSolution.Services\bin\Debug\netcoreapp2.1\UrbanSolution.Data.pdb
+C:\Users\Ivaylo\source\repos\UrbanSolution\UrbanSolution.Services\bin\Debug\netcoreapp2.1\UrbanSolution.Models.pdb
+C:\Users\Ivaylo\source\repos\UrbanSolution\UrbanSolution.Services\bin\Debug\netcoreapp2.1\Microsoft.AspNetCore.Mvc.ViewFeatures.xml
+C:\Users\Ivaylo\source\repos\UrbanSolution\UrbanSolution.Services\obj\Debug\netcoreapp2.1\UrbanSolution.Services.csproj.CopyComplete

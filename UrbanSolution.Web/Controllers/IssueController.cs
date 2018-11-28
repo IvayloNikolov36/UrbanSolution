@@ -15,14 +15,14 @@ namespace UrbanSolution.Web.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var model = await this.issues.AllApprovedAsync();
+            var model = await this.issues.AllAsync(isApproved: true);
 
             return this.View(model);
         }
 
         public async Task<IActionResult> Details(int id)
         {
-            var issueModel = await this.issues.GetAsync(id);
+            var issueModel = await this.issues.DetailsAsync(id);
             if (issueModel == null)
             {
                 return this.BadRequest();

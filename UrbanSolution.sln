@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2048
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrbanSolution.Web", "UrbanSolution.Web\UrbanSolution.Web.csproj", "{9C6DD3DB-2C6E-439C-AEF4-F9020ABA871C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UrbanSolution.Web", "UrbanSolution.Web\UrbanSolution.Web.csproj", "{9C6DD3DB-2C6E-439C-AEF4-F9020ABA871C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrbanSolution.Models", "UrbanSolution.Models\UrbanSolution.Models.csproj", "{DDB680FD-8D09-4F7B-89C8-F4410F7662FD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UrbanSolution.Models", "UrbanSolution.Models\UrbanSolution.Models.csproj", "{DDB680FD-8D09-4F7B-89C8-F4410F7662FD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrbanSolution.Data", "UrbanSolution.Data\UrbanSolution.Data.csproj", "{2ED241AA-8C7D-4859-98B3-A551E7CA7B1D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UrbanSolution.Data", "UrbanSolution.Data\UrbanSolution.Data.csproj", "{2ED241AA-8C7D-4859-98B3-A551E7CA7B1D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrbanSolution.Services", "UrbanSolution.Services\UrbanSolution.Services.csproj", "{3E025A6E-0C7A-42A9-B6DE-8CEBD4C18B4F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UrbanSolution.Services", "UrbanSolution.Services\UrbanSolution.Services.csproj", "{3E025A6E-0C7A-42A9-B6DE-8CEBD4C18B4F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

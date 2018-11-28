@@ -1,12 +1,9 @@
-﻿@model UrbanSolution.Services.Models.UrbanIssueDetailsServiceModel
-@using System.Globalization
-@using Microsoft.Extensions.Configuration
+﻿@model UrbanIssueDetailsServiceModel
+
 @inject IConfiguration Configuration
 @{
     ViewData["Title"] = $"Details for {Model.Name} issue";
-    var apiKey = Configuration.GetSection("Google:MapsApiKey").Value;  //TODO remove after partial/component
-    var lat = Model.Latitude.ToString().Replace(",", ".");
-    var lgt = Model.Longitude.ToString().Replace(",", ".");
+    var apiKey = Configuration.GetSection("Google:MapsApiKey").Value;    //TODO: remove after partial/component
 }
 
 <div row class="text-info">
@@ -29,14 +26,17 @@
             }
             @if (this.User.IsInRole(WebConstants.ManagerRole))
             {
-                <a class="btn btn-primary" asp-area="Manager" asp-controller="Issues" asp-action="Approve" asp-route-id="@Model.Id">Approve</a>
+                if (!Model.IsApproved)
+                {
+                    <a class="btn btn-primary" asp-area="Manager" asp-controller="Issues" asp-action="Approve" asp-route-id="@Model.Id">Approve</a>
+                }
                 <a class="btn btn-primary" asp-area="Manager" asp-controller="Issues" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
                 <a class="btn btn-danger" asp-area="Manager" asp-controller="Issues" asp-action="Delete" asp-route-id=" @Model.Id">Delete</a>
             }
         </div>
     </div>
     <div class="form-group col-xs-6">
-        <div class="row">                                                                                    
+        <div class="row">
             <div id="map" style="height: 400px; width: 600px;">
                 @*TODO/ make editor template for map*@
             </div>
@@ -46,52 +46,16 @@
 
 
 @section Scripts {
-<script>
-    var map;
-    function initMap() {
-
-        var myLatLng = { lat: @(lat) , lng: @(lgt) };
-
-        var mapOptions = {
-            zoom: 17,
-            center: myLatLng
+  
+    <script>
+        var map;
+        function initMap() {
+            var myLatLng = { lat: @(Model.Latitude), lng: @(Model.Longitude) };
+            var mapOptions = { zoom: 17, center: myLatLng }
+            map = new google.maps.Map(document.getElementById('map'), mapOptions);
+            var marker = new google.maps.Marker({ position: myLatLng, map: map });
         }
-
-        map = new google.maps.Map(document.getElementById('map'), mapOptions);
-
-        var marker = new google.maps.Marker({
-            position: myLatLng,
-            map: map,
-            draggable: false,
-            title: "Here"
-        });
-
-        var contentString = '<div id="content">'+
-            '<div id="siteNotice">'+
-            '</div>'+
-            '<h1 id="firstHeading" class="firstHeading">Uluru</h1>'+
-            '<div id="bodyContent">'+
-            '<p><b>Uluru</b>, also referred to as <b>Ayers Rock</b>, is a large ' +
-            'sandstone rock formation in the southern part of the '+
-            'Northern Territory, central Australia. It lies 335&#160;km (208&#160;mi) '+
-            'south west of the nearest large town, Alice Springs; 450&#160;km '+
-            '(280&#160;mi) by road.'+
-            'Heritage Site.</p>' +
-            '</div>'+
-            '</div>';
-
-
-        var infoWindow = new google.maps.InfoWindow({
-            content: contentString
-        });
-
-        marker.addListener('mouseover',
-            function() {
-                infoWindow.open(map, marker);
-            });
-
-    }
-</script>
+    </script>
 
     <script src="https://maps.googleapis.com/maps/api/js?key=@(apiKey)&callback=initMap"
             async defer>

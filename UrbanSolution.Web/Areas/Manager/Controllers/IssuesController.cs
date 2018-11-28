@@ -27,9 +27,9 @@ namespace UrbanSolution.Web.Areas.Manager.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var model = await this.issues.AllNotApprovedAsync();
+            var notApproved = await this.issues.AllAsync(isApproved: false);
 
-            return View(model);
+            return View(notApproved);
         }
 
         public async Task<IActionResult> Edit(int id)
@@ -55,21 +55,42 @@ namespace UrbanSolution.Web.Areas.Manager.Controllers
             }
 
             await this.issues.Update(model.Id, model.Name, model.IssuePictureUrl, model.Description, model.Region, model.Type,
-                model.AddressStreet, model.StreetNumber, model.IsApproved);
+                model.AddressStreet, model.StreetNumber);
 
             this.TempData.AddSuccessMessage(WebConstants.IssueUpdateSuccess);
 
             return this.RedirectToAction("Details", "Issue", new {id, Area = ""});
         }
 
-        [HttpGet]
         public async Task<IActionResult> Delete(int id)
-        {
+        { 
+            bool exists = await this.issues.ExistsAsync(id);             //TODO: make a filter
+            if (!exists)
+            {
+                this.TempData.AddErrorMessage(WebConstants.IssueNotFound);
+                return this.NotFound();
+            }
+
             await this.issues.Delete(id);
 
             this.TempData.AddSuccessMessage(WebConstants.IssueDeleteSuccess);
 
             return this.RedirectToAction("Index", "Issues", new {Area = "Manager"});
+        }
+
+        public async Task<IActionResult> Approve(int id)
+        {
+            bool exists = await this.issues.ExistsAsync(id);
+            if (!exists)
+            {
+                this.TempData.AddErrorMessage(WebConstants.IssueNotFound);
+                return this.NotFound();
+            }
+
+            await this.issues.ApproveAsync(id);
+            this.TempData.AddSuccessMessage(WebConstants.IssueApprovedSuccess);
+
+            return this.RedirectToAction(nameof(Index));
         }
 
         private void SetModelSelectListItems(UrbanIssueEditServiceViewModel model)  //TODO: make it Generic
