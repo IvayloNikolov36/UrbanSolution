@@ -57,3 +57,5 @@ C:\Users\Ivaylo\source\repos\UrbanSolution\UrbanSolution.Web\obj\Debug\netcoreap
 C:\Users\Ivaylo\source\repos\UrbanSolution\UrbanSolution.Web\obj\Debug\netcoreapp2.1\Razor\Views\Shared\_IssuesListingPartial.g.cshtml.cs
 C:\Users\Ivaylo\source\repos\UrbanSolution\UrbanSolution.Web\obj\Debug\netcoreapp2.1\Razor\Views\Issue\Details.g.cshtml.cs
 C:\Users\Ivaylo\source\repos\UrbanSolution\UrbanSolution.Web\obj\Debug\netcoreapp2.1\Razor\Areas\Manager\Views\Issues\Edit.g.cshtml.cs
+C:\Users\Ivaylo\source\repos\UrbanSolution\UrbanSolution.Web\bin\Debug\netcoreapp2.1\UrbanSolution.Services.Mapping.dll
+C:\Users\Ivaylo\source\repos\UrbanSolution\UrbanSolution.Web\bin\Debug\netcoreapp2.1\UrbanSolution.Services.Mapping.pdb

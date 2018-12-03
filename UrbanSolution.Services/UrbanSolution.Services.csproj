@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\UrbanSolution.Data\UrbanSolution.Data.csproj" />
+    <ProjectReference Include="..\UrbanSolution.Services.Mapping\UrbanSolution.Services.Mapping.csproj" />
   </ItemGroup>
 
   <ItemGroup>

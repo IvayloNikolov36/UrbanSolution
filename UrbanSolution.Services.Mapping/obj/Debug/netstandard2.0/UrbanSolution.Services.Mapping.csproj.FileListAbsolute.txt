@@ -1,0 +1,9 @@
+C:\Users\Ivaylo\source\repos\UrbanSolution\UrbanSolution.Services.Mapping\bin\Debug\netstandard2.0\UrbanSolution.Services.Mapping.deps.json
+C:\Users\Ivaylo\source\repos\UrbanSolution\UrbanSolution.Services.Mapping\bin\Debug\netstandard2.0\UrbanSolution.Services.Mapping.dll
+C:\Users\Ivaylo\source\repos\UrbanSolution\UrbanSolution.Services.Mapping\obj\Debug\netstandard2.0\UrbanSolution.Services.Mapping.csprojAssemblyReference.cache
+C:\Users\Ivaylo\source\repos\UrbanSolution\UrbanSolution.Services.Mapping\obj\Debug\netstandard2.0\UrbanSolution.Services.Mapping.csproj.CoreCompileInputs.cache
+C:\Users\Ivaylo\source\repos\UrbanSolution\UrbanSolution.Services.Mapping\obj\Debug\netstandard2.0\UrbanSolution.Services.Mapping.AssemblyInfoInputs.cache
+C:\Users\Ivaylo\source\repos\UrbanSolution\UrbanSolution.Services.Mapping\obj\Debug\netstandard2.0\UrbanSolution.Services.Mapping.AssemblyInfo.cs
+C:\Users\Ivaylo\source\repos\UrbanSolution\UrbanSolution.Services.Mapping\bin\Debug\netstandard2.0\UrbanSolution.Services.Mapping.pdb
+C:\Users\Ivaylo\source\repos\UrbanSolution\UrbanSolution.Services.Mapping\obj\Debug\netstandard2.0\UrbanSolution.Services.Mapping.dll
+C:\Users\Ivaylo\source\repos\UrbanSolution\UrbanSolution.Services.Mapping\obj\Debug\netstandard2.0\UrbanSolution.Services.Mapping.pdb

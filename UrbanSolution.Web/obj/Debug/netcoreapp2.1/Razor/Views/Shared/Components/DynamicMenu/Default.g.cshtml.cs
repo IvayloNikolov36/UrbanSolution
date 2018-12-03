@@ -81,7 +81,7 @@ using Microsoft.Extensions.Configuration;
             WriteLiteral("\r\n<li>");
             EndContext();
             BeginContext(6, 65, false);
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "643edf2327d4491b93d0d6a14ababaf7", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "b7e63bdd16694f7a8213f7b819ba8dda", async() => {
                 BeginContext(63, 4, true);
                 WriteLiteral("Home");
                 EndContext();
@@ -116,7 +116,7 @@ using Microsoft.Extensions.Configuration;
             WriteLiteral("    <li>");
             EndContext();
             BeginContext(139, 71, false);
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "94037918279149c386a180487658f3fc", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "7b3dfb6df8734c6da95b2848022ba5b5", async() => {
                 BeginContext(201, 5, true);
                 WriteLiteral("Users");
                 EndContext();
@@ -156,7 +156,7 @@ using Microsoft.Extensions.Configuration;
             WriteLiteral("    <li>");
             EndContext();
             BeginContext(283, 72, false);
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "cf989874f3eb4817b6e249e39b0bbfed", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "6916d6fbeee1478ea86fa9cca596a829", async() => {
                 BeginContext(348, 3, true);
                 WriteLiteral("New");
                 EndContext();
@@ -190,7 +190,7 @@ using Microsoft.Extensions.Configuration;
             WriteLiteral("<li>");
             EndContext();
             BeginContext(369, 73, false);
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "d8de6489be394cf1b4d6282926f7e0fa", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "e1ffab10455642d2a5fc0c26bab0950a", async() => {
                 BeginContext(432, 6, true);
                 WriteLiteral("Upload");
                 EndContext();

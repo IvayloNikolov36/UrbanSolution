@@ -214,7 +214,7 @@ using Microsoft.Extensions.Configuration;
             WriteLiteral("                    ");
             EndContext();
             BeginContext(1154, 127, false);
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "52670b99aa994ae6aae483b41815d216", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "8295c51c029342dd83431c18aa0ead60", async() => {
                 BeginContext(1270, 7, true);
                 WriteLiteral("Approve");
                 EndContext();
@@ -262,7 +262,7 @@ using Microsoft.Extensions.Configuration;
             WriteLiteral("                ");
             EndContext();
             BeginContext(1318, 121, false);
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "c80e1bfef6ce428d876269998c7c5b11", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "f100c0ca4ac14eee8c9a972dc68394c3", async() => {
                 BeginContext(1431, 4, true);
                 WriteLiteral("Edit");
                 EndContext();
@@ -302,7 +302,7 @@ using Microsoft.Extensions.Configuration;
             WriteLiteral("\r\n                ");
             EndContext();
             BeginContext(1457, 125, false);
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "b43b319ae87f48d88fa08450380aeafa", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("a", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "27558b0c6dc04a57b32189fc0f552377", async() => {
                 BeginContext(1572, 6, true);
                 WriteLiteral("Delete");
                 EndContext();

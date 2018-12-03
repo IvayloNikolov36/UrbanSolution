@@ -14,3 +14,5 @@ C:\Users\Ivaylo\source\repos\UrbanSolution\UrbanSolution.Services\bin\Debug\netc
 C:\Users\Ivaylo\source\repos\UrbanSolution\UrbanSolution.Services\bin\Debug\netcoreapp2.1\UrbanSolution.Models.pdb
 C:\Users\Ivaylo\source\repos\UrbanSolution\UrbanSolution.Services\bin\Debug\netcoreapp2.1\Microsoft.AspNetCore.Mvc.ViewFeatures.xml
 C:\Users\Ivaylo\source\repos\UrbanSolution\UrbanSolution.Services\obj\Debug\netcoreapp2.1\UrbanSolution.Services.csproj.CopyComplete
+C:\Users\Ivaylo\source\repos\UrbanSolution\UrbanSolution.Services\bin\Debug\netcoreapp2.1\UrbanSolution.Services.Mapping.dll
+C:\Users\Ivaylo\source\repos\UrbanSolution\UrbanSolution.Services\bin\Debug\netcoreapp2.1\UrbanSolution.Services.Mapping.pdb

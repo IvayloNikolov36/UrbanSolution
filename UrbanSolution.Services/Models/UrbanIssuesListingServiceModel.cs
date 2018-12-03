@@ -1,8 +1,11 @@
 ﻿using System;
+using AutoMapper;
+using UrbanSolution.Models;
+using UrbanSolution.Services.Mapping;
 
 namespace UrbanSolution.Services.Models
 {
-    public class UrbanIssuesListingServiceModel
+    public class UrbanIssuesListingServiceModel : IMapFrom<UrbanIssue>, IHaveCustomMappings
     {
         public int Id { get; set; }
 
@@ -22,5 +25,10 @@ namespace UrbanSolution.Services.Models
 
         public string Longitude { get; set; }
 
+        public void CreateMappings(IMapperConfigurationExpression configuration)
+        {
+            configuration.CreateMap<UrbanIssue, UrbanIssuesListingServiceModel>()
+                .ForMember(x => x.HasResolved, m => m.MapFrom(u => u.ResolvedIssueId != null));
+        }
     }
 }

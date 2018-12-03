@@ -9,6 +9,9 @@ using UrbanSolution.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using UrbanSolution.Models;
+using UrbanSolution.Services.Mapping;
+using UrbanSolution.Services.Models;
+using UrbanSolution.Web.Areas.Admin.Models;
 using UrbanSolution.Web.Infrastructure.Extensions;
 
 namespace UrbanSolution.Web
@@ -25,7 +28,12 @@ namespace UrbanSolution.Web
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddCors();
+            //services.AddCors();
+
+            AutoMapperConfig.RegisterMappings(
+                typeof(AdminUsersListingViewModel).Assembly,
+                typeof(UrbanIssueDetailsServiceModel).Assembly
+                );
 
             services.Configure<CookiePolicyOptions>(options =>
             {               
