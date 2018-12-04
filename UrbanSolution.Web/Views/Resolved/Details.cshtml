@@ -1,0 +1,45 @@
+﻿@model UrbanSolution.Services.Models.ResolvedDetailsServiceModel
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+
+
+<div class="slick-fade row  picture-listing" id="wrapper">
+    <div><img src="@Model.PictureUrl" class="pic-responsive"></div>
+    <div><img src="@Model.IssuePictureUrl" class="pic-responsive"></div>  
+</div>
+<div class="row center-block"><a class="btn left">Reported</a> <a class="right btn">Resolved</a></div>
+
+<h4>@Model.Description</h4>
+
+
+
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+            $('.slick-fade').slick({
+                dots: false,
+                arrows: false,
+                infinite: false,
+                autoplay:true,
+                speed: 500,
+                fade: true,
+                cssEase: 'linear',
+                centerMode: true
+            });
+            $('.left').click(function () {
+                $('.slick-fade').slick('slickPrev');
+            });
+
+            $('.right').click(function() {
+                $('.slick-fade').slick('slickNext');
+            });
+        });
+    </script>
+    
+}
+    

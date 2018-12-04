@@ -8,8 +8,8 @@ namespace UrbanSolution.Services
     {
         Task<IEnumerable<UrbanIssuesListingServiceModel>> AllAsync(bool isApproved);
 
-        Task<UrbanIssueDetailsServiceModel> DetailsAsync(int id);
+        Task<TModel> GetAsync<TModel>(int id);
 
-        IEnumerable<IssueMapInfoBoxDetailsServiceModel> AllMapInfoDetails(bool areApproved);
+        Task<IEnumerable<IssueMapInfoBoxDetailsServiceModel>> AllMapInfoDetailsAsync(bool areApproved);
     }
 }

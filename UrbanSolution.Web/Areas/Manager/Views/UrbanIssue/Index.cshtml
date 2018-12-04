@@ -1,0 +1,102 @@
+﻿@inject IConfiguration Configuration
+@model IEnumerable<UrbanIssuesListingServiceModel>
+@{
+    ViewData["Title"] = "Not approved issues";
+    var apiKey = Configuration.GetSection("Google:MapsApiKey").Value;
+}
+
+<div row class="text-info text-center">
+    <h2>@this.ViewData["Title"]</h2>
+</div>
+
+
+<hr class="horizontol-line"/>
+
+
+<div class="slick-issues row issues-listing" id="wrapper">
+    @await Html.PartialAsync("_IssuesListingPartial", Model)
+</div>
+
+
+<div class="form-group col-lg-12">
+    <div id="map" style="height: 500px;">
+    </div>
+</div>
+
+@section Scripts
+    {
+    <script>
+        $(document).ready(function () {
+            $('.slick-issues').slick({
+                infinite: true,
+                slidesToShow: 4,
+                slidesToScroll: 1,
+                dots: false,
+                arrows: false,
+                autoplay: true,
+                autoplaySpeed: 50
+            });
+        });
+    </script>
+
+    <script>
+        var map;
+
+        function initMap() {
+            var myLatLng = { lat: @(WebConstants.MapCenterLatitude), lng: @(WebConstants.MapCenterLongitude) };
+            var mapOptions = { zoom: 12.8, center: myLatLng }
+            map = new google.maps.Map(document.getElementById('map'), mapOptions);
+
+
+            $.get("@Url.Action("GetIssuesInfoBoxDetails", "IssuesApi")",
+                function(data, status) {
+                    console.log(data);
+                    var marker = [];
+                    var contentString = [];
+                    var infowindow = [];
+                    for (var i = 0; i < data.length; i++) {
+                        marker[i] = new google.maps.Marker({
+                            position: { lat: parseFloat(data[i].latitude), lng: parseFloat(data[i].longitude) },
+                            map: map
+                        });
+                        contentString[i] = '<div id="content">' +
+                            '<div id="siteNotice">' +
+                            '</div>' +
+                            '<h1 id="firstHeading" class="firstHeading">' +
+                            data[i].name +
+                            '</h1>' +
+                            '<div id="bodyContent">' +
+                            '<p>' + data[i].description + '</p>' +
+                            '<a href="/issue/details/'+ data[i].id +'"><h3 id="content">View Details</h3></a>' +
+                            '</div>' +
+                            '</div>';
+
+                        infowindow[i] = new google.maps.InfoWindow({
+                            content: contentString[i]
+                        });
+                        var markerValue = marker[i];
+
+                        google.maps.event.addListener(markerValue, 'mouseover', (function(currentMarker, i) {
+                            return function() {
+                                infowindow[i].open(map, marker[i]);
+                            }
+                        })(marker[i], i));
+
+                        google.maps.event.addListener(markerValue, 'mouseclick', (function (currentMarker, i) {
+                            return function () {
+                                infowindow[i].close();
+                            }
+                        })(marker[i], i));
+                    }
+                });
+        }
+
+
+    </script>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=@(apiKey)&callback=initMap"
+            async defer>
+    </script>
+
+}
+

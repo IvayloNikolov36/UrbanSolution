@@ -1,0 +1,34 @@
+﻿@model UrbanSolution.Web.Areas.Manager.Models.ResolvedIssueUploadModel
+@{
+    ViewData["Title"] = "Upload";
+}
+
+<div row class="text-info">
+    <h3 class="text-center">@this.ViewData["Title"]</h3>
+    <hr />
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Upload" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="PictureUrl" class="control-label"></label>
+                <input asp-for="PictureUrl" class="form-control" />
+                <span asp-validation-for="PictureUrl" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <textarea asp-for="Description" rows="8" class="form-control"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-default" /> 
+                <a asp-area="Manager" asp-controller="Issue" asp-action="Index" class="btn btn-default">Back</a>
+            </div>
+            <input type="hidden" name="UrbanIssueId" value="@(ViewData[WebConstants.ViewDataIssueId])"/>
+        </form>
+    </div>
+</div>
+
+

@@ -14,11 +14,12 @@ namespace UrbanSolution.Models
         [Range(UserMinAge, UserMaxAge)]
         public int Age { get; set; }
 
-        public ICollection<Comment> Comments { get; set; } = new List<Comment>();
-
         public ICollection<UrbanIssue> UrbanIssues { get; set; } = new List<UrbanIssue>();
 
         public ICollection<ResolvedIssue> ResolvedIssues { get; set; } = new List<ResolvedIssue>();
 
+        public ICollection<Comment> Comments { get; set; } = new List<Comment>();
+
+        public ICollection<Rating> Ratings { get; set; } = new List<Rating>();
     }
 }

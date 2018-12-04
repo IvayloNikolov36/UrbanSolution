@@ -42,6 +42,11 @@ body {
     margin: auto 0px;
 }
 
+.picture-listing .pic-responsive {
+    height: 350px !important;
+    width: 450px !important;
+}
+
 #wrapper {
     width: 100%;
     margin: 0 auto;
@@ -85,3 +90,35 @@ img {
     height: 0;
 }
 
+/*---------------------------------------*/
+/*.nextArrowBtn {
+    position: absolute;
+    z-index: 1000;
+    top: 50%;
+    right: 0;
+    color: #BFAFB2;
+}
+
+.prevArrowBtn {
+    position: absolute;
+    z-index: 1000;
+    top: 50%;
+    left: 0;
+    color: #BFAFB2;
+}*/
+
+/*.slick-prev:after {
+    content: ">";
+    color: red;
+    font-size: 30px;
+}
+
+.slick-next:before {
+    content: "<";
+    color: red;
+    font-size: 30px;
+}*/
+
+/*.slick-prev:before, .slick-next:before {
+    color: #09529b !important;
+}*/

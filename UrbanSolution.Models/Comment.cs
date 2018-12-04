@@ -12,11 +12,11 @@ namespace UrbanSolution.Models
         [StringLength(CommentContentMaxLength, MinimumLength = CommentContentMinLength)]
         public string Content { get; set; }
 
+        public DateTime PostedOn { get; set; }
+
         [Required]
         public string PublisherId { get; set; }
         public User Publisher { get; set; }
-
-        public DateTime PostedOn { get; set; }
 
         public int? TargetId { get; set; }
         public ResolvedIssue Target { get; set; }

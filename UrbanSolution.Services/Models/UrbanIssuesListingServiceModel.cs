@@ -28,7 +28,7 @@ namespace UrbanSolution.Services.Models
         public void CreateMappings(IMapperConfigurationExpression configuration)
         {
             configuration.CreateMap<UrbanIssue, UrbanIssuesListingServiceModel>()
-                .ForMember(x => x.HasResolved, m => m.MapFrom(u => u.ResolvedIssueId != null));
+                .ForMember(x => x.HasResolved, m => m.MapFrom(u => u.ResolvedIssue != null));
         }
     }
 }

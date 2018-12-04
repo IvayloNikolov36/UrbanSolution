@@ -6,6 +6,6 @@
 }
 @if (this.User.IsInRole(WebConstants.ManagerRole))
 {
-    <li><a asp-area="Manager" asp-controller="Issues" asp-action="Index">New</a></li>
+    <li><a asp-area="Manager" asp-controller="UrbanIssue" asp-action="Index">New</a></li>
 }
 <li><a asp-area="" asp-controller="Users" asp-action="UploadIssue">Upload</a></li>

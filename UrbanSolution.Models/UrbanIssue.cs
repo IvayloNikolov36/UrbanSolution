@@ -44,7 +44,6 @@ namespace UrbanSolution.Models
 
         public bool IsApproved { get; set; }
 
-        public int? ResolvedIssueId { get; set; }
         public ResolvedIssue ResolvedIssue { get; set; }
 
     }

@@ -6,7 +6,7 @@ using UrbanSolution.Data;
 using UrbanSolution.Services.Mapping;
 using UrbanSolution.Services.Models;
 
-namespace UrbanSolution.Services
+namespace UrbanSolution.Services.Implementations
 {
     public class IssueService : IIssueService
     {
@@ -26,19 +26,21 @@ namespace UrbanSolution.Services
             return issues;
         }
 
-        public async Task<UrbanIssueDetailsServiceModel> DetailsAsync(int id)
+        public async Task<TModel> GetAsync<TModel>(int id)
         {
-            return await this.db
+            var model = await this.db
                 .UrbanIssues.Where(i => i.Id == id)
-                .To<UrbanIssueDetailsServiceModel>()               
+                .To<TModel>()               
                 .FirstOrDefaultAsync();
+
+            return model;
         }
 
-        public  IEnumerable<IssueMapInfoBoxDetailsServiceModel> AllMapInfoDetails(bool areApproved)
+        public async Task<IEnumerable<IssueMapInfoBoxDetailsServiceModel>> AllMapInfoDetailsAsync(bool areApproved)
         {
-            return this.db.UrbanIssues
+            return await this.db.UrbanIssues
                           .Where(i => i.IsApproved == areApproved)
-                          .To<IssueMapInfoBoxDetailsServiceModel>().ToList();
+                          .To<IssueMapInfoBoxDetailsServiceModel>().ToListAsync();
         }
     }
 }

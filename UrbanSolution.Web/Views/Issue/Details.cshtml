@@ -20,18 +20,29 @@
             <h3>Type: @Model.Type</h3>
             <h3>Region: @Model.Region</h3>
             <h4>@(Model.IsApproved != true ? "Not approved yet!" : "")</h4>
+
+
+            @if(Model.IsApproved && !Model.HasResolved)
+            {
+                <a class="btn btn-primary" asp-area="Manager" asp-controller="Resolved" asp-action="Upload" asp-route-id="@Model.Id">
+                    Upload Resolved
+                </a>
+            }
             @if (Model.HasResolved)
             {
-                @:(View Resolved:) <a></a> @*TODO/ make a link to resolved*@
+                 <a class="btn btn-primary" asp-area="" asp-controller="Resolved" asp-action="Details" asp-route-id="@Model.ResolvedId">View Resolved</a> 
             }
+
+
             @if (this.User.IsInRole(WebConstants.ManagerRole))
             {
                 if (!Model.IsApproved)
                 {
-                    <a class="btn btn-primary" asp-area="Manager" asp-controller="Issues" asp-action="Approve" asp-route-id="@Model.Id">Approve</a>
+                    <a class="btn btn-primary" asp-area="Manager" asp-controller="UrbanIssue" asp-action="Approve" asp-route-id="@Model.Id">Approve</a>
                 }
-                <a class="btn btn-primary" asp-area="Manager" asp-controller="Issues" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
-                <a class="btn btn-danger" asp-area="Manager" asp-controller="Issues" asp-action="Delete" asp-route-id=" @Model.Id">Delete</a>
+
+                <a class="btn btn-primary"  asp-area="Manager" asp-controller="UrbanIssue" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+                <a class="btn btn-danger"  asp-area="Manager" asp-controller="UrbanIssue" asp-action="Delete" asp-route-id=" @Model.Id">Delete</a>
             }
         </div>
     </div>

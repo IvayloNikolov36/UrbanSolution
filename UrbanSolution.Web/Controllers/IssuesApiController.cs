@@ -20,9 +20,9 @@ namespace UrbanSolution.Web.Controllers
         }
 
         [HttpGet("")]
-        public IActionResult GetIssuesInfoBoxDetails()
+        public async Task<IActionResult> GetIssuesInfoBoxDetails()
         {
-            var data = this.issues.AllMapInfoDetails(areApproved: false);
+            var data = await this.issues.AllMapInfoDetailsAsync(areApproved: false);
 
             return Ok(data);
         }

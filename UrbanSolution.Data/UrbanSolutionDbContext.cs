@@ -17,13 +17,15 @@ namespace UrbanSolution.Data
 
         public DbSet<Comment> Comments { get; set; }
 
+        public DbSet<Rating> Ratings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<User>()
-                .HasMany(u => u.Comments)
-                .WithOne(c => c.Publisher)
-                .HasForeignKey(u => u.PublisherId);
+            builder.Entity<UrbanIssue>()
+                .HasOne(u => u.ResolvedIssue)
+                .WithOne(r => r.UrbanIssue)
+                .HasForeignKey<ResolvedIssue>(r => r.UrbanIssueId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
 
             builder.Entity<User>()
                 .HasMany(u => u.UrbanIssues)
@@ -34,6 +36,16 @@ namespace UrbanSolution.Data
                 .HasMany(u => u.ResolvedIssues)
                 .WithOne(u => u.Publisher)
                 .HasForeignKey(u => u.PublisherId);
+
+            builder.Entity<User>()
+                .HasMany(u => u.Comments)
+                .WithOne(c => c.Publisher)
+                .HasForeignKey(u => u.PublisherId);
+
+            builder.Entity<User>()
+                .HasMany(u => u.Ratings)
+                .WithOne(r => r.User)
+                .HasForeignKey(r => r.UserId);
 
             builder.Entity<ResolvedIssue>()
                 .HasMany(e => e.Comments)

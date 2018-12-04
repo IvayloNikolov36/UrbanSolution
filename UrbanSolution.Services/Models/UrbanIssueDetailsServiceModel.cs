@@ -35,10 +35,13 @@ namespace UrbanSolution.Services.Models
 
         public string Longitude { get; set; }
 
+        public int? ResolvedId { get; set; }
+
         public void CreateMappings(IMapperConfigurationExpression configuration)
         {
             configuration.CreateMap<UrbanIssue, UrbanIssueDetailsServiceModel>()
-                .ForMember(x => x.IsApproved, m => m.MapFrom(u => u.ResolvedIssueId != null))
+                .ForMember(x => x.ResolvedId, m => m.MapFrom(u => u.ResolvedIssue.Id))
+                .ForMember(x => x.HasResolved, m => m.MapFrom(u => u.ResolvedIssue != null))
                 .ForMember(x => x.Latitude, m => m.MapFrom(u => u.Latitude.ToString().Replace(",", ".")))
                 .ForMember(x => x.Longitude, m => m.MapFrom(u => u.Longitude.ToString().Replace(",", ".")));
         }

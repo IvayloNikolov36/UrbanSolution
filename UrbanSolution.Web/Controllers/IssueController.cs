@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using UrbanSolution.Services;
+using UrbanSolution.Services.Models;
 
 namespace UrbanSolution.Web.Controllers
 {
@@ -22,7 +23,7 @@ namespace UrbanSolution.Web.Controllers
 
         public async Task<IActionResult> Details(int id)
         {
-            var issueModel = await this.issues.DetailsAsync(id);
+            var issueModel = await this.issues.GetAsync<UrbanIssueDetailsServiceModel>(id);
             if (issueModel == null)
             {
                 return this.BadRequest();
