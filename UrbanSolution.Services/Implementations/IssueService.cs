@@ -1,4 +1,6 @@
-﻿namespace UrbanSolution.Services.Implementations
+﻿using UrbanSolution.Models;
+
+namespace UrbanSolution.Services.Implementations
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -50,11 +52,20 @@
             return model;
         }
 
-        public async Task<IEnumerable<IssueMapInfoBoxDetailsServiceModel>> AllMapInfoDetailsAsync(bool areApproved)
+        public async Task<IEnumerable<IssueMapInfoBoxDetailsServiceModel>> AllMapInfoDetailsAsync(bool areApproved, RegionType? region) //TODO there is the same method in onother service
         {
-            return await this.db.UrbanIssues
-                          .Where(i => i.IsApproved == areApproved)
-                          .To<IssueMapInfoBoxDetailsServiceModel>().ToListAsync();
+            bool takeAllRegions = region == null;
+
+            var issues = this.db.UrbanIssues.Where(i => i.IsApproved == areApproved);
+
+            if (!takeAllRegions)
+            {
+                issues = issues.Where(i => i.Region == region);
+            }
+
+            var result =  await issues.To<IssueMapInfoBoxDetailsServiceModel>().ToListAsync();
+
+            return result;
         }
     }
 }

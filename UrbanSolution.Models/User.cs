@@ -14,6 +14,8 @@ namespace UrbanSolution.Models
         [Range(UserMinAge, UserMaxAge)]
         public int Age { get; set; }
 
+        public RegionType? ManagedRegion { get; set; }
+
         public ICollection<UrbanIssue> UrbanIssues { get; set; } = new List<UrbanIssue>();
 
         public ICollection<ResolvedIssue> ResolvedIssues { get; set; } = new List<ResolvedIssue>();

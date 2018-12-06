@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using UrbanSolution.Models;
 using UrbanSolution.Services.Models;
 
 namespace UrbanSolution.Services
@@ -12,6 +13,6 @@ namespace UrbanSolution.Services
 
         Task<TModel> GetAsync<TModel>(int id); //TODO: the same is in another service
 
-        Task<IEnumerable<IssueMapInfoBoxDetailsServiceModel>> AllMapInfoDetailsAsync(bool areApproved);
+        Task<IEnumerable<IssueMapInfoBoxDetailsServiceModel>> AllMapInfoDetailsAsync(bool areApproved, RegionType? region);
     }
 }

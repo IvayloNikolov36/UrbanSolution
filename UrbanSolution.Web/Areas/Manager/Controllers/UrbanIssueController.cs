@@ -1,27 +1,27 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using UrbanSolution.Models;
-using UrbanSolution.Services.Manager;
-using UrbanSolution.Services.Manager.Models;
-using UrbanSolution.Web.Areas.Manager.Models;
-using UrbanSolution.Web.Infrastructure;
-using UrbanSolution.Web.Infrastructure.Extensions;
-using UrbanSolution.Web.Models;
+﻿namespace UrbanSolution.Web.Areas.Manager.Controllers
+{
+    using Infrastructure;
+    using Infrastructure.Extensions;
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Rendering;
+    using System;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using UrbanSolution.Models;
+    using UrbanSolution.Services.Manager;
+    using UrbanSolution.Services.Manager.Models;
 
-namespace UrbanSolution.Web.Areas.Manager.Controllers
-{    
+    using UrbanSolution.Web.Models;
+
     public class UrbanIssueController : BaseController
     {
-        private readonly IIssueService issues;
+        private readonly IManagerIssueService issues;
 
         public UrbanIssueController(
             UserManager<User> userManager, 
             RoleManager<IdentityRole> roleManager,
-            IIssueService issues) 
+            IManagerIssueService issues) 
             : base(userManager, roleManager)
         {
             this.issues = issues;
@@ -29,13 +29,14 @@ namespace UrbanSolution.Web.Areas.Manager.Controllers
 
         public async Task<IActionResult> Index()
         {
+            var user = await this.UserManager.GetUserAsync(this.User);
+            RegionType? region = user.ManagedRegion;
 
             var model = new IssuesListingViewModel
             {
-                Issues = await this.issues.AllAsync(isApproved: false),
+                Issues = await this.issues.AllAsync(isApproved: false, region: region),
                 UseCarousel = true
             };
-
 
             return View(model);
         }

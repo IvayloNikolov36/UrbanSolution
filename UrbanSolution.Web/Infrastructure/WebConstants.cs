@@ -8,8 +8,10 @@
         public const string AdminUserName = "administrator";
         public const string ManagerUserName = "manager";
 
+        public const string ManagerEmail = "{0}.2019@abv.bg";
+
         public const string DefaultAdminPassword = "adminA123";
-        public const string DefaultManagerPassword = "managerM123";
+        public const string DefaultManagerPassword = "managerM123{0}";
 
         public const string AdminArea = "Admin";
         public const string ManagerArea = "Manager";

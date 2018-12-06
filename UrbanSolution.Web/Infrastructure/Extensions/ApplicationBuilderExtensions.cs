@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using UrbanSolution.Models;
@@ -52,17 +53,41 @@ namespace UrbanSolution.Web.Infrastructure.Extensions
                 {
                     user = new User()
                     {
-                        UserName = ManagerUserName, 
+                        UserName = ManagerUserName,
                         Email = "manager@example.com",
                         FullName = "Regional Manager",
                         Age = 20
                     };
 
-                    await userManager.CreateAsync(user, DefaultManagerPassword);
+                    await userManager.CreateAsync(user, string.Format(DefaultManagerPassword, ""));
                     await userManager.AddToRoleAsync(user, ManagerRole);
                 }
+
+                var regionsAsStrings = Enum.GetNames(typeof(RegionType));
+                for (int i = 0; i < regionsAsStrings.Length; i++)
+                {
+                    var managerUsername = ManagerUserName + regionsAsStrings[i];
+                    user = await userManager.FindByNameAsync(managerUsername);
+                    if (user == null)
+                    {
+                        user = new User()
+                        {
+                            UserName = managerUsername,
+                            Email = string.Format(ManagerEmail, managerUsername),
+                            FullName = $"Manager {regionsAsStrings[i]}",
+                            ManagedRegion = Enum.Parse<RegionType>(regionsAsStrings[i]),
+                            Age = 20
+                        };
+
+                        await userManager.CreateAsync(user, string.Format(DefaultManagerPassword, regionsAsStrings[i]));
+                        await userManager.AddToRoleAsync(user, ManagerRole);
+                    }
+
+                }
+                
             }
         }
+       
     }
 
 }
