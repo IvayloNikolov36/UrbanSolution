@@ -1,0 +1,22 @@
+﻿@model UrbanIssuesListingServiceModel
+
+    <div class="col-md-3">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title text-center">
+                    <a
+                        asp-area=""
+                        asp-controller="Issue"
+                        asp-action="Details"
+                        asp-route-id="@Model.Id">
+                        @Model.Name
+                    </a>
+                </h3>
+            </div>
+            <div class="panel-body">
+                <img src="@Model.IssuePictureUrl" class="img-responsive">
+                <br/>
+                <div class="text-center"><em class="text-info">@Model.PublishedOn.ToShortDateString()</em> by <em class="text-info">@Model.Publisher</em></div>
+            </div>
+        </div>
+    </div>

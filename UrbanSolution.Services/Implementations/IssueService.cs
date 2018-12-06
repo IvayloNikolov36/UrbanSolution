@@ -1,13 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using UrbanSolution.Data;
-using UrbanSolution.Services.Mapping;
-using UrbanSolution.Services.Models;
-
-namespace UrbanSolution.Services.Implementations
+﻿namespace UrbanSolution.Services.Implementations
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using Microsoft.EntityFrameworkCore;
+    using Data;
+    using Mapping;
+    using Models;
+    using Utilities;
+
     public class IssueService : IIssueService
     {
         private UrbanSolutionDbContext db;
@@ -17,13 +18,26 @@ namespace UrbanSolution.Services.Implementations
             this.db = db;
         }
 
-        public async Task<IEnumerable<UrbanIssuesListingServiceModel>> AllAsync(bool isApproved)
+        public async Task<IEnumerable<UrbanIssuesListingServiceModel>> AllAsync(bool isApproved, int page = 1)
         {
             var issues = await this.db
                 .UrbanIssues.Where(i => i.IsApproved == isApproved)
-                .To<UrbanIssuesListingServiceModel>().ToListAsync();
+                .OrderByDescending(i => i.PublishedOn)
+                .Skip((page - 1) * ServiceConstants.IssuesPageSize)
+                .Take(count: ServiceConstants.IssuesPageSize)
+                .To<UrbanIssuesListingServiceModel>()
+                .ToListAsync();
 
             return issues;
+        }
+
+        public async Task<int> TotalAsync(bool isApproved)
+        {
+            var countOfIssues = await this.db
+                .UrbanIssues.Where(i => i.IsApproved == isApproved)
+                .CountAsync();
+
+            return countOfIssues;
         }
 
         public async Task<TModel> GetAsync<TModel>(int id)

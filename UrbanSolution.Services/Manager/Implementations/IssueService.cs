@@ -55,6 +55,9 @@ namespace UrbanSolution.Services.Manager.Implementations
             return issueModel;
         }
 
+        public async Task<int> TotalAsync(bool isApproved)
+            => await this.db.UrbanIssues.Where(i => i.IsApproved == isApproved).CountAsync();
+
         public async Task Update(int id, string name, string issuePictureUrl, string description, RegionType region, IssueType type,
             string addressStreet, string streetNumber)
         {

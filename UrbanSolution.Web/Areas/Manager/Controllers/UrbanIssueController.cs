@@ -7,8 +7,10 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using UrbanSolution.Models;
 using UrbanSolution.Services.Manager;
 using UrbanSolution.Services.Manager.Models;
+using UrbanSolution.Web.Areas.Manager.Models;
 using UrbanSolution.Web.Infrastructure;
 using UrbanSolution.Web.Infrastructure.Extensions;
+using UrbanSolution.Web.Models;
 
 namespace UrbanSolution.Web.Areas.Manager.Controllers
 {    
@@ -27,9 +29,15 @@ namespace UrbanSolution.Web.Areas.Manager.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var notApproved = await this.issues.AllAsync(isApproved: false);
 
-            return View(notApproved);
+            var model = new IssuesListingViewModel
+            {
+                Issues = await this.issues.AllAsync(isApproved: false),
+                UseCarousel = true
+            };
+
+
+            return View(model);
         }
 
         public async Task<IActionResult> Edit(int id)

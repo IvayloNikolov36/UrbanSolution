@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using UrbanSolution.Services;
-
-namespace UrbanSolution.Web.Controllers
+﻿namespace UrbanSolution.Web.Controllers
 {
+    using Microsoft.AspNetCore.Mvc;
+    using Services;
+    using System.Threading.Tasks;
+
     [Route("api/[controller]")]
     [ApiController]
     public class IssuesApiController : ControllerBase

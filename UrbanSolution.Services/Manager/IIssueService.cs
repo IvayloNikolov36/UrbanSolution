@@ -12,6 +12,8 @@ namespace UrbanSolution.Services.Manager
 
         Task<UrbanIssueEditServiceViewModel> GetAsync(int issueId);
 
+        Task<int> TotalAsync(bool isApproved);
+
         Task Update(int id, string name, string issuePictureUrl, string description, RegionType region, IssueType type, string addressStreet, string streetNumber);
 
         Task Delete(int issueId);
