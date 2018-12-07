@@ -81,44 +81,15 @@ img {
     text-decoration: none;
     color: #000000;
 }
-/*#00ced1*/
+
 .horizontol-line {
-    border: solid #ddd;
+    border: solid #00ced1;
     border-width: 1px 0 0;
     clear: both;
     margin: 22px 0 21px;
     height: 0;
 }
 
-/*---------------------------------------*/
-/*.nextArrowBtn {
-    position: absolute;
-    z-index: 1000;
-    top: 50%;
-    right: 0;
-    color: #BFAFB2;
+.article-list li {
+    margin-bottom: 20px;
 }
-
-.prevArrowBtn {
-    position: absolute;
-    z-index: 1000;
-    top: 50%;
-    left: 0;
-    color: #BFAFB2;
-}*/
-
-/*.slick-prev:after {
-    content: ">";
-    color: red;
-    font-size: 30px;
-}
-
-.slick-next:before {
-    content: "<";
-    color: red;
-    font-size: 30px;
-}*/
-
-/*.slick-prev:before, .slick-next:before {
-    color: #09529b !important;
-}*/

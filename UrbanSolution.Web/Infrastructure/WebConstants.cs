@@ -2,19 +2,32 @@
 {
     public class WebConstants
     {
+        public const string AdminArea = "Admin";
+        public const string ManagerArea = "Manager";
+        public const string BlogArea = "Blog";
+
         public const string AdminRole = "Administrator";
         public const string ManagerRole = "Manager";
+        public const string BlogAuthorRole = "BlogAuthor";
 
         public const string AdminUserName = "administrator";
         public const string ManagerUserName = "manager";
+        public const string BlogAuthorUserName = "blogger";
 
-        public const string ManagerEmail = "{0}.2019@abv.bg";
+        public const string AdminFullName = "System Administrator";
+        public const string ManagerFullName = "Regional Manager";
+        public const string BlogAuthorFullName = "Blog Author";
+
+        public const int UserDefaultAge = 20;
+
+        public const string AdminEmail = "admin@example.com";
+        public const string ManagerEmail = "manager@example.com";
+        public const string RegionalManagerEmail = "{0}.2019@abv.bg";
+        public const string BlogAuthorEmail = "{0}.2019@abv.bg";
 
         public const string DefaultAdminPassword = "adminA123";
         public const string DefaultManagerPassword = "managerM123{0}";
-
-        public const string AdminArea = "Admin";
-        public const string ManagerArea = "Manager";
+        public const string DefaultBlogAuthorPassword = "bloggerB123";
 
         public const string TempDataSuccessMessageKey = "SuccessMessage";
         public const string TempDataErrorMessageKey = "ErrorMessage";

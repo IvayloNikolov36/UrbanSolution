@@ -20,6 +20,8 @@ namespace UrbanSolution.Models
 
         public ICollection<ResolvedIssue> ResolvedIssues { get; set; } = new List<ResolvedIssue>();
 
+        public ICollection<Article> PublishedArticles { get; set; } = new List<Article>();
+
         public ICollection<Comment> Comments { get; set; } = new List<Comment>();
 
         public ICollection<Rating> Ratings { get; set; } = new List<Rating>();

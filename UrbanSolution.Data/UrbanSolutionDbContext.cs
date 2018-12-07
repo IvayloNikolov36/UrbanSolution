@@ -15,6 +15,8 @@ namespace UrbanSolution.Data
 
         public DbSet<ResolvedIssue> ResolvedIssues { get; set; }
 
+        public DbSet<Article> Articles { get; set; }
+
         public DbSet<Comment> Comments { get; set; }
 
         public DbSet<Rating> Ratings { get; set; }
@@ -46,6 +48,11 @@ namespace UrbanSolution.Data
                 .HasMany(u => u.Ratings)
                 .WithOne(r => r.User)
                 .HasForeignKey(r => r.UserId);
+
+            builder.Entity<User>()
+                .HasMany(u => u.PublishedArticles)
+                .WithOne(a => a.Author)
+                .HasForeignKey(e => e.AuthorId);
 
             builder.Entity<ResolvedIssue>()
                 .HasMany(e => e.Comments)

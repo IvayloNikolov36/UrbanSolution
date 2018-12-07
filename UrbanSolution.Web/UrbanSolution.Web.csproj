@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="HtmlSanitizer" Version="4.0.199" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.5" PrivateAssets="All" />
@@ -20,6 +21,7 @@
 
   <ItemGroup>
     <Folder Include="Areas\Admin\Data\" />
+    <Folder Include="Areas\Blog\Data\" />
     <Folder Include="Areas\Identity\Services\" />
     <Folder Include="Areas\Manager\Data\" />
   </ItemGroup>
@@ -29,6 +31,12 @@
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
     <Content Update="Areas\Admin\Views\_ViewStart.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Blog\Views\_ViewImports.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Blog\Views\_ViewStart.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
     <Content Update="Areas\Manager\Views\_ViewImports.cshtml">

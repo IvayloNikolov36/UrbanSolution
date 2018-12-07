@@ -1,9 +1,7 @@
-﻿using System;
-using UrbanSolution.Models;
-
-
-namespace UrbanSolution.Web.Infrastructure.Extensions
+﻿namespace UrbanSolution.Web.Infrastructure.Extensions
 {
+    using UrbanSolution.Models;
+
     public static class EnumExtensions
     {
         public static string ToFriendlyName(this IssueType type)

@@ -8,4 +8,8 @@
 {
     <li><a asp-area="Manager" asp-controller="UrbanIssue" asp-action="Index">New</a></li>
 }
+@if (this.User.IsInRole(WebConstants.BlogAuthorRole))
+{
+    <li><a asp-area="Blog" asp-controller="Articles" asp-action="Create">Publish Article</a></li>
+}
 <li><a asp-area="" asp-controller="Users" asp-action="UploadIssue">Upload</a></li>

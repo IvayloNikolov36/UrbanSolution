@@ -15,4 +15,8 @@
     </Reference>
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="HtmlSanitizer" Version="4.0.199" />
+  </ItemGroup>
+
 </Project>
