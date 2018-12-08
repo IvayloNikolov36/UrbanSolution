@@ -39,11 +39,11 @@
             return result;
         }
 
-        public async Task<UrbanIssueEditServiceViewModel> GetAsync(int issueId)
+        public async Task<TModel> GetAsync<TModel>(int issueId)
         {
             var issueModel = await this.db.UrbanIssues
                 .Where(i => i.Id == issueId)
-                .To<UrbanIssueEditServiceViewModel>()
+                .To<TModel>()
                 .FirstOrDefaultAsync();
 
             return issueModel;
@@ -92,6 +92,23 @@
             issueFromDb.IsApproved = true;
 
             await this.db.SaveChangesAsync();
+        }
+
+        public async Task<bool> IsIssueInSameRegionAsync(int issueId, RegionType? managerRegion)
+        {
+            var issue = await this.GetAsync<IssueRegionServiceModel>(issueId);
+            var issueRegion = issue.Region;
+            if (managerRegion == null)
+            {
+                return true;
+            }
+
+            if (issueRegion != managerRegion)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         public async Task Delete(int issueId)

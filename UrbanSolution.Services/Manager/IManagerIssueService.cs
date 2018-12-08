@@ -1,6 +1,5 @@
 ﻿namespace UrbanSolution.Services.Manager
 {
-    using Models;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using UrbanSolution.Models;
@@ -8,6 +7,8 @@
 
     public interface IManagerIssueService
     {
+        Task<TModel> GetAsync<TModel>(int issueId);
+
         Task<IEnumerable<UrbanIssuesListingServiceModel>> AllAsync(bool isApproved, RegionType? region);
 
         Task<int> TotalAsync(bool isApproved);
@@ -19,5 +20,7 @@
         Task<bool> ExistsAsync(int issueId);
 
         Task ApproveAsync(int issueId);
+
+        Task<bool> IsIssueInSameRegionAsync(int issueId, RegionType? managerRegion);
     }
 }

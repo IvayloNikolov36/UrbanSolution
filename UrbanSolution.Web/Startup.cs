@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using UrbanSolution.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using UrbanSolution.Models;
 using UrbanSolution.Services.Mapping;
 using UrbanSolution.Services.Models;
@@ -73,6 +74,7 @@ namespace UrbanSolution.Web
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddTransient<ValidateIssueIdExistsAttribute>();
+            services.TryAddTransient<ValidateIssueAndManagerRegionsAreaEqualAttribute>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -17,25 +17,27 @@
 
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            var id = context.ActionArguments.FirstOrDefault(a => a.Key.ToLower().Contains("id")).Value;
-            if (id == null)
-            {
-                return;
-            }
-
-            var exists = this.issues.ExistsAsync((int)id).GetAwaiter().GetResult();
-
             var controller = context.Controller as Controller;
             if (controller == null)
             {
                 return;
             }
 
-            if (!exists)
+            var id = context.ActionArguments.FirstOrDefault(a => a.Key.ToLower().Contains("id")).Value;
+            if (id == null)
             {
                 controller.TempData.AddErrorMessage(WebConstants.IssueNotFound);
                 context.Result = controller.RedirectToAction("Index");
             }
+            else
+            {
+                var exists = this.issues.ExistsAsync((int)id).GetAwaiter().GetResult();
+                if (!exists)
+                {
+                    controller.TempData.AddErrorMessage(WebConstants.IssueNotFound);
+                    context.Result = controller.RedirectToAction("Index");
+                }
+            }   
 
         }
 

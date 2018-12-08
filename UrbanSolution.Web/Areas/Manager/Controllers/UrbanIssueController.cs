@@ -47,14 +47,10 @@
 
         [HttpGet]
         [ServiceFilter(typeof(ValidateIssueIdExistsAttribute))]
+        [ServiceFilter(typeof(ValidateIssueAndManagerRegionsAreaEqualAttribute))]
         public async Task<IActionResult> Edit(int id)
         {
             var issue = await this.issues.GetAsync<UrbanIssueEditServiceViewModel>(id);
-
-            if (issue == null)
-            {
-                return this.BadRequest();
-            }
 
             this.SetModelSelectListItems(issue);
             return this.View(issue);
@@ -79,8 +75,10 @@
 
         [HttpGet]
         [ServiceFilter(typeof(ValidateIssueIdExistsAttribute))]
+        [ServiceFilter(typeof(ValidateIssueAndManagerRegionsAreaEqualAttribute))]
         public async Task<IActionResult> Delete(int id)
-        { 
+        {
+           
             await this.managerIssues.Delete(id);
 
             this.TempData.AddSuccessMessage(WebConstants.IssueDeleteSuccess);
@@ -88,14 +86,10 @@
             return this.RedirectToAction("Index", "UrbanIssue", new {Area = "Manager"});
         }
 
+        [ServiceFilter(typeof(ValidateIssueIdExistsAttribute))]
+        [ServiceFilter(typeof(ValidateIssueAndManagerRegionsAreaEqualAttribute))]
         public async Task<IActionResult> Approve(int id)
         {
-            bool exists = await this.managerIssues.ExistsAsync(id);
-            if (!exists)
-            {
-                this.TempData.AddErrorMessage(WebConstants.IssueNotFound);
-                return this.NotFound();
-            }
 
             await this.managerIssues.ApproveAsync(id);
             this.TempData.AddSuccessMessage(WebConstants.IssueApprovedSuccess);

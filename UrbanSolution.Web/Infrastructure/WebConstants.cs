@@ -49,6 +49,7 @@
         public const string IssueUpdateSuccess = "Successfully updated issue.";
         public const string IssueDeleteSuccess = "Successfully deleted issue.";
         public const string IssueNotFound = "Issue with this id can't be found!";
+        public const string CantChangeIssue = "You do not have permissions to this issue!";
 
         public const string ViewDataIssueId = "IssueId";
     }
