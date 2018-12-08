@@ -43,6 +43,7 @@
 
         public const string MapCenterLatitude = "42.138893";
         public const string MapCenterLongitude = "24.741101";
+        public const int MapCenterZoom = 13;
 
         public const string IssueApprovedSuccess = "Successfully approved issue.";
         public const string IssueUpdateSuccess = "Successfully updated issue.";

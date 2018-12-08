@@ -7,19 +7,18 @@ namespace UrbanSolution.Web.Models
 {
     public class UploadIssueViewModel
     {
-        [Required]
-        [StringLength(IssueNameMaxLength, MinimumLength = IssueNameMinLength)]
-        [Display(Name = "Issue Name")]
+        [Required, StringLength(IssueNameMaxLength, MinimumLength = IssueNameMinLength)]
+        [Display(Name = "Title")]
         public string Name { get; set; }
 
-        [Required]
-        [StringLength(IssueDescriptionMaxLength, MinimumLength = IssueDescriptionMinLength)]
+        [Required, StringLength(IssueDescriptionMaxLength, MinimumLength = IssueDescriptionMinLength)]
         public string Description { get; set; }
 
         [Required, Url, Display(Name = "Picture Url")]
         public string PictureUrl { get; set; }
 
         [Required]
+        [Display(Name = "Issue type")]
         public string IssueType { get; set; }
 
         public IEnumerable<SelectListItem> IssueTypes { get; set; }
@@ -29,15 +28,16 @@ namespace UrbanSolution.Web.Models
 
         public IEnumerable<SelectListItem> Regions { get; set; }
 
-        [Required, Display(Name = "Street Name")]
+        [Required]
         [StringLength(StreetNameMaxLength, MinimumLength = StreetNameMinLength)]
+        [Display(Name = "Street name")]
         public string AddressStreet { get; set; }
 
-        [Required, Display(Name = "Street Number")]
-        [RegularExpression(@"\b(\d{1,3}[A-Za-z]?-\d{1,3}[A-Za-z]?\b)|(\b\d{1,3}[A-Za-z]?)\b")]
+        [Required]
+        [Display(Name = "Street number")]
         public string StreetNumber { get; set; }
 
-        [Required(ErrorMessage = "Please move and place the marker to take coordinates.")]
+        [Required]
         public string Latitude { get; set; }
 
         [Required]
