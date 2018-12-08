@@ -13,6 +13,7 @@ using UrbanSolution.Services.Mapping;
 using UrbanSolution.Services.Models;
 using UrbanSolution.Web.Areas.Admin.Models;
 using UrbanSolution.Web.Infrastructure.Extensions;
+using UrbanSolution.Web.Infrastructure.Filters;
 
 namespace UrbanSolution.Web
 {
@@ -68,7 +69,10 @@ namespace UrbanSolution.Web
 
             services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            services.AddTransient<ValidateIssueIdExistsAttribute>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

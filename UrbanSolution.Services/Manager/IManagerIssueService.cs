@@ -1,16 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using UrbanSolution.Models;
-using UrbanSolution.Services.Manager.Models;
-using UrbanSolution.Services.Models;
-
-namespace UrbanSolution.Services.Manager
+﻿namespace UrbanSolution.Services.Manager
 {
+    using Models;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using UrbanSolution.Models;
+    using UrbanSolution.Services.Models;
+
     public interface IManagerIssueService
     {
         Task<IEnumerable<UrbanIssuesListingServiceModel>> AllAsync(bool isApproved, RegionType? region);
-
-        Task<UrbanIssueEditServiceViewModel> GetAsync(int issueId);
 
         Task<int> TotalAsync(bool isApproved);
 

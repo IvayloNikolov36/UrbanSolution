@@ -1,8 +1,8 @@
-﻿using System.Threading.Tasks;
-using UrbanSolution.Services.Models;
-
-namespace UrbanSolution.Services
+﻿namespace UrbanSolution.Services
 {
+    using Models;
+    using System.Threading.Tasks;
+
     public interface IResolvedService
     {
         Task<ResolvedDetailsServiceModel> GetAsync(int id);

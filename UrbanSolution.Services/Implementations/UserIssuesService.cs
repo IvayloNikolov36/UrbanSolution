@@ -1,10 +1,10 @@
-﻿using System;
-using System.Threading.Tasks;
-using UrbanSolution.Data;
-using UrbanSolution.Models;
-
-namespace UrbanSolution.Services
+﻿namespace UrbanSolution.Services.Implementations
 {
+    using Data;
+    using System;
+    using System.Threading.Tasks;
+    using UrbanSolution.Models;
+
     public class UserIssuesService : IUserIssuesService
     {
         private readonly UrbanSolutionDbContext db;

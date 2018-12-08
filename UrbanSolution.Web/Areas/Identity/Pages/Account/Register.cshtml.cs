@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -10,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using UrbanSolution.Models;
+using UrbanSolution.Models.Utilities;
 
 namespace UrbanSolution.Web.Areas.Identity.Pages.Account
 {
@@ -45,7 +44,7 @@ namespace UrbanSolution.Web.Areas.Identity.Pages.Account
             public string UserName { get; set; }
 
             [Required]
-            [StringLength(30, MinimumLength = 6)] //TODO: constants in other class
+            [StringLength(DataConstants.UserFullNameMaxLength, MinimumLength = DataConstants.UserFullNameMinLength)]
             [Display(Name = "Full name")]
             public string FullName { get; set; }
 
@@ -54,11 +53,11 @@ namespace UrbanSolution.Web.Areas.Identity.Pages.Account
             [Display(Name = "Email")]
             public string Email { get; set; }
 
-            [Range(15, 80)]
+            [Range(DataConstants.UserMinAge, DataConstants.UserMaxAge)]
             public int Age { get; set; }
 
             [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [StringLength(DataConstants.UserPasswordMaxLength, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = DataConstants.UserPasswordMinLength)]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
             public string Password { get; set; }

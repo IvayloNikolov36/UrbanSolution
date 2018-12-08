@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using UrbanSolution.Services.Admin.Models;
-
-namespace UrbanSolution.Services.Admin
+﻿namespace UrbanSolution.Services.Admin
 {
+    using Models;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+
     public interface IAdminUserService
     {
         Task<IEnumerable<AdminUserListingServiceModel>> AllAsync();

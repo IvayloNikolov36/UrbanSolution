@@ -1,15 +1,14 @@
-﻿using UrbanSolution.Models;
-
-namespace UrbanSolution.Services.Implementations
+﻿namespace UrbanSolution.Services.Implementations
 {
+    using Data;
+    using Mapping;
+    using Microsoft.EntityFrameworkCore;
+    using Models;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using Microsoft.EntityFrameworkCore;
-    using Data;
-    using Mapping;
-    using Models;
     using Utilities;
+    using UrbanSolution.Models;
 
     public class IssueService : IIssueService
     {
@@ -52,7 +51,8 @@ namespace UrbanSolution.Services.Implementations
             return model;
         }
 
-        public async Task<IEnumerable<IssueMapInfoBoxDetailsServiceModel>> AllMapInfoDetailsAsync(bool areApproved, RegionType? region) //TODO there is the same method in onother service
+        public async Task<IEnumerable<IssueMapInfoBoxDetailsServiceModel>> AllMapInfoDetailsAsync(
+            bool areApproved, RegionType? region)                                   
         {
             bool takeAllRegions = region == null;
 
@@ -63,7 +63,9 @@ namespace UrbanSolution.Services.Implementations
                 issues = issues.Where(i => i.Region == region);
             }
 
-            var result =  await issues.To<IssueMapInfoBoxDetailsServiceModel>().ToListAsync();
+            var result = await issues
+                .To<IssueMapInfoBoxDetailsServiceModel>()
+                .ToListAsync();
 
             return result;
         }

@@ -1,13 +1,12 @@
-﻿
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using UrbanSolution.Data;
-using UrbanSolution.Services.Admin.Models;
-
-namespace UrbanSolution.Services.Admin
+﻿namespace UrbanSolution.Services.Admin
 {
+    using Data;
+    using Mapping;
+    using Models;
+    using Microsoft.EntityFrameworkCore;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+
     public class AdminUserService : IAdminUserService
     {
         private readonly UrbanSolutionDbContext db;
@@ -19,12 +18,10 @@ namespace UrbanSolution.Services.Admin
 
         public async Task<IEnumerable<AdminUserListingServiceModel>> AllAsync()
         {
-            var users = await this.db.Users.Select(u => new AdminUserListingServiceModel
-            {
-                Id = u.Id,
-                UserName = u.UserName,
-                Email = u.Email
-            }).ToListAsync();
+            var users = await this.db
+                .Users
+                .To<AdminUserListingServiceModel>()
+                .ToListAsync();
 
             return users;
         }

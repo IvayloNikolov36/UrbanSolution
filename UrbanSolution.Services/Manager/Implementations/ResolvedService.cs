@@ -1,10 +1,10 @@
-﻿using System;
-using System.Threading.Tasks;
-using UrbanSolution.Data;
-using UrbanSolution.Models;
-
-namespace UrbanSolution.Services.Manager.Implementations
+﻿namespace UrbanSolution.Services.Manager.Implementations
 {
+    using Data;
+    using System;
+    using System.Threading.Tasks;
+    using UrbanSolution.Models;
+
     public class ResolvedService : IResolvedService
     {
         private readonly UrbanSolutionDbContext db;
@@ -14,7 +14,9 @@ namespace UrbanSolution.Services.Manager.Implementations
             this.db = db;
         }
 
-        public async Task<int> UploadAsync(string publisherId, int issueId, string pictureUrl, string description)
+        public async Task<int> UploadAsync(
+            string publisherId, int issueId, 
+            string pictureUrl, string description)
         {
             var resolvedIssue = new ResolvedIssue
             {

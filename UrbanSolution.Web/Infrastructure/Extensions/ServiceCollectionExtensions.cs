@@ -1,10 +1,10 @@
-﻿using System.Linq;
-using System.Reflection;
-using Microsoft.Extensions.DependencyInjection;
-using UrbanSolution.Services;
-
-namespace UrbanSolution.Web.Infrastructure.Extensions
+﻿namespace UrbanSolution.Web.Infrastructure.Extensions
 {
+    using Microsoft.Extensions.DependencyInjection;
+    using System.Linq;
+    using System.Reflection;
+    using Services;
+
     public static class ServiceCollectionExtensions
     {
         public static IServiceCollection AddDomainServices(
@@ -20,7 +20,7 @@ namespace UrbanSolution.Web.Infrastructure.Extensions
                     Implementation = t
                 })
                 .ToList()
-                .ForEach(s => services.AddTransient(s.Interface, s.Implementation));
+                .ForEach(s => services.AddScoped(s.Interface, s.Implementation));
 
             return services;
         }

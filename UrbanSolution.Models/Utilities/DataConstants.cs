@@ -2,6 +2,9 @@
 {
     public static class DataConstants
     {
+        public const int UserPasswordMaxLength = 100;
+        public const int UserPasswordMinLength = 6;
+
         public const int StreetNameMinLength = 3;
         public const int StreetNameMaxLength = 30;
 

@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using UrbanSolution.Models;
+using UrbanSolution.Services.Mapping;
 
 namespace UrbanSolution.Services.Manager.Models
 {
-    public class UrbanIssueEditServiceViewModel
+    public class UrbanIssueEditServiceViewModel : IMapFrom<UrbanIssue>, IHaveCustomMappings
     {
         public int Id { get; set; }
 
@@ -39,5 +41,10 @@ namespace UrbanSolution.Services.Manager.Models
 
         public bool IsApproved { get; set; }
 
+        public void CreateMappings(IMapperConfigurationExpression configuration)
+        {
+            configuration.CreateMap<UrbanIssue, UrbanIssueEditServiceViewModel>()
+                .ForMember(x => x.Publisher, m => m.MapFrom(u => u.Publisher.UserName));
+        }
     }
 }

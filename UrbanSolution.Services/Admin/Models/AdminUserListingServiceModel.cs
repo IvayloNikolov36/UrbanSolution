@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc.Rendering;
-
-namespace UrbanSolution.Services.Admin.Models
+﻿namespace UrbanSolution.Services.Admin.Models
 {
-    public class AdminUserListingServiceModel
+    using Mapping;
+    using System.Collections.Generic;
+    using UrbanSolution.Models;
+
+    public class AdminUserListingServiceModel : IMapFrom<User>
     {
         public string Id { get; set; }
 

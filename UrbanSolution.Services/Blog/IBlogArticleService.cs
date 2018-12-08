@@ -1,10 +1,9 @@
-﻿
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using UrbanSolution.Services.Blog.Models;
-
-namespace UrbanSolution.Services.Blog
+﻿namespace UrbanSolution.Services.Blog
 {
+    using Models;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+
     public interface IBlogArticleService
     {
         Task<IEnumerable<BlogArticleListingServiceModel>> AllAsync(int page = 1);

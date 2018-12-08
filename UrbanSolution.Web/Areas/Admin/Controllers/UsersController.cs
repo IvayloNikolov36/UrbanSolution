@@ -17,10 +17,8 @@ namespace UrbanSolution.Web.Areas.Admin.Controllers
 {
     
     public class UsersController : BaseController
-    {
-       
+    {       
         private readonly IAdminUserService users;
-
 
         public UsersController(
             UserManager<User> userManager, 
@@ -36,10 +34,11 @@ namespace UrbanSolution.Web.Areas.Admin.Controllers
             var usersFromDb = await this.users.AllAsync();
             
             var roles =  this.RoleManager.Roles.Select(r => new SelectListItem
-            {
-                Text = r.Name,
-                Value = r.Name
-            }).ToList();
+                {
+                    Text = r.Name,
+                    Value = r.Name
+                })
+                .ToList();
 
             var viewModel = new AdminUsersListingViewModel
             {

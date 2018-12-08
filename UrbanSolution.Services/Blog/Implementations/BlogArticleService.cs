@@ -1,7 +1,7 @@
 ﻿namespace UrbanSolution.Services.Blog.Implementations
 {
-    using AutoMapper.QueryableExtensions;
     using Data;
+    using Mapping;
     using Models;
     using Microsoft.EntityFrameworkCore;
     using System;
@@ -26,7 +26,7 @@
                 .OrderByDescending(a => a.PublishDate)
                 .Skip((page - 1) * ServiceConstants.BlogArticlesPageSize)
                 .Take(ServiceConstants.BlogArticlesPageSize)
-                .ProjectTo<BlogArticleListingServiceModel>()
+                .To<BlogArticleListingServiceModel>()
                 .ToListAsync();
 
         public async Task<int> TotalAsync()
@@ -36,7 +36,7 @@
             => await this.db
                 .Articles
                 .Where(a => a.Id == id)
-                .ProjectTo<BlogArticleDetailsServiceModel>()
+                .To<BlogArticleDetailsServiceModel>()
                 .FirstOrDefaultAsync();
 
         public async Task CreateAsync(string title, string content, string authorId)

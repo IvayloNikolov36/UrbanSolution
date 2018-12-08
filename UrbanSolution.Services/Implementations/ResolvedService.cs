@@ -1,12 +1,12 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using UrbanSolution.Data;
-using UrbanSolution.Services.Mapping;
-using UrbanSolution.Services.Models;
-
-namespace UrbanSolution.Services.Implementations
+﻿namespace UrbanSolution.Services.Implementations
 {
+    using Data;
+    using Mapping;
+    using Microsoft.EntityFrameworkCore;
+    using Models;
+    using System.Linq;
+    using System.Threading.Tasks;
+
     public class ResolvedService : IResolvedService
     {
         private readonly UrbanSolutionDbContext db;

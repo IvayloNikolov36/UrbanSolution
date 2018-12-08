@@ -1,6 +1,7 @@
 ﻿namespace UrbanSolution.Services.Manager.Implementations
 {
     using Data;
+    using Mapping;
     using Microsoft.EntityFrameworkCore;
     using Models;
     using System.Collections.Generic;
@@ -23,7 +24,8 @@
             bool takeAllRegions = region == null;
 
             var issues = this.db
-                .UrbanIssues.Where(i => i.IsApproved == isApproved);
+                .UrbanIssues
+                .Where(i => i.IsApproved == isApproved);
 
             if (!takeAllRegions)
             {
@@ -31,48 +33,37 @@
             }
 
             var result = await issues
-                .Select(i => new UrbanIssuesListingServiceModel   //TODO: make it with AutoMapper
-                {
-                    Id = i.Id,
-                    Name = i.Name,
-                    IssuePictureUrl = i.IssuePictureUrl,
-                    PublishedOn = i.PublishedOn,
-                    Publisher = i.Publisher.UserName,
-                    Latitude = i.Latitude.ToString().Replace(",", "."),
-                    Longitude = i.Longitude.ToString().Replace(",",".")
-                }).ToListAsync();
+                .To<UrbanIssuesListingServiceModel>()
+                .ToListAsync();
 
             return result;
         }
 
         public async Task<UrbanIssueEditServiceViewModel> GetAsync(int issueId)
         {
-            var issueModel = await this.db.UrbanIssues.Where(i => i.Id == issueId).Select(i => new UrbanIssueEditServiceViewModel
-            {
-                Id = i.Id,
-                Description = i.Description,
-                Name = i.Name,
-                AddressStreet = i.AddressStreet,
-                StreetNumber = i.StreetNumber,
-                IssuePictureUrl = i.IssuePictureUrl,
-                PublishedOn = i.PublishedOn,
-                Publisher = i.Publisher.UserName,
-                Region = i.Region,
-                Type = i.Type,
-                IsApproved = i.IsApproved
-            })
-            .FirstOrDefaultAsync();
+            var issueModel = await this.db.UrbanIssues
+                .Where(i => i.Id == issueId)
+                .To<UrbanIssueEditServiceViewModel>()
+                .FirstOrDefaultAsync();
 
             return issueModel;
         }
 
         public async Task<int> TotalAsync(bool isApproved)
-            => await this.db.UrbanIssues.Where(i => i.IsApproved == isApproved).CountAsync();
+        {
+            var total = await this.db
+                .UrbanIssues
+                .Where(i => i.IsApproved == isApproved)
+                .CountAsync();
+
+            return total;
+        }
 
         public async Task Update(int id, string name, string issuePictureUrl, string description, RegionType region, IssueType type,
             string addressStreet, string streetNumber)
         {
-            var issueFromDb = await this.db.FindAsync<UrbanIssue>(id);
+            var issueFromDb = await this.db
+                .FindAsync<UrbanIssue>(id);
 
             issueFromDb.Name = name;
             issueFromDb.IssuePictureUrl = issuePictureUrl;
@@ -87,7 +78,9 @@
 
         public async Task<bool> ExistsAsync(int issueId)
         {
-            var exists = await this.db.UrbanIssues.AnyAsync(i => i.Id == issueId);
+            var exists = await this.db
+                .UrbanIssues
+                .AnyAsync(i => i.Id == issueId);
 
             return exists;
         }
