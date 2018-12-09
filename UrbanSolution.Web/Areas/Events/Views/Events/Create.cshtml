@@ -1,0 +1,175 @@
+﻿@inject IConfiguration Configuration
+@model UrbanSolution.Web.Areas.Events.Models.EventCreateFormModel
+
+@{
+    ViewData["Title"] = "Create event";
+    var apiKey = Configuration.GetSection("Google:MapsApiKey").Value;
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<hr />
+<div class="row">
+    <div class="col-md-7 col-md-offset-2">
+        <form asp-action="Create">
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label asp-for="Title" class="control-label"></label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label asp-for="PictureUrl" class="control-label"></label>
+                    <input asp-for="PictureUrl" class="form-control" />
+                    <span asp-validation-for="PictureUrl" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label asp-for="StartDate" class="control-label"></label>
+                    <input asp-for="StartDate" class="form-control" />
+                    <span asp-validation-for="StartDate" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label asp-for="EndDate" class="control-label"></label>
+                    <input asp-for="EndDate" class="form-control" />
+                    <span asp-validation-for="EndDate" class="text-danger"></span>
+                </div>
+            </div>
+
+
+            <label>Enter location in the map</label>
+            <input id="pac-input" class="controls" type="text"placeholder="Enter a location" />
+            <div class="form-group">
+                <div id="map" style="height: 400px;"></div>
+            </div>
+            <div id="infowindow-content">
+                <span id="place-name" class="title"></span><br>
+                Place ID <span id="place-id"></span><br>
+                <span id="place-address"></span>
+            </div>
+
+
+            <div class="row">
+                <div class="form-group col-sm-12">
+                    <div class="input-group">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button" id="GetAddress" >Get Address</button>
+                        </span>
+                        <input asp-for="Address" class="form-control" placeholder="Adress..." />
+                        <span asp-validation-for="Address" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group col-sm-12">
+                    <label asp-for="Description" class="control-label"></label>
+                    <textarea asp-for="Description" rows="5" class="form-control"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>                
+            </div>
+
+            <input type="hidden" asp-for="Latitude" />
+            <input type="hidden" asp-for="Longitude" />
+
+            <hr />
+
+            <div class="row" style="text-align: center">
+                <input type="submit" value="Create" class="btn btn-default" />
+                <a asp-action="Index" class="btn btn-default">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        var map;
+        var place;
+        var address;
+        var coordinates = {};
+
+        function initMap() {
+            var map = new google.maps.Map(document.getElementById('map'),
+                {
+                    center: { lat: @(WebConstants.MapCenterLatitude), lng: @(WebConstants.MapCenterLongitude) },
+                    zoom: @(WebConstants.MapCenterZoom)
+                });
+
+            var input = document.getElementById('pac-input');
+
+            var autocomplete = new google.maps.places.Autocomplete(input);
+            autocomplete.bindTo('bounds', map);
+
+            map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+            var infowindow = new google.maps.InfoWindow();
+            var infowindowContent = document.getElementById('infowindow-content');
+            infowindow.setContent(infowindowContent);
+            var marker = new google.maps.Marker({
+                map: map
+            });
+            marker.addListener('click',
+                function() {
+                    infowindow.open(map, marker);
+                });
+
+            autocomplete.addListener('place_changed',
+                function() {
+                    infowindow.close();
+                    place = autocomplete.getPlace();
+                    if (!place.geometry) {
+                        return;
+                    }
+
+                    if (place.geometry.viewport) {
+                        map.fitBounds(place.geometry.viewport);
+                    } else {
+                        map.setCenter(place.geometry.location);
+                        map.setZoom(17);
+                    }
+
+                    coordinates.latitude = place.geometry.location.lat();
+                    coordinates.longitude = place.geometry.location.lng();
+
+                    // Set the position of the marker using the place ID and location.
+                    marker.setPlace({
+                        placeId: place.place_id,
+                        location: place.geometry.location
+                    });
+
+
+                    marker.setVisible(true);
+
+                    //var coordinates = marker.getPosition();
+
+                    address = place.name.trim();
+
+
+                    infowindowContent.children['place-name'].textContent = place.name;
+                    infowindowContent.children['place-id'].textContent = place.place_id;
+                    infowindowContent.children['place-address'].textContent =
+                        place.formatted_address;
+
+                    infowindow.open(map, marker);
+                });
+        }
+
+        $("#GetAddress").click(function() {
+            $("#Address").val(address);
+            $("#Latitude").val(coordinates.latitude);
+            $("#Longitude").val(coordinates.longitude);
+        });
+
+
+    </script>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=@(apiKey)&libraries=places&callback=initMap"
+            async defer>
+    </script>
+
+}
