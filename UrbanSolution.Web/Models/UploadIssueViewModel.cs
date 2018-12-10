@@ -7,7 +7,7 @@ namespace UrbanSolution.Web.Models
 {
     public class UploadIssueViewModel
     {
-        [Required, StringLength(IssueNameMaxLength, MinimumLength = IssueNameMinLength)]
+        [Required, StringLength(IssueTitleMaxLength, MinimumLength = IssueTitleMinLength)]
         [Display(Name = "Title")]
         public string Name { get; set; }
 

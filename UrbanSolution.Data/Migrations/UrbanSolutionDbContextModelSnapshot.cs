@@ -165,20 +165,69 @@ namespace UrbanSolution.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(200);
 
+                    b.Property<int?>("EventId");
+
                     b.Property<DateTime>("PostedOn");
 
                     b.Property<string>("PublisherId")
                         .IsRequired();
 
-                    b.Property<int?>("TargetId");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("EventId");
 
                     b.HasIndex("PublisherId");
 
-                    b.HasIndex("TargetId");
-
                     b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("UrbanSolution.Models.Event", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Address")
+                        .IsRequired();
+
+                    b.Property<string>("CreatorId");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(2000);
+
+                    b.Property<DateTime>("EndDate");
+
+                    b.Property<double>("Latitude");
+
+                    b.Property<double>("Longitude");
+
+                    b.Property<string>("PictureUrl");
+
+                    b.Property<DateTime>("StartDate");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(50);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorId");
+
+                    b.ToTable("Events");
+                });
+
+            modelBuilder.Entity("UrbanSolution.Models.MappingTables.EventUser", b =>
+                {
+                    b.Property<string>("ParticipantId");
+
+                    b.Property<int>("EventId");
+
+                    b.HasKey("ParticipantId", "EventId");
+
+                    b.HasIndex("EventId");
+
+                    b.ToTable("EventUsers");
                 });
 
             modelBuilder.Entity("UrbanSolution.Models.Rating", b =>
@@ -260,7 +309,7 @@ namespace UrbanSolution.Data.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(20);
+                        .HasMaxLength(50);
 
                     b.Property<DateTime>("PublishedOn");
 
@@ -394,14 +443,34 @@ namespace UrbanSolution.Data.Migrations
 
             modelBuilder.Entity("UrbanSolution.Models.Comment", b =>
                 {
+                    b.HasOne("UrbanSolution.Models.Event")
+                        .WithMany("Comments")
+                        .HasForeignKey("EventId");
+
                     b.HasOne("UrbanSolution.Models.User", "Publisher")
                         .WithMany("Comments")
                         .HasForeignKey("PublisherId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
 
-                    b.HasOne("UrbanSolution.Models.ResolvedIssue", "Target")
-                        .WithMany("Comments")
-                        .HasForeignKey("TargetId");
+            modelBuilder.Entity("UrbanSolution.Models.Event", b =>
+                {
+                    b.HasOne("UrbanSolution.Models.User", "Creator")
+                        .WithMany("EventsCreated")
+                        .HasForeignKey("CreatorId");
+                });
+
+            modelBuilder.Entity("UrbanSolution.Models.MappingTables.EventUser", b =>
+                {
+                    b.HasOne("UrbanSolution.Models.Event", "Event")
+                        .WithMany("Participants")
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("UrbanSolution.Models.User", "Participant")
+                        .WithMany("EventsParticipations")
+                        .HasForeignKey("ParticipantId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("UrbanSolution.Models.Rating", b =>

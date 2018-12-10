@@ -1,11 +1,10 @@
-﻿using System.Threading.Tasks;
-
-namespace UrbanSolution.Web.Infrastructure.Extensions
+﻿namespace UrbanSolution.Web.Infrastructure.Extensions
 {
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.Extensions.DependencyInjection;
     using System;
+    using System.Threading.Tasks;
     using UrbanSolution.Models;
     using static WebConstants;
 
@@ -16,7 +15,8 @@ namespace UrbanSolution.Web.Infrastructure.Extensions
         {
             new IdentityRole(AdminRole),
             new IdentityRole(ManagerRole),
-            new IdentityRole(BlogAuthorRole)
+            new IdentityRole(BlogAuthorRole),
+            new IdentityRole(EventCreatorRole)
         };
 
         public static async void SeedDatabase(this IApplicationBuilder app)
@@ -31,35 +31,38 @@ namespace UrbanSolution.Web.Infrastructure.Extensions
 
                 await CreateRoles(roleManager);
 
-                await CreateAdmin(userManager);
+                await CreateUser(userManager, AdminUserName, AdminEmail, AdminFullName, UserDefaultAge, DefaultAdminPassword, AdminRole);
 
-                await CreateManager(userManager);
+                await CreateUser(userManager, ManagerUserName, ManagerEmail, ManagerFullName, UserDefaultAge, string.Format(DefaultManagerPassword, ""), ManagerRole);
 
                 await CreateRegionalManagers(userManager);
 
-                await CreateBlogAuthor(userManager);
+                await CreateUser(userManager, BlogAuthorUserName, BlogAuthorEmail, BlogAuthorFullName, UserDefaultAge, DefaultBlogAuthorPassword, BlogAuthorRole);
+
+                await CreateUser(userManager, EventCreatorUserName, EventCreatorEmail, EventCreatorFullName, UserDefaultAge, DefaultEventCreatorPassword, EventCreatorRole);
 
             }
         }
 
-        private static async Task CreateBlogAuthor(UserManager<User> userManager)
+        private static async Task CreateUser(UserManager<User> userManager, string userName, string email, string fullName, int age, string defaultPassword, string role)
         {
-            var user = await userManager.FindByNameAsync(BlogAuthorUserName);
+            var user = await userManager.FindByNameAsync(userName);
 
             if (user == null)
             {
                 user = new User()
                 {
-                    UserName = BlogAuthorUserName,
-                    Email = BlogAuthorEmail,
-                    FullName = BlogAuthorFullName,
-                    Age = UserDefaultAge
+                    UserName = userName,
+                    Email = email,
+                    FullName = fullName,
+                    Age = age
                 };
 
-                await userManager.CreateAsync(user, DefaultBlogAuthorPassword);
-                await userManager.AddToRoleAsync(user, BlogAuthorRole);
+                await userManager.CreateAsync(user, defaultPassword);
+                await userManager.AddToRoleAsync(user, role);
             }
         }
+
 
         private static async Task CreateRegionalManagers(UserManager<User> userManager)
         {
@@ -84,42 +87,6 @@ namespace UrbanSolution.Web.Infrastructure.Extensions
                     await userManager.AddToRoleAsync(user, ManagerRole);
                 }
 
-            }
-        }
-
-        private static async Task CreateManager(UserManager<User> userManager)
-        {
-            var user = await userManager.FindByNameAsync(ManagerUserName);
-            if (user == null)
-            {
-                user = new User()
-                {
-                    UserName = ManagerUserName,
-                    Email = ManagerEmail,
-                    FullName = ManagerFullName,
-                    Age = UserDefaultAge
-                };
-
-                await userManager.CreateAsync(user, string.Format(DefaultManagerPassword, ""));
-                await userManager.AddToRoleAsync(user, ManagerRole);
-            }
-        }
-
-        private static async Task CreateAdmin(UserManager<User> userManager)
-        {
-            var user = await userManager.FindByNameAsync(AdminUserName);
-            if (user == null)
-            {
-                user = new User()
-                {
-                    UserName = AdminUserName,
-                    Email = AdminEmail,
-                    FullName = AdminFullName,
-                    Age = UserDefaultAge
-                };
-
-                await userManager.CreateAsync(user, DefaultAdminPassword);
-                await userManager.AddToRoleAsync(user, AdminRole);
             }
         }
 

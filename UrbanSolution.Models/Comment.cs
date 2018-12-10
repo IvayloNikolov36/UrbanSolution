@@ -1,9 +1,9 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using static UrbanSolution.Models.Utilities.DataConstants;
-
-namespace UrbanSolution.Models
+﻿namespace UrbanSolution.Models
 {
+    using System;
+    using System.ComponentModel.DataAnnotations;
+    using static Utilities.DataConstants;
+
     public class Comment
     {
         public int Id { get; set; }
@@ -17,9 +17,6 @@ namespace UrbanSolution.Models
         [Required]
         public string PublisherId { get; set; }
         public User Publisher { get; set; }
-
-        public int? TargetId { get; set; }
-        public ResolvedIssue Target { get; set; }
 
     }
 }

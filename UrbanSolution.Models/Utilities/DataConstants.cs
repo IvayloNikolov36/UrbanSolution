@@ -11,8 +11,8 @@
         public const int CommentContentMinLength = 20;
         public const int CommentContentMaxLength = 200;
 
-        public const int IssueNameMinLength = 6;
-        public const int IssueNameMaxLength = 20;
+        public const int IssueTitleMinLength = 6;
+        public const int IssueTitleMaxLength = 50;
         public const int IssueDescriptionMinLength = 20;
         public const int IssueDescriptionMaxLength = 300;
 
@@ -26,6 +26,11 @@
         public const int ArticleTitleMinLenght = 6;
 
         public const int ArticleContentMinLength = 200;
+
+        public const int EventTitleMinLength = 6;
+        public const int EventTitleMaxLength = 50;
+        public const int EventDescriptionMaxLength = 2000;
+        public const int EventDescriptionMinLength = 30;
 
     }
 }

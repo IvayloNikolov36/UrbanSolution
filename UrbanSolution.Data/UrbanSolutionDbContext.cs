@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
-using UrbanSolution.Models;
-
-namespace UrbanSolution.Data
+﻿namespace UrbanSolution.Data
 {
+    using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+    using Microsoft.EntityFrameworkCore;
+    using Models;
+    using Models.MappingTables;
+
     public class UrbanSolutionDbContext : IdentityDbContext<User>
     {
         public UrbanSolutionDbContext(DbContextOptions<UrbanSolutionDbContext> options)
@@ -17,12 +18,38 @@ namespace UrbanSolution.Data
 
         public DbSet<Article> Articles { get; set; }
 
+        public DbSet<Event> Events { get; set; }
+
+        public DbSet<EventUser> EventUsers { get; set; }
+
         public DbSet<Comment> Comments { get; set; }
 
         public DbSet<Rating> Ratings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            //Mappings
+
+            builder.Entity<EventUser>()
+                .HasKey(eu => new {eu.ParticipantId, eu.EventId});
+
+            builder.Entity<EventUser>()
+                .HasOne(eu => eu.Participant)
+                .WithMany(u => u.EventsParticipations)
+                .HasForeignKey(eu => eu.ParticipantId);
+
+            builder.Entity<EventUser>()
+                .HasOne(eu => eu.Event)
+                .WithMany(e => e.Participants)
+                .HasForeignKey(eu => eu.EventId);
+
+            //one to many relations
+
+            builder.Entity<Event>()
+                .HasOne(e => e.Creator)
+                .WithMany(u => u.EventsCreated)
+                .HasForeignKey(e => e.CreatorId);
+
             builder.Entity<UrbanIssue>()
                 .HasOne(u => u.ResolvedIssue)
                 .WithOne(r => r.UrbanIssue)
@@ -53,11 +80,6 @@ namespace UrbanSolution.Data
                 .HasMany(u => u.PublishedArticles)
                 .WithOne(a => a.Author)
                 .HasForeignKey(e => e.AuthorId);
-
-            builder.Entity<ResolvedIssue>()
-                .HasMany(e => e.Comments)
-                .WithOne(c => c.Target)
-                .HasForeignKey(e => e.TargetId);
 
             base.OnModelCreating(builder);
         }

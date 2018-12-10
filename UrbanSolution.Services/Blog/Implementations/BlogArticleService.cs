@@ -21,7 +21,8 @@
         }
 
         public async Task<IEnumerable<BlogArticleListingServiceModel>> AllAsync(int page = 1)
-            => await this.db
+        {
+            var articles = await this.db
                 .Articles
                 .OrderByDescending(a => a.PublishDate)
                 .Skip((page - 1) * ServiceConstants.BlogArticlesPageSize)
@@ -29,15 +30,27 @@
                 .To<BlogArticleListingServiceModel>()
                 .ToListAsync();
 
-        public async Task<int> TotalAsync()
-            => await this.db.Articles.CountAsync();
+            return articles;
+        }
 
-        public async Task<BlogArticleDetailsServiceModel> ById(int id)
-            => await this.db
+
+        public async Task<int> TotalAsync()
+        {
+            var count = await this.db.Articles.CountAsync();
+
+            return count;
+        }
+
+        public async Task<BlogArticleDetailsServiceModel> GetAsync(int id)
+        {
+            var article = await this.db
                 .Articles
                 .Where(a => a.Id == id)
                 .To<BlogArticleDetailsServiceModel>()
                 .FirstOrDefaultAsync();
+
+            return article;
+        }
 
         public async Task CreateAsync(string title, string content, string authorId)
         {

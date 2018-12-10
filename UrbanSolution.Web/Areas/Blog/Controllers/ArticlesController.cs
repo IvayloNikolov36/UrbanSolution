@@ -45,7 +45,7 @@ namespace UrbanSolution.Web.Areas.Blog.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Details(int id)
         {
-            var model = await this.articles.ById(id);
+            var model = await this.articles.GetAsync(id);
 
             return this.ViewOrNotFound(model);
         }

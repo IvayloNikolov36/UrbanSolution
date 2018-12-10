@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Identity;
-using static UrbanSolution.Models.Utilities.DataConstants;
-
-namespace UrbanSolution.Models
+﻿namespace UrbanSolution.Models
 {
+    using MappingTables;
+    using Microsoft.AspNetCore.Identity;
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+    using static Utilities.DataConstants;
+
     public class User : IdentityUser
     {
         [Required]
@@ -25,5 +26,10 @@ namespace UrbanSolution.Models
         public ICollection<Comment> Comments { get; set; } = new List<Comment>();
 
         public ICollection<Rating> Ratings { get; set; } = new List<Rating>();
+
+        public ICollection<Event> EventsCreated { get; set; } = new List<Event>();
+
+        public ICollection<EventUser> EventsParticipations { get; set; } = new List<EventUser>();
+
     }
 }

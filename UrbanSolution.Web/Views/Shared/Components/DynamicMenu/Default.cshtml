@@ -1,19 +1,25 @@
 ﻿
 <li><a asp-area="" asp-controller="Issue" asp-action="Index">Home</a></li>
 
-@if (this.User.IsInRole(WebConstants.AdminRole))
+@if (User.IsInRole(WebConstants.AdminRole))
 {
     <li><a asp-area="Admin" asp-controller="Users" asp-action="Index">Users</a></li>
 }
-@if (this.User.IsInRole(WebConstants.ManagerRole))
+@if (User.IsInRole(WebConstants.ManagerRole))
 {
     <li><a asp-area="Manager" asp-controller="UrbanIssue" asp-action="Index">New</a></li>
 }
-@if (this.User.IsInRole(WebConstants.BlogAuthorRole))
+@if (User.IsInRole(WebConstants.BlogAuthorRole))
 {
     <li><a asp-area="Blog" asp-controller="Articles" asp-action="Create">Publish Article</a></li>
+}
+@if (User.IsInRole(WebConstants.EventCreatorRole))
+{
+    <li><a asp-area="Events" asp-controller="Events" asp-action="Create">Create Event</a></li>
 }
 
 <li><a asp-area="" asp-controller="Users" asp-action="UploadIssue">Upload</a></li>
 
 <li><a asp-area="Blog" asp-controller="Articles" asp-action="Index">Articles</a></li>
+
+<li><a asp-area="Events" asp-controller="Events" asp-action="Index">Events</a></li>

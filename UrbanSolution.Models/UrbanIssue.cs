@@ -10,7 +10,7 @@ namespace UrbanSolution.Models
         public int Id { get; set; }
 
         [Required]
-        [StringLength(DataConstants.IssueNameMaxLength, MinimumLength = IssueDescriptionMinLength)]
+        [StringLength(DataConstants.IssueTitleMaxLength, MinimumLength = IssueDescriptionMinLength)]
         public string Name { get; set; }
 
         [Required]

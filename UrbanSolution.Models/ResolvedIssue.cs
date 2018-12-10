@@ -26,8 +26,6 @@ namespace UrbanSolution.Models
 
         public double Rating { get; set; }
 
-        public ICollection<Comment> Comments { get; set; } = new List<Comment>();
-
         public ICollection<Rating> Ratings { get; set; } = new List<Rating>();
 
     }

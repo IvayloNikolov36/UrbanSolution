@@ -9,7 +9,7 @@ namespace UrbanSolution.Web.Areas.Manager.Models
     public class UrbanIssueEditFromModel
     {
         [Required]
-        [StringLength(DataConstants.IssueNameMaxLength, MinimumLength = IssueDescriptionMinLength)]
+        [StringLength(DataConstants.IssueTitleMaxLength, MinimumLength = IssueDescriptionMinLength)]
         public string Name { get; set; }
 
         [Required]
