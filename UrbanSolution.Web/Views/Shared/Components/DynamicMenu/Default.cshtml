@@ -4,6 +4,7 @@
 @if (User.IsInRole(WebConstants.AdminRole))
 {
     <li><a asp-area="Admin" asp-controller="Users" asp-action="Index">Users</a></li>
+    <li><a asp-area="Admin" asp-controller="Activity" asp-action="Index">Activity</a></li>
 }
 @if (User.IsInRole(WebConstants.ManagerRole))
 {

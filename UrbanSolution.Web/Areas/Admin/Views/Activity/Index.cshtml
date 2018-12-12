@@ -1,0 +1,29 @@
+﻿@model AdminActivityIndexModel
+@{
+    ViewData["Title"] = $"Activity for admin {Model.AdminUserName}";
+}
+
+<div row class="text-info text-center">
+    <h2>@this.ViewData["Title"]</h2>
+</div>
+
+<table class="table table-bordered table-striped table table-hover">
+    <thead>
+    <tr>
+        <th class="text-center"><strong>Username</strong></th>
+        <th class="text-center"><strong>Action</strong></th>
+        <th class="text-center"><strong>Date</strong></th>
+    </tr>   
+    </thead>
+    <tbody>
+    @foreach (var activity in Model.Activities)
+    {
+        <tr>
+            <td class="text-center">@activity.EditedUserUserName</td>
+            <td class="text-center">@activity.Activity</td>
+            <td class="text-center">@activity.DateTime</td>
+        </tr>
+    }
+    </tbody>
+</table>
+

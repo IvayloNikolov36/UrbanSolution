@@ -1,32 +1,32 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using UrbanSolution.Data;
-using UrbanSolution.Models;
-using UrbanSolution.Services.Admin;
-using UrbanSolution.Web.Areas.Admin.Models;
-using UrbanSolution.Web.Infrastructure;
-using UrbanSolution.Web.Infrastructure.Extensions;
-using static UrbanSolution.Web.Infrastructure.WebConstants;
-
-namespace UrbanSolution.Web.Areas.Admin.Controllers
+﻿namespace UrbanSolution.Web.Areas.Admin.Controllers
 {
+    using Infrastructure;
+    using Infrastructure.Extensions;
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Rendering;
+    using Models;
+    using System;
+    using System.Linq;
+    using System.Threading.Tasks;      
+    using UrbanSolution.Models;
+    using UrbanSolution.Models.Enums;
+    using UrbanSolution.Services.Admin;
     
     public class UsersController : BaseController
     {       
         private readonly IAdminUserService users;
+        private readonly IAdminActivityService activities;
 
         public UsersController(
             UserManager<User> userManager, 
             RoleManager<IdentityRole> roleManager, 
-            IAdminUserService users) 
+            IAdminUserService users,
+            IAdminActivityService activities) 
             : base(userManager, roleManager)
         {
             this.users = users;
+            this.activities = activities;
         }
 
         public async Task<IActionResult> Index()
@@ -74,6 +74,8 @@ namespace UrbanSolution.Web.Areas.Admin.Controllers
             {
                 await this.UserManager.AddToRoleAsync(user, model.Role);
 
+                await this.WriteAdminLogInfoAsync(ActivityType.AddToRole, user.Id, model.Role);
+
                 this.TempData.AddSuccessMessage(string.Format(WebConstants.UserAddedToRoleSuccess, user.UserName, model.Role));
             }
         
@@ -85,7 +87,7 @@ namespace UrbanSolution.Web.Areas.Admin.Controllers
         {
             var user = await this.UserManager.FindByIdAsync(model.UserId);
 
-            if (!(await this.UserAndRoleExists(model, user)))
+            if (!(await this.UserAndRoleExists(model, user))) //TODO: make it Filter
             {
                 this.ModelState.AddModelError(String.Empty, "Invalid identity details");
             }
@@ -103,6 +105,8 @@ namespace UrbanSolution.Web.Areas.Admin.Controllers
             else
             {
                 await this.UserManager.RemoveFromRoleAsync(user, model.Role);
+
+                await this.WriteAdminLogInfoAsync(ActivityType.RemoveFromRole, user.Id, model.Role);
 
                 this.TempData.AddSuccessMessage(string.Format(WebConstants.UserRemovedFromRoleSuccess, user.UserName, model.Role));
             }
@@ -123,5 +127,13 @@ namespace UrbanSolution.Web.Areas.Admin.Controllers
 
             return userExists;
         }
+
+        private async Task WriteAdminLogInfoAsync(ActivityType activity, string userId, string role)
+        {
+            var admin = await this.UserManager.GetUserAsync(this.User);
+
+            await this.activities.WriteAdminLogInfoAsync(admin.Id, userId, role, activity);
+        }
+
     }
 }
