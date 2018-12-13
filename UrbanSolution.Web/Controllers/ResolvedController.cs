@@ -7,8 +7,8 @@ namespace UrbanSolution.Web.Controllers
 {
     public class ResolvedController : Controller
     {
-        private readonly Services.IResolvedService resolvedService;
-        private readonly Services.IIssueService issueService;
+        private readonly IResolvedService resolvedService;
+        private readonly IIssueService issueService;
 
         public ResolvedController(IResolvedService resolvedService, IIssueService issueService)
         {

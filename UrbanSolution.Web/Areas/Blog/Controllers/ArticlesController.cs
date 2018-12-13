@@ -3,11 +3,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using UrbanSolution.Models;
 using UrbanSolution.Services.Blog;
+using UrbanSolution.Services.Blog.Models;
 using UrbanSolution.Services.Html;
+using UrbanSolution.Services.Utilities;
 using UrbanSolution.Web.Areas.Blog.Models;
 using UrbanSolution.Web.Infrastructure;
 using UrbanSolution.Web.Infrastructure.Extensions;
 using UrbanSolution.Web.Infrastructure.Filters;
+using UrbanSolution.Web.Models;
 
 namespace UrbanSolution.Web.Areas.Blog.Controllers
 {

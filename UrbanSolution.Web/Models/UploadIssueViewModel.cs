@@ -5,7 +5,7 @@ using static UrbanSolution.Models.Utilities.DataConstants;
 
 namespace UrbanSolution.Web.Models
 {
-    public class UploadIssueViewModel
+    public class PublishIssueViewModel
     {
         [Required, StringLength(IssueTitleMaxLength, MinimumLength = IssueTitleMinLength)]
         [Display(Name = "Title")]

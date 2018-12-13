@@ -27,9 +27,9 @@ namespace UrbanSolution.Web.Controllers
             this.userManager = userManager;
         }
 
-        public IActionResult UploadIssue()
+        public IActionResult PublishIssue()
         {
-            var model = new UploadIssueViewModel();
+            var model = new PublishIssueViewModel();
             this.SetModelSelectListItems(model);    
 
             return this.View(model);
@@ -37,7 +37,7 @@ namespace UrbanSolution.Web.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> UploadIssue(UploadIssueViewModel model)
+        public async Task<IActionResult> PublishIssue(PublishIssueViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -59,7 +59,7 @@ namespace UrbanSolution.Web.Controllers
             return this.RedirectToAction(nameof(HomeController.Index), "Home");
         }
 
-        private void SetModelSelectListItems(UploadIssueViewModel model)
+        private void SetModelSelectListItems(PublishIssueViewModel model)
         {
             model.Regions = Enum.
                 GetNames(typeof(RegionType))
