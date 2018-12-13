@@ -6,7 +6,7 @@
     {
         Task UploadAsync(string userId, string name, 
             string description,string pictureUrl, string issueType, 
-            string region, string addressStreet, string streetNumber,
+            string region, string address,
             double latitude, double longitude);
     }
 }

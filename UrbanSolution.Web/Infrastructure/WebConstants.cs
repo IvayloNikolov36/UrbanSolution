@@ -60,5 +60,16 @@
         public const string ViewDataIssueId = "IssueId";
 
         public const string EventCreationSuccess = "Event successfylly created.";
+
+        public const string CurrentCountryEN = "Bulgaria";
+        public const string CurrentCountryBG = "България";
+        public const string CurrentTownEn = "Plovdiv";
+        public const string CurrentTownBg = "Пловдив";
+
+        public const string MarkerNotPlaced =
+            "No coordinates. Find the place on the map and get the address of the place.";
+
+        public const string NoAddressSet =
+            "No address is set! Please, Find the place on the map and press Get Address button";
     }
 }

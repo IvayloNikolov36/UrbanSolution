@@ -2,7 +2,7 @@
 @using UrbanSolution.Models.Utilities
 @model PublishIssueViewModel
 @{
-    ViewData["Title"] = "Upload Issue";
+    ViewData["Title"] = "Publish Issue";
     var apiKey = Configuration.GetSection("Google:MapsApiKey").Value;
 }
 
@@ -11,7 +11,10 @@
 <hr />
 
 <div class="row">
-    <div class="col-lg-7 col-md-offset-2">
+    <div class="col-md-8 col-md-offset-2">
+
+        <div asp-validation-summary="All" class="text-danger"></div>
+
         <form method="post">
             <div class="row">
                 <div class="form-group col-xs-6">
@@ -30,37 +33,26 @@
                 </div>
             </div>
 
-            <input id="pac-input" class="controls" type="text"
-                   placeholder="Enter a location" />
-
+            <label>Enter location in the map</label>
+            <input id="pac-input" class="controls" type="text" placeholder="Enter a location" />
             <div class="form-group">
                 <div id="map" style="height: 400px;"></div>
             </div>
-
             <div id="infowindow-content">
                 <span id="place-name" class="title"></span><br>
                 Place ID <span id="place-id"></span><br>
                 <span id="place-address"></span>
             </div>
-            <br />
-            <div class="row" style="text-align: center">
-                <input value="Get Address" class="btn btn-default" id="GetAddress" />
-            </div>
-            
+
 
             <div class="row">
-                <div class="form-group col-xs-6">
-                    <label asp-for="AddressStreet"></label>
-                    <div>
-                        <input asp-for="AddressStreet" class="form-control" value="" />
-                        <span asp-validation-for="AddressStreet" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="form-group col-xs-6">
-                    <label asp-for="StreetNumber"></label>
-                    <div>
-                        <input asp-for="StreetNumber" class="form-control" value="" />
-                        <span asp-validation-for="StreetNumber" class="text-danger"></span>
+                <div class="form-group col-sm-12">
+                    <div class="input-group">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button" id="GetAddress">Get Address</button>
+                        </span>
+                        <input asp-for="Address" class="form-control" placeholder="Adress..." />
+                        <span asp-validation-for="Address" class="text-danger"></span>
                     </div>
                 </div>
             </div>
@@ -87,9 +79,11 @@
                 </div>
             </div>
 
-            <input type="hidden" id="Latitude" name="Latitude"/>
-            <input type="hidden" id="Longitude" name="Longitude"/>
+            <input type="hidden" id="Latitude" name="Latitude" />
+            <input type="hidden" id="Longitude" name="Longitude" />
+            <input type="hidden" id="Town" name="Town" />
             <hr />
+
             <div class="row" style="text-align: center">
                 <button type="submit" class="btn btn-default">Publish</button>
             </div>
@@ -105,10 +99,8 @@
         var map;
         var place;
         var streetName;
-        var streetNumber;
-        var latitude;
-        var longitude;
         var coordinates = {};
+        var town = "";
 
         function initMap() {
             var map = new google.maps.Map(document.getElementById('map'),
@@ -127,9 +119,12 @@
             var infowindow = new google.maps.InfoWindow();
             var infowindowContent = document.getElementById('infowindow-content');
             infowindow.setContent(infowindowContent);
+
             var marker = new google.maps.Marker({
-                map: map
+                map: map,
+                animation: google.maps.Animation.DROP
             });
+
             marker.addListener('click',
                 function() {
                     infowindow.open(map, marker);
@@ -150,25 +145,24 @@
                         map.setZoom(17);
                     }
 
+                    //
                     coordinates.latitude = place.geometry.location.lat();
                     coordinates.longitude = place.geometry.location.lng();
 
                     // Set the position of the marker using the place ID and location.
                     marker.setPlace({
                         placeId: place.place_id,
-                        location: place.geometry.location
+                        location: place.geometry.location,
                     });
-
 
                     marker.setVisible(true);
 
-                    //var coordinates = marker.getPosition();
-
-                    streetName = place.name.trim().slice(0, -2);
-                    streetNumber = place.name.trim().slice(-2);
-                    latitude = place.geometry.lat;
-                    longitude = place.geometry.lng;
-
+                    //
+                    streetName = place.name.trim();
+                    var pointInfo = place.formatted_address.split(",");
+                    //country = pointInfo[3].trim();
+                    town = pointInfo[2].trim();
+             
                     infowindowContent.children['place-name'].textContent = place.name;
                     infowindowContent.children['place-id'].textContent = place.place_id;
                     infowindowContent.children['place-address'].textContent =
@@ -179,10 +173,11 @@
         }
 
         $("#GetAddress").click(function() {
-            $("#AddressStreet").val(streetName);
-            $("#StreetNumber").val(streetNumber);
+            $("#Address").val(streetName);
             $("#Latitude").val(coordinates.latitude);
             $("#Longitude").val(coordinates.longitude);
+            $("#Town").val(town);
+            $("#Country").val(country);
         });
 
 

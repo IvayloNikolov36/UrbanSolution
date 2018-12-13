@@ -5,8 +5,8 @@
         public const int UserPasswordMaxLength = 100;
         public const int UserPasswordMinLength = 6;
 
-        public const int StreetNameMinLength = 3;
-        public const int StreetNameMaxLength = 30;
+        public const int AddressMinLength = 3;
+        public const int AddressMaxLength = 60;
 
         public const int CommentContentMinLength = 20;
         public const int CommentContentMaxLength = 200;

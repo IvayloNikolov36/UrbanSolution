@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using UrbanSolution.Web.Infrastructure;
 using static UrbanSolution.Models.Utilities.DataConstants;
 
 namespace UrbanSolution.Web.Models
 {
-    public class PublishIssueViewModel
+    public class PublishIssueViewModel : IValidatableObject
     {
         [Required, StringLength(IssueTitleMaxLength, MinimumLength = IssueTitleMinLength)]
         [Display(Name = "Title")]
@@ -28,20 +29,23 @@ namespace UrbanSolution.Web.Models
 
         public IEnumerable<SelectListItem> Regions { get; set; }
 
-        [Required]
-        [StringLength(StreetNameMaxLength, MinimumLength = StreetNameMinLength)]
-        [Display(Name = "Street name")]
-        public string AddressStreet { get; set; }
+        [Required(ErrorMessage = WebConstants.NoAddressSet)]
+        [StringLength(AddressMaxLength, MinimumLength = AddressMinLength)]
+        public string Address { get; set; }
 
-        [Required]
-        [Display(Name = "Street number")]
-        public string StreetNumber { get; set; }
-
-        [Required]
+        [Required(ErrorMessage = WebConstants.MarkerNotPlaced)]
         public string Latitude { get; set; }
 
-        [Required]
         public string Longitude { get; set; }
-        
+
+        public string Town { get; set; }
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if (!this.Town.Equals(WebConstants.CurrentTownEn) && !this.Town.Equals(WebConstants.CurrentTownBg))
+            {
+                yield return new ValidationResult($"The place should be in {WebConstants.CurrentTownEn}");
+            }
+        }
     }
 }

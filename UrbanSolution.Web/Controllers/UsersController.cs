@@ -52,7 +52,7 @@ namespace UrbanSolution.Web.Controllers
             var longitude = double.Parse(model.Longitude.Trim(), CultureInfo.InvariantCulture);
             
             await this.issues.UploadAsync(userId, model.Name, model.Description, model.PictureUrl, 
-                model.IssueType, model.Region, model.AddressStreet, model.StreetNumber, latitude, longitude);
+                model.IssueType, model.Region, model.Address, latitude, longitude);
 
             this.TempData.AddSuccessMessage(WebConstants.IssueUploaded);
 

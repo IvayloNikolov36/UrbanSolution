@@ -28,11 +28,8 @@ namespace UrbanSolution.Models
         public string Description { get; set; }
 
         [Required]
-        [StringLength(StreetNameMaxLength, MinimumLength = StreetNameMinLength)]
+        [StringLength(AddressMaxLength, MinimumLength = AddressMinLength)]
         public string AddressStreet { get; set; }
-
-        [Required]
-        public string StreetNumber { get; set; }
 
         public RegionType Region { get; set; }
 

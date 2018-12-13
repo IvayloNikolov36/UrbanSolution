@@ -71,7 +71,6 @@
             issueFromDb.Region = region;
             issueFromDb.Type = type;
             issueFromDb.AddressStreet = addressStreet;
-            issueFromDb.StreetNumber = streetNumber;
 
             await this.db.SaveChangesAsync();
         }

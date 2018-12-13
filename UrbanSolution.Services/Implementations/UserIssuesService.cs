@@ -15,7 +15,7 @@
         }
 
         public async Task UploadAsync(string userId, string name, string description, string pictureUrl, string issueType, string region,
-            string addressStreet, string streetNumber, double latitude, double longitude)
+            string address, double latitude, double longitude)
         {
             var issue = new UrbanIssue
             {
@@ -26,8 +26,7 @@
                 Region = Enum.Parse<RegionType>(region),
                 PublishedOn = DateTime.UtcNow,
                 PublisherId = userId,
-                AddressStreet = addressStreet,
-                StreetNumber = streetNumber,
+                AddressStreet = address,
                 Latitude = latitude,
                 Longitude = longitude
             };
