@@ -16,7 +16,7 @@
 <div class="row">
     <div class="col-md-6">
         <ul class="list-group article-list">
-            @foreach (var article in Model.Articles)
+            @foreach (var article in Model.Articles)   //TODO: display template
             {
                 <li class="list-group-item">
                     <a asp-action="Details" asp-route-id="@article.Id" asp-route-title="@article.Title.ToFriendlyUrl()">@article.Title</a>

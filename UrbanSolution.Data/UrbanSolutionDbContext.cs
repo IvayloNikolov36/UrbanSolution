@@ -28,6 +28,8 @@
 
         public DbSet<AdminLog> AdminLogs { get; set; }
 
+        public DbSet<UrbanService> UrbanServices { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             //Mappings

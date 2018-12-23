@@ -28,6 +28,7 @@ namespace UrbanSolution.Web.Areas.Events.Controllers
             this.userManager = userManager;
         }
 
+        [AllowAnonymous]
         public async Task<IActionResult> Index(int page = 1)
         {
             var allEvents = await this.events.AllAsync<EventsListingServiceModel>(page);
@@ -72,7 +73,7 @@ namespace UrbanSolution.Web.Areas.Events.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int id)
         {
             var eventModel = await this.events.GetAsync<EventDetailsServiceModel>(id);

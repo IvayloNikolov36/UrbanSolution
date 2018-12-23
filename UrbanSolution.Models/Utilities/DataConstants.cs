@@ -32,5 +32,10 @@
         public const int EventDescriptionMaxLength = 2000;
         public const int EventDescriptionMinLength = 30;
 
+        public const int UrbanServiceNameMaxLength = 30;
+        public const int UrbanServiceNameMinLength = 6;
+        public const int UrbanServiceDescriptionMaxLength = 2000;
+        public const int UrbanServiceDescriptionMinLenght = 30;
+
     }
 }
