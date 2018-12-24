@@ -1,13 +1,13 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using UrbanSolution.Models;
-using UrbanSolution.Services.Admin;
-using UrbanSolution.Services.Admin.Models;
-using UrbanSolution.Web.Areas.Admin.Models;
-
+﻿
 namespace UrbanSolution.Web.Areas.Admin.Controllers
 {
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.AspNetCore.Mvc;
+    using Models;
+    using System.Threading.Tasks;
+    using UrbanSolution.Models;
+    using UrbanSolution.Services.Admin;
+
     public class ActivityController : BaseController
     {
         private readonly IAdminActivityService activities;

@@ -20,7 +20,11 @@
         <ul class="dropdown-menu">
             <li><a asp-area="Manager" asp-controller="UrbanIssue" asp-action="Index">New issues</a></li>
             <li role="separator" class="divider"></li>
-            <li><a asp-area="Manager" asp-controller="Activity" asp-action="Index">Activity</a></li>
+            <li><a asp-area="Manager" asp-controller="Activity" asp-action="Index">My Activity</a></li>
+            @if ((string)this.ViewData["username"] == WebConstants.ManagerUserName)
+            {
+                <li><a asp-area="Manager" asp-controller="Activity" asp-action="AllManagersActivity">All Activity</a></li> 
+            }
         </ul>
     </li>
 }

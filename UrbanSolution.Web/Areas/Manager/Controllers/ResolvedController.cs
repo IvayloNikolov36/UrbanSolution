@@ -1,4 +1,5 @@
-﻿using UrbanSolution.Services;
+﻿using UrbanSolution.Models.Enums;
+using UrbanSolution.Services;
 
 namespace UrbanSolution.Web.Areas.Manager.Controllers
 {
@@ -20,12 +21,13 @@ namespace UrbanSolution.Web.Areas.Manager.Controllers
 
         public ResolvedController(
             UserManager<User> userManager, 
-            RoleManager<IdentityRole> roleManager,
+            RoleManager<IdentityRole> roleManager,            
+            IManagerActivityService managerActivity,
             IResolvedService resolvedService,
             IFileService fileService,
             IPictureService pictureService,
             ICloudinaryService cloudinary) 
-            : base(userManager, roleManager)
+            : base(userManager, roleManager, managerActivity)
         {
             this.resolvedService = resolvedService;
             this.fileService = fileService;
@@ -59,14 +61,16 @@ namespace UrbanSolution.Web.Areas.Manager.Controllers
 
             this.fileService.DeleteFileFromServer(fileName);
            
-            var userId = this.UserManager.GetUserId(User);
+            var managerId = this.UserManager.GetUserId(User);
 
-            var pictureId = await this.pictureService.WritePictureInfo(userId, cloudinaryPictureUrl, cloudinaryThumbnailPictureUrl, uploadResult.PublicId, uploadResult.CreatedAt, uploadResult.Length);
+            var pictureId = await this.pictureService.WritePictureInfo(managerId, cloudinaryPictureUrl, cloudinaryThumbnailPictureUrl, uploadResult.PublicId, uploadResult.CreatedAt, uploadResult.Length);
 
             //
 
             var resolvedId = await this.resolvedService
-                .UploadAsync(userId, model.UrbanIssueId, pictureId, model.Description);
+                .UploadAsync(managerId, model.UrbanIssueId, pictureId, model.Description);
+
+            await this.ManagerActivity.WriteManagerLogInfoAsync(managerId, ManagerActivityType.UploadedResolved);
 
             this.TempData.AddSuccessMessage(WebConstants.ResolvedUploaded);
 

@@ -28,6 +28,8 @@
 
         public DbSet<AdminLog> AdminLogs { get; set; }
 
+        public DbSet<ManagerLog> ManagerLogs { get; set; }
+
         public DbSet<UrbanService> UrbanServices { get; set; }
 
         public DbSet<CloudinaryImage> CloudinaryImages { get; set; }

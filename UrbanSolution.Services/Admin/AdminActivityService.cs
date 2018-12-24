@@ -1,14 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using UrbanSolution.Services.Admin.Models;
-using UrbanSolution.Services.Mapping;
-
-namespace UrbanSolution.Services.Admin
+﻿namespace UrbanSolution.Services.Admin
 {
     using Data;
+    using Mapping;
+    using Microsoft.EntityFrameworkCore;
+    using Models;
     using System;
     using System.Threading.Tasks;
+    using System.Collections.Generic;
+    using System.Linq;
     using UrbanSolution.Models;
     using UrbanSolution.Models.Enums;
 
@@ -21,7 +20,7 @@ namespace UrbanSolution.Services.Admin
             this.db = db;
         }
 
-        public async Task WriteAdminLogInfoAsync(string adminId, string userId, string role, ActivityType activity)
+        public async Task WriteAdminLogInfoAsync(string adminId, string userId, string role, AdminActivityType activity)
         {
             var logInfo = new AdminLog
             {

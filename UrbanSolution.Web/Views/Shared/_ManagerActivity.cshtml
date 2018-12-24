@@ -1,0 +1,24 @@
+﻿
+@model IEnumerable<UrbanSolution.Services.Manager.Models.ManagerActivitiesListingServiceModel>
+
+<table class="table table-bordered table-striped table table-hover">
+    <thead>
+    <tr>
+        <th class="text-center"><strong>Username</strong></th>
+        <th class="text-center"><strong>Action</strong></th>
+        <th class="text-center"><strong>Date</strong></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var activity in Model)
+    {
+        <tr>
+            <td class="text-center">@activity.UserName</td>
+            <td class="text-center">@activity.Activity</td>
+            <td class="text-center">@activity.DateTime</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+

@@ -74,7 +74,7 @@
             {
                 await this.UserManager.AddToRoleAsync(user, model.Role);
 
-                await this.WriteAdminLogInfoAsync(ActivityType.AddToRole, user.Id, model.Role);
+                await this.WriteAdminLogInfoAsync(AdminActivityType.AddToRole, user.Id, model.Role);
 
                 this.TempData.AddSuccessMessage(string.Format(WebConstants.UserAddedToRoleSuccess, user.UserName, model.Role));
             }
@@ -106,7 +106,7 @@
             {
                 await this.UserManager.RemoveFromRoleAsync(user, model.Role);
 
-                await this.WriteAdminLogInfoAsync(ActivityType.RemoveFromRole, user.Id, model.Role);
+                await this.WriteAdminLogInfoAsync(AdminActivityType.RemoveFromRole, user.Id, model.Role);
 
                 this.TempData.AddSuccessMessage(string.Format(WebConstants.UserRemovedFromRoleSuccess, user.UserName, model.Role));
             }
@@ -128,7 +128,7 @@
             return userExists;
         }
 
-        private async Task WriteAdminLogInfoAsync(ActivityType activity, string userId, string role)
+        private async Task WriteAdminLogInfoAsync(AdminActivityType activity, string userId, string role)
         {
             var admin = await this.UserManager.GetUserAsync(this.User);
 

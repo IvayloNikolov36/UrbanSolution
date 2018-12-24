@@ -15,7 +15,7 @@ namespace UrbanSolution.Models
 
         public User EditedUser { get; set; }
 
-        public ActivityType Activity { get; set; }
+        public AdminActivityType Activity { get; set; }
 
         public DateTime DateTime { get; set; }
 
