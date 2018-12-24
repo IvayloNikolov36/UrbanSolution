@@ -4,6 +4,6 @@
 
     public interface IResolvedService
     {
-        Task<int> UploadAsync(string publisherId, int issueId, string pictureUrl, string description);       
+        Task<int> UploadAsync(string publisherId, int issueId, int pictureId, string description);       
     }
 }

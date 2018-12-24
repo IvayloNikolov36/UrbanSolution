@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using AutoMapper;
-using UrbanSolution.Models;
-using UrbanSolution.Services.Mapping;
-
-namespace UrbanSolution.Services.Models
+﻿namespace UrbanSolution.Services.Models
 {
+    using AutoMapper;
+    using Mapping;
+    using System;
+    using System.Collections.Generic;    
+    using UrbanSolution.Models;  
+
     public class ResolvedDetailsServiceModel : IMapFrom<ResolvedIssue>, IHaveCustomMappings
     {
         public string Description { get; set; }
 
-        public string PictureUrl { get; set; }
+        public string ResolvedPictureUrl { get; set; }
 
         public string IssuePictureUrl { get; set; }
 
@@ -29,7 +29,8 @@ namespace UrbanSolution.Services.Models
         public void CreateMappings(IMapperConfigurationExpression configuration)
         {
             configuration.CreateMap<ResolvedIssue, ResolvedDetailsServiceModel>()
-                .ForMember(x => x.IssuePictureUrl, m => m.MapFrom(r => r.UrbanIssue.IssuePictureUrl));
+                .ForMember(x => x.IssuePictureUrl, m => m.MapFrom(r => r.UrbanIssue.CloudinaryImage.PictureUrl))
+                .ForMember(x => x.ResolvedPictureUrl, m => m.MapFrom(r => r.CloudinaryImage.PictureUrl));
         }
     }
 }

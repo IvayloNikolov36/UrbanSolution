@@ -11,15 +11,15 @@ namespace UrbanSolution.Models
 
         [Required]
         [StringLength(DataConstants.IssueTitleMaxLength, MinimumLength = IssueDescriptionMinLength)]
-        public string Name { get; set; }
+        public string Title { get; set; }
 
         [Required]
         public string  PublisherId { get; set; }
         public User Publisher { get; set; }
 
-        [Required]
-        [Url]
-        public string IssuePictureUrl { get; set; }
+        public int CloudinaryImageId { get; set; }
+
+        public CloudinaryImage CloudinaryImage { get; set; }
 
         public DateTime PublishedOn { get; set; } 
 

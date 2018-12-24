@@ -59,18 +59,15 @@
             return total;
         }
 
-        public async Task Update(int id, string name, string issuePictureUrl, string description, RegionType region, IssueType type,
-            string addressStreet, string streetNumber)
+        public async Task UpdateAsync(int id, string title, string description, RegionType region, IssueType type, string street)
         {
-            var issueFromDb = await this.db
+            var issue = await this.db
                 .FindAsync<UrbanIssue>(id);
 
-            issueFromDb.Name = name;
-            issueFromDb.IssuePictureUrl = issuePictureUrl;
-            issueFromDb.Description = description;
-            issueFromDb.Region = region;
-            issueFromDb.Type = type;
-            issueFromDb.AddressStreet = addressStreet;
+            issue.Title = title;           
+            issue.Description = description;
+            issue.Region = region;
+            issue.Type = type;
 
             await this.db.SaveChangesAsync();
         }
@@ -110,7 +107,7 @@
             return true;
         }
 
-        public async Task Delete(int issueId)
+        public async Task DeleteAsync(int issueId)
         {
             var issueToDelete = await this.db.FindAsync<UrbanIssue>(issueId);
 

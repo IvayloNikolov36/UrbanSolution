@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using UrbanSolution.Web.Infrastructure;
-using static UrbanSolution.Models.Utilities.DataConstants;
-
-namespace UrbanSolution.Web.Models
+﻿namespace UrbanSolution.Web.Models
 {
+    using Infrastructure;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc.Rendering;
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+    using static UrbanSolution.Models.Utilities.DataConstants;
+
     public class PublishIssueViewModel : IValidatableObject
     {
         [Required, StringLength(IssueTitleMaxLength, MinimumLength = IssueTitleMinLength)]
@@ -15,8 +16,9 @@ namespace UrbanSolution.Web.Models
         [Required, StringLength(IssueDescriptionMaxLength, MinimumLength = IssueDescriptionMinLength)]
         public string Description { get; set; }
 
-        [Required, Url, Display(Name = "Picture Url")]
-        public string PictureUrl { get; set; }
+        [Required]
+        [Display(Name = "Picture file")]
+        public IFormFile PictureFile { get; set; }
 
         [Required]
         [Display(Name = "Issue type")]
@@ -45,6 +47,12 @@ namespace UrbanSolution.Web.Models
             if (!this.Town.Equals(WebConstants.CurrentTownEn) && !this.Town.Equals(WebConstants.CurrentTownBg))
             {
                 yield return new ValidationResult($"The place should be in {WebConstants.CurrentTownEn}");
+            }
+
+            if (!this.PictureFile.FileName.EndsWith(".jpg")
+                || PictureFile.Length > WebConstants.PictureUploadFileLength)
+            {
+                yield return new ValidationResult($"Your file submission should be a '.jpg' file with no more than 5.5mb size");
             }
         }
     }

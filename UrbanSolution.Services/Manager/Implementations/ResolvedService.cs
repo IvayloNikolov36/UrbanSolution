@@ -14,18 +14,16 @@
             this.db = db;
         }
 
-        public async Task<int> UploadAsync(
-            string publisherId, int issueId, 
-            string pictureUrl, string description)
+        public async Task<int> UploadAsync(string publisherId, int issueId, int pictureId, string description)
         {
             var resolvedIssue = new ResolvedIssue
             {
-                PictureUrl = pictureUrl,
-                Description = description,
                 PublisherId = publisherId,
+                UrbanIssueId = issueId,
+                CloudinaryImageId = pictureId,
+                Description = description,                
                 Rating = 0,
-                ResolvedOn = DateTime.UtcNow,
-                UrbanIssueId = issueId
+                ResolvedOn = DateTime.UtcNow               
             };
 
             this.db.ResolvedIssues.Add(resolvedIssue);

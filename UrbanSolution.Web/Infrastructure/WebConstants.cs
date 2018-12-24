@@ -71,5 +71,7 @@
 
         public const string NoAddressSet =
             "No address is set! Please, Find the place on the map and press Get Address button";
+
+        public const int PictureUploadFileLength = 5500000;
     }
 }

@@ -5,7 +5,7 @@
     public interface IUserIssuesService
     {
         Task UploadAsync(string userId, string name, 
-            string description,string pictureUrl, string issueType, 
+            string description, int cloudinaryImageId, string issueType, 
             string region, string address,
             double latitude, double longitude);
     }

@@ -1,8 +1,9 @@
-﻿@model UrbanIssueDetailsServiceModel
+﻿@using UrbanSolution.Web.Infrastructure.Extensions
+@model UrbanIssueDetailsServiceModel
 
 @inject IConfiguration Configuration
 @{
-    ViewData["Title"] = $"Details for {Model.Name} issue";
+    ViewData["Title"] = $"Details for {Model.Title}";
     var apiKey = Configuration.GetSection("Google:MapsApiKey").Value;    //TODO: remove after partial/component
 }
 
@@ -15,12 +16,10 @@
     <div class="form-group col-xs-6">
         <div class="row">
             <h3>Published by <em>@Model.Publisher</em> on <em>@Model.PublishedOn.ToShortDateString()</em></h3>
-            <h3>Description: @Model.Description</h3>
-            <h3>@Model.AddressStreet street @Model.StreetNumber</h3>
-            <h3>Type: @Model.Type</h3>
+            <h3>@Model.Description</h3>
+            <h3>@Model.Address</h3>
+            <h3>Type: @Model.Type.ToFriendlyName()</h3>
             <h3>Region: @Model.Region</h3>
-            <h4>@(Model.IsApproved != true ? "Not approved yet!" : "")</h4>
-
 
             @if(Model.IsApproved && !Model.HasResolved)
             {

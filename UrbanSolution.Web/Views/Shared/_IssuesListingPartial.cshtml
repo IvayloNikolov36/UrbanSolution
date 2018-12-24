@@ -23,7 +23,8 @@ else
         </div>
     </div>
 
-    //show pagging
+    //show paging
+
     if(Model.TotalIssues > Model.Issues.Count())
     {
         @await Html.PartialAsync("_PagingPartial", pagesModel)

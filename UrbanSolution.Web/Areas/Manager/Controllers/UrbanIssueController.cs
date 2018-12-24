@@ -65,8 +65,8 @@
                 return this.RedirectToAction(nameof(Edit), "UrbanIssue", new {id});
             }
 
-            await this.managerIssues.Update(model.Id, model.Name, model.IssuePictureUrl, model.Description, model.Region, model.Type,
-                model.AddressStreet, model.StreetNumber);
+            await this.managerIssues.UpdateAsync(model.Id, model.Title, model.Description, model.Region, model.Type,
+                model.AddressStreet);
 
             this.TempData.AddSuccessMessage(WebConstants.IssueUpdateSuccess);
 
@@ -79,7 +79,7 @@
         public async Task<IActionResult> Delete(int id)
         {
            
-            await this.managerIssues.Delete(id);
+            await this.managerIssues.DeleteAsync(id);
 
             this.TempData.AddSuccessMessage(WebConstants.IssueDeleteSuccess);
 

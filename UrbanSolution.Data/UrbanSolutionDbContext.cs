@@ -30,6 +30,8 @@
 
         public DbSet<UrbanService> UrbanServices { get; set; }
 
+        public DbSet<CloudinaryImage> CloudinaryImages { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             //Mappings
@@ -47,18 +49,19 @@
                 .WithMany(e => e.Participants)
                 .HasForeignKey(eu => eu.EventId);
 
-            //one to many relations
-
-            builder.Entity<Event>()
-                .HasOne(e => e.Creator)
-                .WithMany(u => u.EventsCreated)
-                .HasForeignKey(e => e.CreatorId);
-
+            //one to zero or one
             builder.Entity<UrbanIssue>()
                 .HasOne(u => u.ResolvedIssue)
                 .WithOne(r => r.UrbanIssue)
                 .HasForeignKey<ResolvedIssue>(r => r.UrbanIssueId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
+
+            //one to many relations
+
+            builder.Entity<Event>()
+                .HasOne(e => e.Creator)
+                .WithMany(u => u.EventsCreated)
+                .HasForeignKey(e => e.CreatorId);           
 
             builder.Entity<User>()
                 .HasMany(u => u.UrbanIssues)

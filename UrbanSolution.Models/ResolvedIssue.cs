@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using static UrbanSolution.Models.Utilities.DataConstants;
-
-namespace UrbanSolution.Models
+﻿namespace UrbanSolution.Models
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+    using static Utilities.DataConstants;
+
     public class ResolvedIssue
     {
         public int Id { get; set; }
@@ -18,8 +18,9 @@ namespace UrbanSolution.Models
 
         public DateTime ResolvedOn { get; set; }
 
-        [Required, Url]
-        public string PictureUrl { get; set; }
+        public int CloudinaryImageId { get; set; }
+
+        public CloudinaryImage CloudinaryImage { get; set; }
 
         [Required, StringLength(IssueDescriptionMaxLength, MinimumLength = IssueDescriptionMinLength)]
         public string Description { get; set; }

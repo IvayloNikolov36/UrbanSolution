@@ -14,14 +14,13 @@
             this.db = db;
         }
 
-        public async Task UploadAsync(string userId, string name, string description, string pictureUrl, string issueType, string region,
-            string address, double latitude, double longitude)
+        public async Task UploadAsync(string userId, string title, string description, int cloudinaryImageId, string issueType, string region, string address, double latitude, double longitude)
         {
             var issue = new UrbanIssue
             {
-                Name = name,
+                Title = title,
                 Description = description,
-                IssuePictureUrl = pictureUrl,
+                CloudinaryImageId = cloudinaryImageId,
                 Type = Enum.Parse<IssueType>(issueType),
                 Region = Enum.Parse<RegionType>(region),
                 PublishedOn = DateTime.UtcNow,
@@ -35,5 +34,6 @@
 
             await this.db.SaveChangesAsync();
         }
+
     }
 }

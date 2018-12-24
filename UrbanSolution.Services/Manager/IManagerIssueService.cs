@@ -13,14 +13,14 @@
 
         Task<int> TotalAsync(bool isApproved);
 
-        Task Update(int id, string name, string issuePictureUrl, string description, RegionType region, IssueType type, string addressStreet, string streetNumber);
-
-        Task Delete(int issueId);
+        Task DeleteAsync(int issueId);
 
         Task<bool> ExistsAsync(int issueId);
 
         Task ApproveAsync(int issueId);
 
         Task<bool> IsIssueInSameRegionAsync(int issueId, RegionType? managerRegion);
+
+        Task UpdateAsync(int id, string title, string description, RegionType region, IssueType type, string street);
     }
 }

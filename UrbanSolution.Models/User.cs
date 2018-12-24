@@ -31,5 +31,7 @@
 
         public ICollection<EventUser> EventsParticipations { get; set; } = new List<EventUser>();
 
+        public ICollection<CloudinaryImage> UploadedImages { get; set; } = new List<CloudinaryImage>();
+
     }
 }

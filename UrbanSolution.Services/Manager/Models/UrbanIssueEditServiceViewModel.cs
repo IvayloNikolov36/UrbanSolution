@@ -1,23 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using AutoMapper;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using UrbanSolution.Models;
-using UrbanSolution.Services.Mapping;
-
-namespace UrbanSolution.Services.Manager.Models
+﻿namespace UrbanSolution.Services.Manager.Models
 {
+    using AutoMapper;
+    using Mapping;
+    using Microsoft.AspNetCore.Mvc.Rendering;
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+    using UrbanSolution.Models;
+   
     public class UrbanIssueEditServiceViewModel : IMapFrom<UrbanIssue>, IHaveCustomMappings
     {
         public int Id { get; set; }
 
-        public string Name { get; set; }
+        public string Title { get; set; }
 
         public string Publisher { get; set; }
-
-        [Display(Name = "Picture Url")]
-        public string IssuePictureUrl { get; set; }
 
         [Display(Name = "Published on")]
         public DateTime PublishedOn { get; set; }
@@ -26,10 +23,6 @@ namespace UrbanSolution.Services.Manager.Models
 
         [Display(Name = "Street")]
         public string AddressStreet { get; set; }
-        
-        [Display(Name = "Address number")]
-        [RegularExpression(@"\b(\d{1,3}[A-Za-z]?-\d{1,3}[A-Za-z]?\b)|(\b\d{1,3}[A-Za-z]?)\b")]
-        public string StreetNumber { get; set; }
 
         public RegionType Region { get; set; }
 

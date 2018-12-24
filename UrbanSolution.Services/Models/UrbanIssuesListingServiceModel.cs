@@ -1,17 +1,19 @@
-﻿using System;
-using AutoMapper;
-using UrbanSolution.Models;
-using UrbanSolution.Services.Mapping;
-
-namespace UrbanSolution.Services.Models
+﻿namespace UrbanSolution.Services.Models
 {
+    using AutoMapper;
+    using Mapping;
+    using System;
+    using UrbanSolution.Models;
+
     public class UrbanIssuesListingServiceModel : IMapFrom<UrbanIssue>, IHaveCustomMappings
     {
         public int Id { get; set; }
 
-        public string Name { get; set; }
+        public string Title { get; set; }
 
-        public string IssuePictureUrl { get; set; }
+        //public string IssuePictureUrl { get; set; }
+
+        public string IssuePictureThumbnailUrl { get; set; }
 
         public bool HasResolved { get; set; }
 
@@ -31,7 +33,9 @@ namespace UrbanSolution.Services.Models
                 .ForMember(x => x.HasResolved, m => m.MapFrom(u => u.ResolvedIssue != null))
                 .ForMember(x => x.Publisher, m => m.MapFrom(u => u.Publisher.UserName))
                 .ForMember(x => x.Latitude, m => m.MapFrom(u => u.Latitude.ToString().Replace(",", ".")))
-                .ForMember(x => x.Longitude, m => m.MapFrom(u => u.Longitude.ToString().Replace(",", ".")));
+                .ForMember(x => x.Longitude, m => m.MapFrom(u => u.Longitude.ToString().Replace(",", ".")))
+                //.ForMember(x => x.IssuePictureUrl, m => m.MapFrom(u => u.CloudinaryImage.PictureUrl))
+                .ForMember(x => x.IssuePictureThumbnailUrl, m => m.MapFrom(u => u.CloudinaryImage.PictureThumbnailUrl));
         }
     }
 }

@@ -17,6 +17,7 @@ namespace UrbanSolution.Web.Areas.Manager.Controllers
         }
 
         protected UserManager<User> UserManager { get; }
+
         protected RoleManager<IdentityRole> RoleManager { get; }
     }
 }

@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Cloudinary.Core" Version="1.31.0" />
     <PackageReference Include="HtmlSanitizer" Version="4.0.199" />
   </ItemGroup>
 

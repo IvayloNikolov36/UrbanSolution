@@ -6,5 +6,8 @@
         public const int BlogArticlesPageSize = 2;
         public const int EventsPageSize = 2;
 
+        public const string ImageUploadPath = "{0}\\images\\upload";
+
+        public const string CloudinaryGetImageUrl = "{0}.jpg";
     }
 }
