@@ -2,10 +2,11 @@
 {
     using System.Threading.Tasks;
     using CloudinaryDotNet.Actions;
+    using Microsoft.AspNetCore.Http;
 
     public interface ICloudinaryService
     {
-        Task<ImageUploadResult> UploadImageAsync(string filePath);
+        Task<ImageUploadResult> UploadFormFileAsync(IFormFile file);
 
         string GetImageUrl(string imagePublicId);
 

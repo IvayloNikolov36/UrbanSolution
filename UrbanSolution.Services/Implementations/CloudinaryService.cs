@@ -1,7 +1,9 @@
-﻿namespace UrbanSolution.Services.Implementations
+﻿
+namespace UrbanSolution.Services.Implementations
 {
     using CloudinaryDotNet;
     using CloudinaryDotNet.Actions;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Configuration;
     using System;
     using System.Collections.Generic;
@@ -20,26 +22,27 @@
             this.InitializeCloudinary();
         }
 
-        public async Task<ImageUploadResult> UploadImageAsync(string filePath)
-        { 
-            var uploadParams = new ImageUploadParams()
+        public async Task<ImageUploadResult> UploadFormFileAsync(IFormFile file)
+        {
+            using (var memoryStream = file.OpenReadStream())
             {
-                File = new FileDescription(filePath),
-                PublicId = $"urban{Guid.NewGuid()}",
-                Transformation = new Transformation().Crop("limit").Width(800).Height(600),
-                EagerTransforms = new List<Transformation>()
+                var uploadParams = new ImageUploadParams()
                 {
-                    new Transformation().Width(200).Height(200).Crop("thumb"),
-                    //new Transformation().Width(100).Height(150).Crop("fit").FetchFormat("png"),
-                },
-                //Tags = "special, for_homepage"
-            };
+                    File = new FileDescription(Guid.NewGuid().ToString(), memoryStream),
+                    PublicId = $"urban{Guid.NewGuid()}",
+                    Transformation = new Transformation().Crop("limit").Width(800).Height(600),
+                    EagerTransforms = new List<Transformation>()
+                    {
+                        new Transformation().Width(200).Height(200).Crop("thumb")
+                    }
+                };
 
-            var uploadResult = await cloudinary.UploadAsync(uploadParams);
+                var uploadResult = await cloudinary.UploadAsync(uploadParams);
 
-            return uploadResult;
+                return uploadResult;
+            }           
         }
-
+       
         public string GetImageUrl(string imagePublicId)
         {
             var pictureUrl = this.cloudinary.Api.UrlImgUp

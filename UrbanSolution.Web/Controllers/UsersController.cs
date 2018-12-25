@@ -1,41 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using CloudinaryDotNet;
-using CloudinaryDotNet.Actions;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Extensions.FileProviders;
-using UrbanSolution.Models;
-using UrbanSolution.Services;
-using UrbanSolution.Web.Infrastructure;
-using UrbanSolution.Web.Infrastructure.Extensions;
-using UrbanSolution.Web.Models;
-
-
-namespace UrbanSolution.Web.Controllers
+﻿namespace UrbanSolution.Web.Controllers
 {
+    using Infrastructure;
+    using Infrastructure.Extensions;
+    using Models;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Rendering;
+    using UrbanSolution.Models;
+    using Services;
+    using System;
+    using System.Globalization;
+    using System.Linq;
+    using System.Threading.Tasks;
+
     [Authorize]
     public class UsersController : Controller
     {
         private readonly IUserIssuesService issues;
         private readonly UserManager<User> userManager;
         private readonly ICloudinaryService cloudinary;
-        private readonly IFileService fileService;
         private readonly IPictureService pictureService;
 
-        public UsersController(IUserIssuesService issues, UserManager<User> userManager, ICloudinaryService cloudinary, IFileService fileService, IPictureService pictureService)
+        public UsersController(IUserIssuesService issues, UserManager<User> userManager, ICloudinaryService cloudinary, IPictureService pictureService)
         {
             this.issues = issues;
             this.userManager = userManager;
-            this.cloudinary = cloudinary;
-            this.fileService = fileService;
+            this.cloudinary = cloudinary;          
             this.pictureService = pictureService;
         }
 
@@ -57,15 +48,11 @@ namespace UrbanSolution.Web.Controllers
                 return this.View(model);
             }
 
-            var fileName = await this.fileService.UploadFileToServerAsync(model.PictureFile);
-
-            var uploadResult = await this.cloudinary.UploadImageAsync(fileName);
+            var uploadResult = await this.cloudinary.UploadFormFileAsync(model.PictureFile);
 
             var cloudinaryPictureUrl = this.cloudinary.GetImageUrl(uploadResult.PublicId);
 
             var cloudinaryThumbnailPictureUrl = this.cloudinary.GetImageThumbnailUrl(uploadResult.PublicId);
-
-            this.fileService.DeleteFileFromServer(fileName);
 
             var userId = this.userManager.GetUserId(User);
 
