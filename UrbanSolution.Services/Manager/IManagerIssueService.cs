@@ -7,20 +7,21 @@
 
     public interface IManagerIssueService
     {
-        Task<TModel> GetAsync<TModel>(int issueId);
+        Task UpdateAsync(string managerId, int id, string title, string description, RegionType region, IssueType type, string street);
+
+        Task DeleteAsync(string managerId, int issueId);
+
+        Task ApproveAsync(string managerId, int issueId);
 
         Task<IEnumerable<UrbanIssuesListingServiceModel>> AllAsync(bool isApproved, RegionType? region);
 
-        Task<int> TotalAsync(bool isApproved);
+        Task<TModel> GetAsync<TModel>(int issueId);
 
-        Task DeleteAsync(int issueId);
+        Task<int> TotalAsync(bool isApproved);        
 
-        Task<bool> ExistsAsync(int issueId);
-
-        Task ApproveAsync(int issueId);
+        Task<bool> ExistsAsync(int issueId);        
 
         Task<bool> IsIssueInSameRegionAsync(int issueId, RegionType? managerRegion);
-
-        Task UpdateAsync(int id, string title, string description, RegionType region, IssueType type, string street);
+        
     }
 }

@@ -1,11 +1,13 @@
-﻿using System;
-using System.Threading.Tasks;
-
+﻿
 namespace UrbanSolution.Services
 {
+    using Microsoft.AspNetCore.Http;
+    using System.Threading.Tasks;
+
     public interface IPictureService
-    {
-        Task<int> WritePictureInfo(string uploaderId, string pictureUrl, string pictureThumbnailUrl,
-            string picturePublicId, DateTime uploadedOn, long pictureLength);
+    {        
+        Task<int> UploadImageAsync(string userId, IFormFile pictureFile);
+
+        Task DeleteImageAsync(int pictureId);
     }
 }

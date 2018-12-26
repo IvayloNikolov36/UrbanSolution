@@ -11,7 +11,7 @@
     {
         [Required, StringLength(IssueTitleMaxLength, MinimumLength = IssueTitleMinLength)]
         [Display(Name = "Title")]
-        public string Name { get; set; }
+        public string Title { get; set; }
 
         [Required, StringLength(IssueDescriptionMaxLength, MinimumLength = IssueDescriptionMinLength)]
         public string Description { get; set; }

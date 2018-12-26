@@ -10,16 +10,19 @@ namespace UrbanSolution.Web.Areas.Manager.Controllers
 
     public class ActivityController : BaseController
     {
-        public ActivityController(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IManagerActivityService managerActivity) 
-            : base(userManager, roleManager, managerActivity)
-        {            
+        private readonly IManagerActivityService activity;
+
+        public ActivityController(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IManagerActivityService activity) 
+            : base(userManager, roleManager)
+        {
+            this.activity = activity;
         }
 
         public async Task<IActionResult> Index()
         {
             var managerId = this.UserManager.GetUserId(this.User);
 
-            var managerActivity = await this.ManagerActivity.AllAsync(managerId);
+            var managerActivity = await this.activity.AllAsync(managerId);
 
             return this.View(managerActivity);
         }
@@ -34,7 +37,7 @@ namespace UrbanSolution.Web.Areas.Manager.Controllers
                 return this.BadRequest();
             }
             
-            var managerActivity = await this.ManagerActivity.AllAsync();
+            var managerActivity = await this.activity.AllAsync();
 
             return this.View(managerActivity);
         }

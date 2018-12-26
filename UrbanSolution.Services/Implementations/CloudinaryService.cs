@@ -7,6 +7,7 @@ namespace UrbanSolution.Services.Implementations
     using Microsoft.Extensions.Configuration;
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
     using Utilities;
 
@@ -42,7 +43,18 @@ namespace UrbanSolution.Services.Implementations
                 return uploadResult;
             }           
         }
-       
+
+        public async Task DeleteImages(params string[] publicIds)
+        {
+            var delParams = new DelResParams
+            {
+                PublicIds = publicIds.ToList(),
+                Invalidate = true
+            };
+
+            await cloudinary.DeleteResourcesAsync(delParams);
+        }
+
         public string GetImageUrl(string imagePublicId)
         {
             var pictureUrl = this.cloudinary.Api.UrlImgUp

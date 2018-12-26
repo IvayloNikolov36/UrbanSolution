@@ -1,12 +1,13 @@
-﻿namespace UrbanSolution.Services
+﻿
+namespace UrbanSolution.Services
 {
+    using Microsoft.AspNetCore.Http;
     using System.Threading.Tasks;
 
     public interface IUserIssuesService
     {
-        Task UploadAsync(string userId, string name, 
-            string description, int cloudinaryImageId, string issueType, 
-            string region, string address,
-            double latitude, double longitude);
+        Task UploadAsync(string userId, string title, string description, IFormFile pictureFile,
+            string issueType, string region, string address, string latitude, string longitude);
+
     }
 }

@@ -12,7 +12,6 @@ namespace UrbanSolution.Web.Areas.Manager.Controllers
     using System.Linq;
     using System.Threading.Tasks;
     using UrbanSolution.Models;
-    using UrbanSolution.Models.Enums;
     using UrbanSolution.Services.Manager;
     using UrbanSolution.Services.Manager.Models;
     using UrbanSolution.Web.Models;
@@ -25,10 +24,9 @@ namespace UrbanSolution.Web.Areas.Manager.Controllers
         public UrbanIssueController(
             UserManager<User> userManager, 
             RoleManager<IdentityRole> roleManager,
-            IManagerActivityService managerActivity,
             IManagerIssueService managerIssues,
             IIssueService issues) 
-            : base(userManager, roleManager, managerActivity)
+            : base(userManager, roleManager)
         {
             this.managerIssues = managerIssues;
             this.issues = issues;
@@ -68,12 +66,9 @@ namespace UrbanSolution.Web.Areas.Manager.Controllers
                 return this.RedirectToAction(nameof(Edit), "UrbanIssue", new {id});
             }
 
-            await this.managerIssues.UpdateAsync(model.Id, model.Title, model.Description, model.Region, model.Type,
-                model.AddressStreet);
-
             var managerId = this.UserManager.GetUserId(this.User);
 
-            await this.ManagerActivity.WriteManagerLogInfoAsync(managerId, ManagerActivityType.EditedIssue);
+            await this.managerIssues.UpdateAsync(managerId, model.Id, model.Title, model.Description, model.Region, model.Type, model.AddressStreet);
 
             this.TempData.AddSuccessMessage(WebConstants.IssueUpdateSuccess);
 
@@ -84,12 +79,10 @@ namespace UrbanSolution.Web.Areas.Manager.Controllers
         [ServiceFilter(typeof(ValidateIssueIdExistsAttribute))]
         [ServiceFilter(typeof(ValidateIssueAndManagerRegionsAreaEqualAttribute))]
         public async Task<IActionResult> Delete(int id)
-        {           
-            await this.managerIssues.DeleteAsync(id);
-
+        {
             var managerId = this.UserManager.GetUserId(this.User);
 
-            await this.ManagerActivity.WriteManagerLogInfoAsync(managerId, ManagerActivityType.DeletedIssue);
+            await this.managerIssues.DeleteAsync(managerId, id);
 
             this.TempData.AddSuccessMessage(WebConstants.IssueDeleteSuccess);
 
@@ -100,11 +93,9 @@ namespace UrbanSolution.Web.Areas.Manager.Controllers
         [ServiceFilter(typeof(ValidateIssueAndManagerRegionsAreaEqualAttribute))]
         public async Task<IActionResult> Approve(int id)
         {
-            await this.managerIssues.ApproveAsync(id);
-
             var managerId = this.UserManager.GetUserId(this.User);
 
-            await this.ManagerActivity.WriteManagerLogInfoAsync(managerId, ManagerActivityType.ApprovedIssue);
+            await this.managerIssues.ApproveAsync(managerId, id);
 
             this.TempData.AddSuccessMessage(WebConstants.IssueApprovedSuccess);
 

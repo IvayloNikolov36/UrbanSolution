@@ -10,7 +10,6 @@
     using UrbanSolution.Models;
     using Services;
     using System;
-    using System.Globalization;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -48,26 +47,9 @@
                 return this.View(model);
             }
 
-            var uploadResult = await this.cloudinary.UploadFormFileAsync(model.PictureFile);
-
-            var cloudinaryPictureUrl = this.cloudinary.GetImageUrl(uploadResult.PublicId);
-
-            var cloudinaryThumbnailPictureUrl = this.cloudinary.GetImageThumbnailUrl(uploadResult.PublicId);
-
             var userId = this.userManager.GetUserId(User);
 
-            var pictureId = await this.pictureService.WritePictureInfo(userId, cloudinaryPictureUrl, cloudinaryThumbnailPictureUrl,uploadResult.PublicId, uploadResult.CreatedAt, uploadResult.Length);
-
-            await this.issues.UploadAsync(
-                userId, 
-                model.Name, 
-                model.Description,
-                pictureId, 
-                model.IssueType, 
-                model.Region, 
-                model.Address,
-                double.Parse(model.Latitude.Trim(), CultureInfo.InvariantCulture),
-                double.Parse(model.Longitude.Trim(), CultureInfo.InvariantCulture));
+            await this.issues.UploadAsync(userId, model.Title, model.Description, model.PictureFile, model.IssueType,model.Region, model.Address, model.Latitude, model.Longitude);
 
             this.TempData.AddSuccessMessage(WebConstants.IssueUploaded);
 

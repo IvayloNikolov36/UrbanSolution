@@ -1,39 +1,45 @@
-﻿namespace UrbanSolution.Services.Implementations
+﻿
+namespace UrbanSolution.Services.Implementations
 {
     using Data;
+    using Microsoft.AspNetCore.Http;
     using System;
+    using System.Globalization;
     using System.Threading.Tasks;
     using UrbanSolution.Models;
 
     public class UserIssuesService : IUserIssuesService
     {
         private readonly UrbanSolutionDbContext db;
+        private readonly IPictureService pictureService;
 
-        public UserIssuesService(UrbanSolutionDbContext db)
+        public UserIssuesService(UrbanSolutionDbContext db, IPictureService pictureService)
         {
             this.db = db;
+            this.pictureService = pictureService;
         }
 
-        public async Task UploadAsync(string userId, string title, string description, int cloudinaryImageId, string issueType, string region, string address, double latitude, double longitude)
+        public async Task UploadAsync(string userId, string title, string description, IFormFile pictureFile, string issueType, string region, string address, string latitude, string longitude)
         {
+            var picId = await this.pictureService.UploadImageAsync(userId, pictureFile);
+
             var issue = new UrbanIssue
             {
                 Title = title,
                 Description = description,
-                CloudinaryImageId = cloudinaryImageId,
+                CloudinaryImageId = picId,
                 Type = Enum.Parse<IssueType>(issueType),
                 Region = Enum.Parse<RegionType>(region),
                 PublishedOn = DateTime.UtcNow,
                 PublisherId = userId,
                 AddressStreet = address,
-                Latitude = latitude,
-                Longitude = longitude
+                Latitude = double.Parse(latitude.Trim(), CultureInfo.InvariantCulture),
+                Longitude = double.Parse(longitude.Trim(), CultureInfo.InvariantCulture)
             };
 
             this.db.Add(issue);
 
             await this.db.SaveChangesAsync();
         }
-
     }
 }
