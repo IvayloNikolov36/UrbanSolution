@@ -31,7 +31,6 @@ namespace UrbanSolution.Services.Implementations
             return pictureId;
         }
 
-
         public async Task DeleteImageAsync(int pictureId)
         {
             var pictureFromDb = await this.db.FindAsync<CloudinaryImage>(pictureId);

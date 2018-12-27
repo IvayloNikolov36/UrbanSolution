@@ -1,14 +1,15 @@
-﻿using AutoMapper;
-using UrbanSolution.Models;
-using UrbanSolution.Services.Mapping;
-
+﻿
 namespace UrbanSolution.Services.Models
 {
+    using AutoMapper;
+    using Mapping;
+    using UrbanSolution.Models;
+   
     public class IssueMapInfoBoxDetailsServiceModel : IMapFrom<UrbanIssue>, IHaveCustomMappings
     {
         public int Id { get; set; }
 
-        public string Name { get; set; }
+        public string Title { get; set; }
 
         public string Description { get; set; }
 

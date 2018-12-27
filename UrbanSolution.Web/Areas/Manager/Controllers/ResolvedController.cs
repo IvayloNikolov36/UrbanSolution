@@ -1,4 +1,5 @@
 ﻿using UrbanSolution.Services;
+using UrbanSolution.Services.Manager.Models;
 
 namespace UrbanSolution.Web.Areas.Manager.Controllers
 {
@@ -15,24 +16,21 @@ namespace UrbanSolution.Web.Areas.Manager.Controllers
     {
         private readonly IResolvedService resolvedService;
         private readonly IPictureService pictureService;
-        private readonly ICloudinaryService cloudinary;
 
         public ResolvedController(
             UserManager<User> userManager, 
             RoleManager<IdentityRole> roleManager,            
             IResolvedService resolvedService,
-            IPictureService pictureService,
-            ICloudinaryService cloudinary) 
+            IPictureService pictureService) 
             : base(userManager, roleManager)
         {
             this.resolvedService = resolvedService;
             this.pictureService = pictureService;
-            this.cloudinary = cloudinary;
         }
 
         public IActionResult Upload(int id)
         {
-            this.ViewData[WebConstants.ViewDataIssueId] = id;
+            this.ViewData[WebConstants.ViewDataIssueId] = id; //TODO: ???
 
             return View();
         }
@@ -42,7 +40,7 @@ namespace UrbanSolution.Web.Areas.Manager.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return this.View();
+                return this.View(model);
             }
            
             var managerId = this.UserManager.GetUserId(User);
@@ -52,8 +50,55 @@ namespace UrbanSolution.Web.Areas.Manager.Controllers
 
             this.TempData.AddSuccessMessage(WebConstants.ResolvedUploaded);
 
-            return this.RedirectToAction("Details", "Resolved", new { resolvedId, area="" });
+            return this.RedirectToAction("Details", "Resolved", new { id = resolvedId, area = "" });
         }
- 
+
+        public async Task<IActionResult> Edit(int id)
+        {
+            var resolvedToEdit = await this.resolvedService.GetAsync(id);
+
+            return this.View(resolvedToEdit);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(int id, ResolvedIssueEditServiceModel model)
+        {
+            if (!this.ModelState.IsValid)
+            {
+                return this.View();
+            }
+
+            var managerId = this.UserManager.GetUserId(this.User);
+
+            bool isCompleted = await this.resolvedService.UpdateAsync(managerId, id, model.Description, model.PictureFile);
+
+            if (!isCompleted) // the manager is not the same manager who is published the resolved issue.
+            {
+                return this.BadRequest();
+            }
+
+            this.TempData[WebConstants.TempDataSuccessMessageKey] = WebConstants.ResolvedUpdated;
+
+            return this.RedirectToAction("Details", "Resolved", new { id, area= "" });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var managerId = this.UserManager.GetUserId(User);
+
+            var canDelete = await this.resolvedService.DeleteAsync(managerId, id);
+            if (!canDelete)
+            {
+                return this.BadRequest();
+            }
+
+            this.TempData.AddSuccessMessage(WebConstants.ResolvedDeleted);
+
+            return this.RedirectToAction("Index", "UrbanIssue", new { area = "Manager" });
+        }
+
+
+
     }
 }

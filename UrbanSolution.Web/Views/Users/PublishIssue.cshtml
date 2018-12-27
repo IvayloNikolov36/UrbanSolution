@@ -157,10 +157,8 @@
 
                     marker.setVisible(true);
 
-                    //
                     streetName = place.name.trim();
                     var pointInfo = place.formatted_address.split(",");
-                    //country = pointInfo[3].trim();
                     town = pointInfo[2].trim();
              
                     infowindowContent.children['place-name'].textContent = place.name;
@@ -177,10 +175,7 @@
             $("#Latitude").val(coordinates.latitude);
             $("#Longitude").val(coordinates.longitude);
             $("#Town").val(town);
-            $("#Country").val(country);
-        });
-
-
+        });    
     </script>
 
     <script src="https://maps.googleapis.com/maps/api/js?key=@(apiKey)&libraries=places&callback=initMap"

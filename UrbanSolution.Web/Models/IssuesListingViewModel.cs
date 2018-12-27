@@ -22,5 +22,6 @@
 
         public bool UseCarousel { get; set; } = false;
 
+        public string ViewTitle { get; set; }
     }
 }

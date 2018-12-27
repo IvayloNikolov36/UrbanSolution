@@ -44,25 +44,30 @@
         public const string UserIsNotSetToRole = "User {0} is not set to role {1}.";
         public const string UserAlreadyInRole = "User {0} has been already {1}.";
 
-        public const string IssueUploaded = "Successfully uploaded issue.";
-        public const string ResolvedUploaded = "Successfully uploaded resolved.";
+        public const string ResolvedUploaded = "Successfully uploaded resolved issue.";
+        public const string ResolvedDeleted = "Resolved issuesuccessfully deleted.";
+        public const string ResolvedUpdated = "Resolved issue successfully updated.";
 
         public const string MapCenterLatitude = "42.138893";
         public const string MapCenterLongitude = "24.741101";
         public const int MapCenterZoom = 13;
 
+        public const string IssueUploaded = "Successfully uploaded issue.";
         public const string IssueApprovedSuccess = "Successfully approved issue.";
         public const string IssueUpdateSuccess = "Successfully updated issue.";
         public const string IssueDeleteSuccess = "Successfully deleted issue.";
         public const string IssueNotFound = "Issue with this id can't be found!";
         public const string CantChangeIssue = "You do not have permissions to this issue!";
 
-        public const string ViewDataIssueId = "IssueId";
+        public const string ViewDataIssueId = "issueId";
+        public const string ViewDataUserId = "userId";
+        public const string ViewDataManagerId = "managerId";
+        public const string ViewDateTitle = "title";
+        public const string ViewDateApprovedIssuesTitle = "Approved issues";
+        public const string ViewDateResolvedIssuesTitle = "Resolved issues";
 
         public const string EventCreationSuccess = "Event successfylly created.";
 
-        public const string CurrentCountryEN = "Bulgaria";
-        public const string CurrentCountryBG = "България";
         public const string CurrentTownEn = "Plovdiv";
         public const string CurrentTownBg = "Пловдив";
 
@@ -73,5 +78,8 @@
             "No address is set! Please, Find the place on the map and press Get Address button";
 
         public const int PictureUploadFileLength = 5500000;
+
+        
+
     }
 }

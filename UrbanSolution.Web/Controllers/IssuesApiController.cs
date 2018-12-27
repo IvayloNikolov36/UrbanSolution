@@ -1,12 +1,13 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using UrbanSolution.Models;
-
+﻿
 namespace UrbanSolution.Web.Controllers
 {
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Services;
     using System.Threading.Tasks;
+
+    using UrbanSolution.Models;
 
     [Route("api/[controller]")]
     [ApiController]

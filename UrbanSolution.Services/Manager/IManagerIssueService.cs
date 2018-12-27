@@ -22,6 +22,7 @@
         Task<bool> ExistsAsync(int issueId);        
 
         Task<bool> IsIssueInSameRegionAsync(int issueId, RegionType? managerRegion);
-        
+
+        Task RemoveResolvedReferenceAsync(int issueId);
     }
 }

@@ -8,6 +8,8 @@
 
     public class ResolvedDetailsServiceModel : IMapFrom<ResolvedIssue>, IHaveCustomMappings
     {
+        public int Id { get; set; }
+
         public string Description { get; set; }
 
         public string ResolvedPictureUrl { get; set; }
@@ -15,6 +17,8 @@
         public string IssuePictureUrl { get; set; }
 
         public string PublishedOn { get; set; }
+
+        public string PublisherId { get; set;  }
 
         public string PublisherUserName { get; set; }
 
@@ -30,7 +34,8 @@
         {
             configuration.CreateMap<ResolvedIssue, ResolvedDetailsServiceModel>()
                 .ForMember(x => x.IssuePictureUrl, m => m.MapFrom(r => r.UrbanIssue.CloudinaryImage.PictureUrl))
-                .ForMember(x => x.ResolvedPictureUrl, m => m.MapFrom(r => r.CloudinaryImage.PictureUrl));
+                .ForMember(x => x.ResolvedPictureUrl, m => m.MapFrom(r => r.CloudinaryImage.PictureUrl))
+                .ForMember(x => x.PublisherUserName, m => m.MapFrom(r => r.Publisher.UserName));
         }
     }
 }

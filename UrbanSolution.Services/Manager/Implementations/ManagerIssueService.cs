@@ -134,6 +134,14 @@ namespace UrbanSolution.Services.Manager.Implementations
 
             return true;
         }
-        
+
+        public async Task RemoveResolvedReferenceAsync(int issueId)
+        {
+            var issueToUpdate = await this.db.FindAsync<UrbanIssue>(issueId);
+
+            issueToUpdate.ResolvedIssue = null;
+
+            await this.db.SaveChangesAsync();
+        }
     }
 }

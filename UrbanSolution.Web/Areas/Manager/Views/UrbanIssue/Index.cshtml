@@ -39,12 +39,10 @@
 
     <script>
         var map;
-
         function initMap() {
             var myLatLng = { lat: @(WebConstants.MapCenterLatitude), lng: @(WebConstants.MapCenterLongitude) };
-            var mapOptions = { zoom: 12.8, center: myLatLng }
+            var mapOptions = { zoom: @(WebConstants.MapCenterZoom), center: myLatLng }
             map = new google.maps.Map(document.getElementById('map'), mapOptions);
-
 
             $.get("@Url.Action("GetIssuesInfoBoxDetails", "IssuesApi")",
                 function(data, status) {

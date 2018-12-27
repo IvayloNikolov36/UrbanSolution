@@ -1,11 +1,13 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using UrbanSolution.Services;
-using UrbanSolution.Services.Models;
-using UrbanSolution.Web.Models;
-
+﻿
 namespace UrbanSolution.Web.Controllers
 {
+    using Microsoft.AspNetCore.Mvc;
+    using Models;
+    using Services;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using UrbanSolution.Services.Models;
+
     public class IssueController : Controller
     {
         private readonly IIssueService issues;
@@ -17,13 +19,9 @@ namespace UrbanSolution.Web.Controllers
 
         public async Task<IActionResult> Index(int page = 1)
         {
+            var modelIssues = await this.issues.AllAsync(isApproved: true, page: page);
 
-            var model = new IssuesListingViewModel
-            {
-                Issues = await this.issues.AllAsync(isApproved: true, page: page),
-                TotalIssues = await this.issues.TotalAsync(isApproved: true),
-                CurrentPage = page
-            };
+            var model = await this.GetModelForListingIssuesAsync(modelIssues, page);
 
             return this.View(model);
         }
@@ -31,6 +29,7 @@ namespace UrbanSolution.Web.Controllers
         public async Task<IActionResult> Details(int id)
         {
             var issueModel = await this.issues.GetAsync<UrbanIssueDetailsServiceModel>(id);
+
             if (issueModel == null)
             {
                 return this.BadRequest();
@@ -38,5 +37,20 @@ namespace UrbanSolution.Web.Controllers
 
             return this.View(issueModel);
         }
+
+        private async Task<IssuesListingViewModel> GetModelForListingIssuesAsync(IEnumerable<UrbanIssuesListingServiceModel> modelIssues, int page)
+        {
+            var totalIssues = await this.issues.TotalAsync(isApproved: true);
+
+            var model = new IssuesListingViewModel
+            {
+                Issues = modelIssues,
+                TotalIssues = totalIssues,
+                CurrentPage = page
+            };
+
+            return model;
+        }
+
     }
 }
