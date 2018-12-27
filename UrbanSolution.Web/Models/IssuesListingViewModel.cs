@@ -1,4 +1,6 @@
-﻿namespace UrbanSolution.Web.Models
+﻿using UrbanSolution.Models;
+
+namespace UrbanSolution.Web.Models
 {
     using Services.Utilities;
     using System;
@@ -22,6 +24,6 @@
 
         public bool UseCarousel { get; set; } = false;
 
-        public string ViewTitle { get; set; }
+        public RegionType? Region { get; set; }
     }
 }

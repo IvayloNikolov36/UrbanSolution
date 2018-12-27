@@ -42,6 +42,8 @@
 
         public string Town { get; set; }
 
+        public string Neighbourhood { get; set; }
+
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             if (!this.Town.Equals(WebConstants.CurrentTownEn) && !this.Town.Equals(WebConstants.CurrentTownBg))

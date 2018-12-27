@@ -1,8 +1,10 @@
 ﻿@inject IConfiguration Configuration
+@using UrbanSolution.Web.Infrastructure.Extensions
 @model UrbanSolution.Web.Models.IssuesListingViewModel
 @{
     ViewData["Title"] = "New issues";
     var apiKey = Configuration.GetSection("Google:MapsApiKey").Value;
+    (double mapRegLat, double mapRegLong, double mapRegZoom) = Model.Region.GetMapPositions();
 }
 
 <div row class="text-info text-center">
@@ -10,19 +12,30 @@
     <hr/>
 </div>
 
-
-<div class="slick-issues row issues-listing" id="wrapper">
-    @await Html.PartialAsync("_IssuesListingPartial", Model)
-</div>
-
-
-<div class="form-group col-lg-12">
-    <div id="map" style="height: 500px;">
+@if (Model.Issues.Any())
+{
+    @*issues for carousel*@
+    <div class="slick-issues row issues-listing" id="wrapper">
+        @await Html.PartialAsync("_IssuesListingPartial", Model)
     </div>
-</div>
+
+    @*google map with markers for issues location*@
+    <div class="form-group col-lg-12">
+        <div id="map" style="height: 500px;">
+        </div>
+    </div>
+}
+else
+{
+    <div row class="text-info text-center">
+        <br />
+        <h4>@WebConstants.NoIssuesToShow</h4>
+        <br/>
+    </div>
+}
 
 @section Scripts
-    {
+{
     <script>
         $(document).ready(function () {
             $('.slick-issues').slick({
@@ -40,8 +53,8 @@
     <script>
         var map;
         function initMap() {
-            var myLatLng = { lat: @(WebConstants.MapCenterLatitude), lng: @(WebConstants.MapCenterLongitude) };
-            var mapOptions = { zoom: @(WebConstants.MapCenterZoom), center: myLatLng }
+            var myLatLng = { lat: @(mapRegLat.ToString().Replace(",", ".")), lng: @(mapRegLong.ToString().Replace(",", ".")) };
+            var mapOptions = { zoom: @(mapRegZoom.ToString().Replace(",", ".")), center: myLatLng }
             map = new google.maps.Map(document.getElementById('map'), mapOptions);
 
             $.get("@Url.Action("GetIssuesInfoBoxDetails", "IssuesApi")",
@@ -58,10 +71,9 @@
                         contentString[i] = '<div id="content">' +
                             '<div id="siteNotice">' +
                             '</div>' +
-                            '<h1 id="firstHeading" class="firstHeading">' +
-                            data[i].name +
-                            '</h1>' +
+                            '<h1 id="firstHeading" class="firstHeading">' + data[i].title + '</h1>' +
                             '<div id="bodyContent">' +
+                            '<div><img src="' + data[i].pictureThumbnailUrl + '"alt="Smiley face" height="80" width="80">' +
                             '<p>' + data[i].description + '</p>' +
                             '<a href="/issue/details/'+ data[i].id +'"><h3 id="content">View Details</h3></a>' +
                             '</div>' +
@@ -86,13 +98,10 @@
                     }
                 });
         }
-
-
     </script>
 
     <script src="https://maps.googleapis.com/maps/api/js?key=@(apiKey)&callback=initMap"
             async defer>
     </script>
-
 }
 

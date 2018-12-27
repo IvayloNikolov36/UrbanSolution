@@ -34,12 +34,16 @@ namespace UrbanSolution.Web.Areas.Manager.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var user = await this.UserManager.GetUserAsync(this.User);
-            RegionType? region = user.ManagedRegion;
+            var manager = await this.UserManager.GetUserAsync(this.User);
+
+            RegionType? region = manager.ManagedRegion;
+
+            var issuesForRegion = await this.managerIssues.AllAsync(isApproved: false, region: region);
 
             var model = new IssuesListingViewModel
             {
-                Issues = await this.managerIssues.AllAsync(isApproved: false, region: region),
+                Issues = issuesForRegion,
+                Region = region,
                 UseCarousel = true
             };
 
@@ -54,6 +58,7 @@ namespace UrbanSolution.Web.Areas.Manager.Controllers
             var issue = await this.issues.GetAsync<UrbanIssueEditServiceViewModel>(id);
 
             this.SetModelSelectListItems(issue);
+
             return this.View(issue);
         }
 
@@ -63,6 +68,7 @@ namespace UrbanSolution.Web.Areas.Manager.Controllers
             if (!this.ModelState.IsValid)
             {
                 this.SetModelSelectListItems(model);
+
                 return this.RedirectToAction(nameof(Edit), "UrbanIssue", new {id});
             }
 

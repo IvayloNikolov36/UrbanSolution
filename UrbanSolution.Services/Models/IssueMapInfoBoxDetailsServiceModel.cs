@@ -11,6 +11,10 @@ namespace UrbanSolution.Services.Models
 
         public string Title { get; set; }
 
+        public string PictureUrl { get; set; }
+
+        public string PictureThumbnailUrl { get; set; }
+
         public string Description { get; set; }
 
         public string Latitude { get; set; }
@@ -21,7 +25,9 @@ namespace UrbanSolution.Services.Models
         {
             configuration.CreateMap<UrbanIssue, IssueMapInfoBoxDetailsServiceModel>()
                 .ForMember(x => x.Latitude,m => m.MapFrom(u => u.Latitude.ToString().Replace(",", ".")))
-                .ForMember(x => x.Longitude, m => m.MapFrom(u => u.Longitude.ToString().Replace(",", ".")));
+                .ForMember(x => x.Longitude, m => m.MapFrom(u => u.Longitude.ToString().Replace(",", ".")))
+                .ForMember(x => x.PictureUrl, m => m.MapFrom(u => u.CloudinaryImage.PictureUrl))
+                .ForMember(x => x.PictureThumbnailUrl, m => m.MapFrom(u => u.CloudinaryImage.PictureThumbnailUrl));
         }
     }
 }

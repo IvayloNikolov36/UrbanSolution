@@ -79,7 +79,34 @@
 
         public const int PictureUploadFileLength = 5500000;
 
-        
 
+        public const string NoIssuesToShow = "There is no issues to show";
+
+
+        //Google Map Regions Coordinates
+
+        public const double CenterRegLat = 42.14431437;
+        public const double CenterRegLong = 24.74481583;
+        public const double CenterRegZoom = 12.7;
+
+        public const double SouthRegLat = 42.11668869;
+        public const double SouthRegLong = 24.73846436;
+        public const double SouthRegZoom = 13.7;
+
+        public const double WesternRegLat = 42.1308213;
+        public const double WesternRegLong = 24.70705032;
+        public const double WesternRegZoom = 15;
+
+        public const double NorthRegLat = 42.15882258;
+        public const double NorthRegLong = 24.73846436;
+        public const double NorthRegZoom = 16;
+
+        public const double EasternRegLat = 42.14749628;
+        public const double EasternRegLong = 24.77811813;
+        public const double EasternRegZoom = 16;
+
+        public const double ThraciaRegLat = 42.13273087;
+        public const double ThraciaRegLong = 24.78721619;
+        public const double ThraciaRegZoom = 14;
     }
 }

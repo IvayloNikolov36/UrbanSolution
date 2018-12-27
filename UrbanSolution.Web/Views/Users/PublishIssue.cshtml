@@ -1,5 +1,5 @@
 ﻿@inject IConfiguration Configuration
-@using UrbanSolution.Models.Utilities
+
 @model PublishIssueViewModel
 @{
     ViewData["Title"] = "Publish Issue";
@@ -27,7 +27,7 @@
                 <div class="form-group col-xs-6">
                     <label asp-for="PictureFile"></label>
                     <div>
-                        <input asp-for="PictureFile" class="form-control"/>
+                        <input asp-for="PictureFile" class="form-control" />
                         <span asp-validation-for="PictureFile" class="text-danger"></span>
                     </div>
                 </div>
@@ -105,7 +105,9 @@
         function initMap() {
             var map = new google.maps.Map(document.getElementById('map'),
                 {
-                    center: { lat: @(WebConstants.MapCenterLatitude), lng: @(WebConstants.MapCenterLongitude) },
+                    center: {
+                        lat: @(WebConstants.MapCenterLatitude),
+                        lng: @(WebConstants.MapCenterLongitude) },
                     zoom: @(WebConstants.MapCenterZoom)
                 });
 
@@ -152,7 +154,7 @@
                     // Set the position of the marker using the place ID and location.
                     marker.setPlace({
                         placeId: place.place_id,
-                        location: place.geometry.location,
+                        location: place.geometry.location
                     });
 
                     marker.setVisible(true);
@@ -160,6 +162,12 @@
                     streetName = place.name.trim();
                     var pointInfo = place.formatted_address.split(",");
                     town = pointInfo[2].trim();
+                    //if (pointInfo[1].indexOf(" g.k. ") !== -1) {
+                    //    neighbourhood = pointInfo[1].split(/\s+g\.k\.\s+/)[1];
+                    //} else {
+                    //    neighbourhood = pointInfo[1];
+                    //}                   
+                    //console.log(neighbourhood);
              
                     infowindowContent.children['place-name'].textContent = place.name;
                     infowindowContent.children['place-id'].textContent = place.place_id;

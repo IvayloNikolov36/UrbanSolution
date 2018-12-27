@@ -1,6 +1,8 @@
 ﻿namespace UrbanSolution.Web.Infrastructure.Extensions
 {
+    using System;
     using UrbanSolution.Models;
+    using static WebConstants;   
 
     public static class EnumExtensions
     {
@@ -28,6 +30,28 @@
                 default:
                     return "";
             }
+        }
+
+        public static Tuple<double, double, double> GetMapPositions(this RegionType? region)
+        {
+                switch (region)
+                {
+                    case null:
+                    case RegionType.Central:
+                        return new Tuple<double, double, double>(CenterRegLat, CenterRegLong, CenterRegZoom);
+                    case RegionType.North:
+                        return new Tuple<double, double, double>(NorthRegLat, NorthRegLong, NorthRegZoom);
+                    case RegionType.South:
+                        return new Tuple<double, double, double>(SouthRegLat, SouthRegLong, SouthRegZoom);
+                    case RegionType.Eastern:
+                        return new Tuple<double, double, double>(EasternRegLat, EasternRegLong, EasternRegZoom);
+                    case RegionType.Western:
+                        return new Tuple<double, double, double>(WesternRegLat, WesternRegLong, WesternRegZoom);
+                    case RegionType.Thracia:
+                        return new Tuple<double, double, double>(ThraciaRegLat, ThraciaRegLong, ThraciaRegZoom);
+                    default:
+                        return null;
+                }
         }
     }
 }
