@@ -51,9 +51,7 @@
 
             await this.issues.UploadAsync(userId, model.Title, model.Description, model.PictureFile, model.IssueType,model.Region, model.Address, model.Latitude, model.Longitude);
 
-            this.TempData.AddSuccessMessage(WebConstants.IssueUploaded);
-
-            return this.RedirectToAction(nameof(HomeController.Index), "Home");
+            return this.RedirectToAction(nameof(HomeController.Index), "Home").WithSuccess("", WebConstants.IssueUploaded);
         }
 
         private void SetModelSelectListItems(PublishIssueViewModel model)

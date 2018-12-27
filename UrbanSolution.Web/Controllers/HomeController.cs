@@ -1,7 +1,5 @@
 ﻿using System.Diagnostics;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using UrbanSolution.Services;
 using UrbanSolution.Web.Models;
 
 namespace UrbanSolution.Web.Controllers

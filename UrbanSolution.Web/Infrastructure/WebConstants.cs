@@ -108,5 +108,14 @@
         public const double ThraciaRegLat = 42.13273087;
         public const double ThraciaRegLong = 24.78721619;
         public const double ThraciaRegZoom = 14;
+
+        public const string NoIssueInDb = "No issue found!";
+        public const string NoResolvedFound = "No resolved issue found!";
+
+        public const string NotAuthorized = "Not Authorized!";
+
+        public const string CantViewManagersActivity = "You can't view other managers activity!";
+        public const string CantEditResolved = "You can't edit resolved issue, published by another manager!";
+        public const string CantDeleteResolved = "You can't delete resolved issue, published by another manager!";
     }
 }

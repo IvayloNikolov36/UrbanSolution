@@ -1,4 +1,7 @@
 ﻿
+using UrbanSolution.Web.Infrastructure;
+using UrbanSolution.Web.Infrastructure.Extensions;
+
 namespace UrbanSolution.Web.Controllers
 {
     using Microsoft.AspNetCore.Mvc;
@@ -32,13 +35,14 @@ namespace UrbanSolution.Web.Controllers
 
             if (issueModel == null)
             {
-                return this.BadRequest();
+                return this.RedirectToAction("Index").WithDanger("", WebConstants.NoIssueInDb);
             }
 
             return this.View(issueModel);
         }
 
-        private async Task<IssuesListingViewModel> GetModelForListingIssuesAsync(IEnumerable<UrbanIssuesListingServiceModel> modelIssues, int page)
+        private async Task<IssuesListingViewModel> GetModelForListingIssuesAsync(
+            IEnumerable<UrbanIssuesListingServiceModel> modelIssues, int page)
         {
             var totalIssues = await this.issues.TotalAsync(isApproved: true);
 

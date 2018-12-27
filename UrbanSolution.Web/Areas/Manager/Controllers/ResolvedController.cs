@@ -1,5 +1,5 @@
 ﻿using UrbanSolution.Services;
-using UrbanSolution.Services.Manager.Models;
+
 
 namespace UrbanSolution.Web.Areas.Manager.Controllers
 {
@@ -11,6 +11,8 @@ namespace UrbanSolution.Web.Areas.Manager.Controllers
     using System.Threading.Tasks;
     using UrbanSolution.Models;
     using UrbanSolution.Services.Manager;
+    using UrbanSolution.Services.Manager.Models;
+    using static Infrastructure.WebConstants;
 
     public class ResolvedController : BaseController
     {
@@ -48,9 +50,8 @@ namespace UrbanSolution.Web.Areas.Manager.Controllers
             var resolvedId = await this.resolvedService
                 .UploadAsync(managerId, model.UrbanIssueId, model.PictureFile, model.Description);
 
-            this.TempData.AddSuccessMessage(WebConstants.ResolvedUploaded);
-
-            return this.RedirectToAction("Details", "Resolved", new { id = resolvedId, area = "" });
+            return this.RedirectToAction("Details", "Resolved", new { id = resolvedId, area = "" })
+                .WithSuccess("", ResolvedUploaded);
         }
 
         public async Task<IActionResult> Edit(int id)
@@ -74,12 +75,12 @@ namespace UrbanSolution.Web.Areas.Manager.Controllers
 
             if (!isCompleted) // the manager is not the same manager who is published the resolved issue.
             {
-                return this.BadRequest();
+                return this.RedirectToAction("Details", "Resolved", new { id, area = "" })
+                    .WithDanger(NotAuthorized, CantEditResolved);
             }
 
-            this.TempData[WebConstants.TempDataSuccessMessageKey] = WebConstants.ResolvedUpdated;
-
-            return this.RedirectToAction("Details", "Resolved", new { id, area= "" });
+            return this.RedirectToAction("Details", "Resolved", new { id, area= "" })
+                .WithSuccess("", ResolvedUpdated);
         }
 
         [HttpGet]
@@ -88,17 +89,16 @@ namespace UrbanSolution.Web.Areas.Manager.Controllers
             var managerId = this.UserManager.GetUserId(User);
 
             var canDelete = await this.resolvedService.DeleteAsync(managerId, id);
+
             if (!canDelete)
             {
-                return this.BadRequest();
+                return this.RedirectToAction("Index", "UrbanIssue", new { area = "Manager" })
+                    .WithDanger(NotAuthorized, CantDeleteResolved);
             }
-
-            this.TempData.AddSuccessMessage(WebConstants.ResolvedDeleted);
-
-            return this.RedirectToAction("Index", "UrbanIssue", new { area = "Manager" });
+                
+            return this.RedirectToAction("Index", "UrbanIssue", new { area = "Manager" })
+                    .WithSuccess("", ResolvedDeleted);
         }
-
-
 
     }
 }

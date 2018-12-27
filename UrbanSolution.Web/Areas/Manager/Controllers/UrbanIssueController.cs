@@ -1,7 +1,8 @@
 ﻿
+using static UrbanSolution.Web.Infrastructure.WebConstants;
+
 namespace UrbanSolution.Web.Areas.Manager.Controllers
 {
-    using Infrastructure;
     using Infrastructure.Extensions;
     using Infrastructure.Filters;
     using Microsoft.AspNetCore.Identity;
@@ -76,9 +77,8 @@ namespace UrbanSolution.Web.Areas.Manager.Controllers
 
             await this.managerIssues.UpdateAsync(managerId, model.Id, model.Title, model.Description, model.Region, model.Type, model.AddressStreet);
 
-            this.TempData.AddSuccessMessage(WebConstants.IssueUpdateSuccess);
-
-            return this.RedirectToAction("Details", "Issue", new {id, Area = ""});
+            return this.RedirectToAction("Details", "Issue", new {id, Area = ""})
+                .WithSuccess("", IssueUpdateSuccess);
         }
 
         [HttpGet]
@@ -90,9 +90,8 @@ namespace UrbanSolution.Web.Areas.Manager.Controllers
 
             await this.managerIssues.DeleteAsync(managerId, id);
 
-            this.TempData.AddSuccessMessage(WebConstants.IssueDeleteSuccess);
-
-            return this.RedirectToAction("Index", "UrbanIssue", new {Area = "Manager"});
+            return this.RedirectToAction("Index", "UrbanIssue", new {Area = "Manager"})
+                .WithSuccess("", IssueDeleteSuccess);
         }
 
         [ServiceFilter(typeof(ValidateIssueIdExistsAttribute))]
@@ -103,9 +102,7 @@ namespace UrbanSolution.Web.Areas.Manager.Controllers
 
             await this.managerIssues.ApproveAsync(managerId, id);
 
-            this.TempData.AddSuccessMessage(WebConstants.IssueApprovedSuccess);
-
-            return this.RedirectToAction(nameof(Index));
+            return this.RedirectToAction(nameof(Index)).WithSuccess("", IssueApprovedSuccess);
         }
 
         private void SetModelSelectListItems(UrbanIssueEditServiceViewModel model)

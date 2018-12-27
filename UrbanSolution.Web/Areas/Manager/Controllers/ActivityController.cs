@@ -1,12 +1,14 @@
 ﻿
+
 namespace UrbanSolution.Web.Areas.Manager.Controllers
 {
-    using Infrastructure;
+    using Infrastructure.Extensions;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using System.Threading.Tasks;
     using UrbanSolution.Models;
     using UrbanSolution.Services.Manager;
+    using static Infrastructure.WebConstants;
 
     public class ActivityController : BaseController
     {
@@ -32,9 +34,9 @@ namespace UrbanSolution.Web.Areas.Manager.Controllers
             //TODO: make it filter
             var username = this.UserManager.GetUserName(this.User);
 
-            if (username != WebConstants.ManagerUserName)
+            if (username != ManagerUserName)
             {
-                return this.BadRequest();
+                return this.RedirectToAction("Index", "Home").WithDanger(NotAuthorized, CantViewManagersActivity);
             }
             
             var managerActivity = await this.activity.AllAsync();

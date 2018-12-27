@@ -1,6 +1,7 @@
-﻿namespace UrbanSolution.Web.Areas.Admin.Controllers
+﻿using static UrbanSolution.Web.Infrastructure.WebConstants;
+
+namespace UrbanSolution.Web.Areas.Admin.Controllers
 {
-    using Infrastructure;
     using Infrastructure.Extensions;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
@@ -68,7 +69,7 @@
 
             if (userAlreadyInRole)
             {
-                this.TempData.AddInfoMessage(string.Format(WebConstants.UserAlreadyInRole, user.UserName, model.Role));
+                this.TempData.AddInfoMessage(string.Format(UserAlreadyInRole, user.UserName, model.Role));
             }
             else
             {
@@ -76,7 +77,7 @@
 
                 await this.WriteAdminLogInfoAsync(AdminActivityType.AddToRole, user.Id, model.Role);
 
-                this.TempData.AddSuccessMessage(string.Format(WebConstants.UserAddedToRoleSuccess, user.UserName, model.Role));
+                this.TempData.AddSuccessMessage(string.Format(UserAddedToRoleSuccess, user.UserName, model.Role));
             }
         
             return this.RedirectToAction(nameof(Index));
@@ -100,7 +101,7 @@
             bool userInRole = await this.UserManager.IsInRoleAsync(user, model.Role);
             if (!userInRole)
             {
-                this.TempData.AddInfoMessage(string.Format(WebConstants.UserIsNotSetToRole, user.UserName, model.Role));
+                this.TempData.AddInfoMessage(string.Format(UserIsNotSetToRole, user.UserName, model.Role));
             }
             else
             {
@@ -108,7 +109,7 @@
 
                 await this.WriteAdminLogInfoAsync(AdminActivityType.RemoveFromRole, user.Id, model.Role);
 
-                this.TempData.AddSuccessMessage(string.Format(WebConstants.UserRemovedFromRoleSuccess, user.UserName, model.Role));
+                this.TempData.AddSuccessMessage(string.Format(UserRemovedFromRoleSuccess, user.UserName, model.Role));
             }
 
             return this.RedirectToAction(nameof(Index));

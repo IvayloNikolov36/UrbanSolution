@@ -1,4 +1,8 @@
-﻿namespace UrbanSolution.Web.Controllers
+﻿using UrbanSolution.Services.Models;
+using UrbanSolution.Web.Infrastructure;
+using UrbanSolution.Web.Infrastructure.Extensions;
+
+namespace UrbanSolution.Web.Controllers
 {
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Identity;
@@ -26,7 +30,7 @@
 
             if (detailsModel == null)
             {
-                return this.NotFound();
+                return this.RedirectToAction("Index", "UrbanIssue").WithDanger("", WebConstants.NoResolvedFound);
             }
 
             return this.View(detailsModel);
