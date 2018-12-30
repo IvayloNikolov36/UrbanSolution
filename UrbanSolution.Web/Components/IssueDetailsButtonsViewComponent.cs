@@ -6,12 +6,12 @@
     using UrbanSolution.Models;
     using static Infrastructure.WebConstants;
 
-    [ViewComponent(Name = ViewComponentDynamicMenuName)]
-    public class DynamicMenuViewComponent : ViewComponent
+    [ViewComponent(Name = ViewComponentIssueDetailsButtonsName)]
+    public class IssueDetailsButtonsViewComponent : ViewComponent
     {
         private readonly UserManager<User> userManager;
 
-        public DynamicMenuViewComponent(UserManager<User> userManager)
+        public IssueDetailsButtonsViewComponent(UserManager<User> userManager)
         {
             this.userManager = userManager;
         }
@@ -22,7 +22,7 @@
 
             if (user != null)
             {
-                this.ViewData[ViewDataUsernameKey] = user.UserName;
+                this.ViewData[ViewDataManagerRegionKey] = user.ManagedRegion.ToString();
             }
 
             return this.View();

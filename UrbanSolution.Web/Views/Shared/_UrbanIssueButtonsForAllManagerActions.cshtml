@@ -1,0 +1,21 @@
+﻿@model UrbanIssueDetailsServiceModel
+
+@if (!Model.IsApproved)
+{
+    <a asp-area="Manager" asp-controller="UrbanIssue" asp-action="Approve" asp-route-id="@Model.Id"
+       class="btn btn-primary">
+        Approve
+    </a>
+}
+@if (!Model.HasResolved)
+{
+    @await Html.PartialAsync("_IssueViewButtonsForDeleteAndEdit", Model.Id)
+}
+@if (Model.IsApproved && !Model.HasResolved)
+{
+    <a asp-area="Manager" asp-controller="Resolved" asp-action="Upload" asp-route-id="@Model.Id"
+       class="btn btn-primary">
+        Upload Resolved
+    </a>
+}
+

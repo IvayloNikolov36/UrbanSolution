@@ -5,6 +5,7 @@
     using Microsoft.AspNetCore.Mvc.Filters;
     using System.Linq;
     using Services.Manager;
+    using static WebConstants;
 
     public class ValidateIssueIdExistsAttribute : ActionFilterAttribute
     {
@@ -23,19 +24,20 @@
                 return;
             }
 
-            var id = context.ActionArguments.FirstOrDefault(a => a.Key.ToLower().Contains("id")).Value;
+            var id = context.ActionArguments
+                .FirstOrDefault(a => a.Key.ToLower().Contains("id")).Value;
             if (id == null)
             {
-                controller.TempData.AddErrorMessage(WebConstants.IssueNotFound);
-                context.Result = controller.RedirectToAction("Index");
+                context.Result = controller.RedirectToAction("Index")
+                    .WithDanger("", IssueNotFound);
             }
             else
             {
                 var exists = this.issues.ExistsAsync((int)id).GetAwaiter().GetResult();
                 if (!exists)
                 {
-                    controller.TempData.AddErrorMessage(WebConstants.IssueNotFound);
-                    context.Result = controller.RedirectToAction("Index");
+                    context.Result = controller.RedirectToAction("Index")
+                        .WithDanger("", IssueNotFound);
                 }
             }   
 

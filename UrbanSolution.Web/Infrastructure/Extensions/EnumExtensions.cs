@@ -36,7 +36,8 @@
         {
                 switch (region)
                 {
-                    case null:
+                    case null: //TODO: remove case null:
+                    case RegionType.All:
                     case RegionType.Central:
                         return new Tuple<double, double, double>(CenterRegLat, CenterRegLong, CenterRegZoom);
                     case RegionType.North:

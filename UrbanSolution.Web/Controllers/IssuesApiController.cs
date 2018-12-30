@@ -1,12 +1,10 @@
-﻿
-namespace UrbanSolution.Web.Controllers
+﻿namespace UrbanSolution.Web.Controllers
 {
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Services;
     using System.Threading.Tasks;
-
     using UrbanSolution.Models;
 
     [Route("api/[controller]")]

@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
-using UrbanSolution.Services.Admin.Models;
-
+﻿
 namespace UrbanSolution.Web.Areas.Admin.Models
 {
+    using System.Collections.Generic;
+    using UrbanSolution.Services.Admin.Models;
+
     public class AdminActivityIndexModel
     {
         public IEnumerable<AdminActivitiesListingServiceModel> Activities { get; set; }

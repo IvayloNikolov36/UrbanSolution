@@ -1,0 +1,23 @@
+﻿<script>
+    $(document).ready(function () {
+        $('.slick-fade').slick({
+            dots: false,
+            arrows: false,
+            infinite: false,
+            autoplay: true,
+            speed: 500,
+            fade: true,
+            cssEase: 'linear',
+            centerMode: true
+        });
+
+        $('.left').click(function () {
+            $('.slick-fade').slick('slickPrev');
+        });
+
+        $('.right').click(function () {
+            $('.slick-fade').slick('slickNext');
+        });
+    });
+</script>
+

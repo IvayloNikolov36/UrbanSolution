@@ -1,7 +1,4 @@
-﻿
-using static UrbanSolution.Web.Infrastructure.WebConstants;
-
-namespace UrbanSolution.Web.Areas.Manager.Controllers
+﻿namespace UrbanSolution.Web.Areas.Manager.Controllers
 {
     using Infrastructure.Extensions;
     using Infrastructure.Filters;
@@ -16,6 +13,7 @@ namespace UrbanSolution.Web.Areas.Manager.Controllers
     using UrbanSolution.Services.Manager;
     using UrbanSolution.Services.Manager.Models;
     using UrbanSolution.Web.Models;
+    using static Infrastructure.WebConstants;
 
     public class UrbanIssueController : BaseController
     {
@@ -24,10 +22,9 @@ namespace UrbanSolution.Web.Areas.Manager.Controllers
 
         public UrbanIssueController(
             UserManager<User> userManager, 
-            RoleManager<IdentityRole> roleManager,
             IManagerIssueService managerIssues,
             IIssueService issues) 
-            : base(userManager, roleManager)
+            : base(userManager)
         {
             this.managerIssues = managerIssues;
             this.issues = issues;
@@ -66,16 +63,24 @@ namespace UrbanSolution.Web.Areas.Manager.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(int id, UrbanIssueEditServiceViewModel model)
         {
-            if (!this.ModelState.IsValid)
+            if (!this.ModelState.IsValid)                 //TODO: make a filter
             {
                 this.SetModelSelectListItems(model);
 
                 return this.RedirectToAction(nameof(Edit), "UrbanIssue", new {id});
             }
 
-            var managerId = this.UserManager.GetUserId(this.User);
+            var manager = await this.UserManager.GetUserAsync(User);
 
-            await this.managerIssues.UpdateAsync(managerId, model.Id, model.Title, model.Description, model.Region, model.Type, model.AddressStreet);
+            var canUpdate = await this.managerIssues.UpdateAsync(
+                manager, model.Id, model.Title, model.Description, 
+                model.Region, model.Type, model.AddressStreet);
+
+            if (!canUpdate)
+            {
+                return this.RedirectToAction("Details", "Issue", new { id, Area = "" })
+                    .WithDanger("", CantEditIssueForAnotherRegion);
+            }
 
             return this.RedirectToAction("Details", "Issue", new {id, Area = ""})
                 .WithSuccess("", IssueUpdateSuccess);
@@ -83,40 +88,48 @@ namespace UrbanSolution.Web.Areas.Manager.Controllers
 
         [HttpGet]
         [ServiceFilter(typeof(ValidateIssueIdExistsAttribute))]
-        [ServiceFilter(typeof(ValidateIssueAndManagerRegionsAreaEqualAttribute))]
+        //[ServiceFilter(typeof(ValidateIssueAndManagerRegionsAreaEqualAttribute))] -> checked in service
         public async Task<IActionResult> Delete(int id)
         {
-            var managerId = this.UserManager.GetUserId(this.User);
+            var manager = await this.UserManager.GetUserAsync(this.User);
 
-            await this.managerIssues.DeleteAsync(managerId, id);
+            var canDelete = await this.managerIssues.DeleteAsync(manager, id);
+
+            if (!canDelete)
+            {
+                return this.RedirectToAction("Index", "UrbanIssue", new { Area = "Manager" })
+                    .WithDanger("", CantDeleteIssueForAnotherRegion);
+            }
 
             return this.RedirectToAction("Index", "UrbanIssue", new {Area = "Manager"})
                 .WithSuccess("", IssueDeleteSuccess);
         }
 
         [ServiceFilter(typeof(ValidateIssueIdExistsAttribute))]
-        [ServiceFilter(typeof(ValidateIssueAndManagerRegionsAreaEqualAttribute))]
+        //[ServiceFilter(typeof(ValidateIssueAndManagerRegionsAreaEqualAttribute))]
         public async Task<IActionResult> Approve(int id)
         {
-            var managerId = this.UserManager.GetUserId(this.User);
+            var manager = await this.UserManager.GetUserAsync(User);
 
-            await this.managerIssues.ApproveAsync(managerId, id);
+            var canApprove = await this.managerIssues.ApproveAsync(manager, id);
+            if (!canApprove)
+            {
+                return this.RedirectToAction(nameof(Index)).WithDanger("", CantApproveIssueForAnotherRegion);
+            }
 
             return this.RedirectToAction(nameof(Index)).WithSuccess("", IssueApprovedSuccess);
         }
 
         private void SetModelSelectListItems(UrbanIssueEditServiceViewModel model)
         {
-            model.Regions = Enum.
-                GetNames(typeof(RegionType))
+            model.Regions = Enum.GetNames(typeof(RegionType))
                 .Select(r => new SelectListItem
                 {
                     Text = r,
                     Value = r
                 }).ToList();
 
-            model.IssueTypes = Enum
-                .GetNames(typeof(IssueType))
+            model.IssueTypes = Enum.GetNames(typeof(IssueType))
                 .Select(i => new SelectListItem
                 {
                     Text = (Enum.Parse<IssueType>(i)).ToFriendlyName(),

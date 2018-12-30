@@ -7,8 +7,8 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using Utilities;
     using UrbanSolution.Models;
+    using static Utilities.ServiceConstants;
 
     public class IssueService : IIssueService
     {
@@ -19,13 +19,14 @@
             this.db = db;
         }
 
-        public async Task<IEnumerable<UrbanIssuesListingServiceModel>> AllAsync(bool isApproved, int page = 1)
+        public async Task<IEnumerable<UrbanIssuesListingServiceModel>> AllAsync(
+            bool isApproved, int page = 1)
         {
             var issues = await this.db
                 .UrbanIssues.Where(i => i.IsApproved == isApproved)
                 .OrderByDescending(i => i.PublishedOn)
-                .Skip((page - 1) * ServiceConstants.IssuesPageSize)
-                .Take(count: ServiceConstants.IssuesPageSize)
+                .Skip((page - 1) * IssuesPageSize)
+                .Take(count: IssuesPageSize)
                 .To<UrbanIssuesListingServiceModel>()
                 .ToListAsync();
 
@@ -54,9 +55,10 @@
         public async Task<IEnumerable<IssueMapInfoBoxDetailsServiceModel>> AllMapInfoDetailsAsync(
             bool areApproved, RegionType? region)                                   
         {
-            bool takeAllRegions = region == null;
+            bool takeAllRegions = region == RegionType.All;
 
-            var issues = this.db.UrbanIssues.Where(i => i.IsApproved == areApproved);
+            var issues = this.db.UrbanIssues
+                .Where(i => i.IsApproved == areApproved);
 
             if (!takeAllRegions)
             {

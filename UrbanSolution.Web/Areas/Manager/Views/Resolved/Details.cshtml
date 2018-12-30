@@ -1,0 +1,43 @@
+﻿@model ResolvedDetailsServiceModel
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div row class="text-info">
+    <h3 class="text-center">@this.ViewData["Title"]</h3>
+    <hr />
+</div>
+
+<div class="row">
+
+    <div class="col-md-8 text-center">
+        <div>
+            <a class="btn btn-primary left">Now</a> 
+            <a class="btn btn-primary right">Than</a>
+        </div>
+        <br/>
+        <div class="slick-fade picture-listing" id="wrapper">
+            <div><img src="@Model.ResolvedPictureUrl"></div>
+            <div><img src="@Model.IssuePictureUrl"></div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        @if ((string) ViewData[WebConstants.ViewDataManagerId] == Model.PublisherId)
+        {          
+            @await Html.PartialAsync("_IssueViewButtonsForDeleteAndEdit", Model.Id)                      
+        }
+        <h4>Published by <em class="text-info">@Model.PublisherUserName</em></h4>
+        <h4>on <em class="text-info">@Model.ResolvedOn.ToShortDateString()</em></h4>
+        <h4>
+            <em>@Model.Description</em>
+        </h4>
+    </div>
+
+</div>
+
+@section Scripts
+{
+    <partial name="_SlickCarouselScriptPartial" />
+}
+

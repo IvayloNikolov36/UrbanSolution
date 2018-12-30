@@ -7,6 +7,7 @@
         South = 3,
         Eastern = 4,
         Western = 5,
-        Thracia = 6
+        Thracia = 6,
+        All = 7
     }
 }

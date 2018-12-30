@@ -162,12 +162,6 @@
                     streetName = place.name.trim();
                     var pointInfo = place.formatted_address.split(",");
                     town = pointInfo[2].trim();
-                    //if (pointInfo[1].indexOf(" g.k. ") !== -1) {
-                    //    neighbourhood = pointInfo[1].split(/\s+g\.k\.\s+/)[1];
-                    //} else {
-                    //    neighbourhood = pointInfo[1];
-                    //}                   
-                    //console.log(neighbourhood);
              
                     infowindowContent.children['place-name'].textContent = place.name;
                     infowindowContent.children['place-id'].textContent = place.place_id;

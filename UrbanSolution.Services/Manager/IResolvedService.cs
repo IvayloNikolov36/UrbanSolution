@@ -1,8 +1,6 @@
-﻿
-namespace UrbanSolution.Services.Manager
+﻿namespace UrbanSolution.Services.Manager
 {
     using Microsoft.AspNetCore.Http;
-    using Models;
     using System.Threading.Tasks;
 
     public interface IResolvedService
@@ -11,8 +9,9 @@ namespace UrbanSolution.Services.Manager
 
         Task<bool> DeleteAsync(string managerId, int resolvedId);
 
-        Task<ResolvedIssueEditServiceModel> GetAsync(int id);
+        Task<TModel> GetAsync<TModel>(int id);
 
         Task<bool> UpdateAsync(string managerId, int id, string description, IFormFile pictureFile);
+
     }
 }

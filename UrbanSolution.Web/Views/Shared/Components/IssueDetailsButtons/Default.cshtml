@@ -1,0 +1,16 @@
+﻿
+@if (Model.HasResolved)
+{
+    //TODO: make tagHelper
+    <a class="btn btn-primary" asp-area="Manager" asp-controller="Resolved" asp-action="Details"
+       asp-route-id="@Model.ResolvedId">
+        View Resolved
+    </a>
+}
+
+@*user ManagedRegion is not null*@
+
+@if (!string.IsNullOrEmpty((string)ViewData[WebConstants.ViewDataManagerRegionKey]))
+{
+    @await Html.PartialAsync("_UrbanIssueButtonsForAllManagerActions", Model, null)
+}

@@ -1,21 +1,18 @@
-﻿
-
-namespace UrbanSolution.Web.Areas.Manager.Controllers
+﻿namespace UrbanSolution.Web.Areas.Manager.Controllers
 {
-    using Infrastructure.Extensions;
+    using Infrastructure.Filters;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using System.Threading.Tasks;
     using UrbanSolution.Models;
     using UrbanSolution.Services.Manager;
-    using static Infrastructure.WebConstants;
 
     public class ActivityController : BaseController
     {
         private readonly IManagerActivityService activity;
 
-        public ActivityController(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IManagerActivityService activity) 
-            : base(userManager, roleManager)
+        public ActivityController(UserManager<User> userManager, IManagerActivityService activity) 
+            : base(userManager)
         {
             this.activity = activity;
         }
@@ -29,16 +26,10 @@ namespace UrbanSolution.Web.Areas.Manager.Controllers
             return this.View(managerActivity);
         }
 
+        [Route("All")]
+        [ServiceFilter(typeof(ValidateManagerIsMainManagerAttribute))]
         public async Task<IActionResult> AllManagersActivity()
-        {       
-            //TODO: make it filter
-            var username = this.UserManager.GetUserName(this.User);
-
-            if (username != ManagerUserName)
-            {
-                return this.RedirectToAction("Index", "Home").WithDanger(NotAuthorized, CantViewManagersActivity);
-            }
-            
+        {                   
             var managerActivity = await this.activity.AllAsync();
 
             return this.View(managerActivity);

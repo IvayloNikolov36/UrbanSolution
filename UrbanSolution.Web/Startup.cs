@@ -1,23 +1,23 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.EntityFrameworkCore;
-using UrbanSolution.Data;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using UrbanSolution.Models;
-using UrbanSolution.Services.Mapping;
-using UrbanSolution.Services.Models;
-using UrbanSolution.Web.Areas.Admin.Models;
-using UrbanSolution.Web.Infrastructure.Extensions;
-using UrbanSolution.Web.Infrastructure.Filters;
-
-namespace UrbanSolution.Web
+﻿namespace UrbanSolution.Web
 {
+    using Data;
+    using Infrastructure.Extensions;
+    using Infrastructure.Filters;
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Routing;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
+    using Services.Mapping;
+    using UrbanSolution.Models;
+    using UrbanSolution.Services.Models;
+    using UrbanSolution.Web.Areas.Admin.Models;
+    
+
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -30,12 +30,9 @@ namespace UrbanSolution.Web
         public void ConfigureServices(IServiceCollection services)
         {
 
-            //services.AddCors();
-
             AutoMapperConfig.RegisterMappings(
                 typeof(AdminUsersListingViewModel).Assembly,
-                typeof(UrbanIssueDetailsServiceModel).Assembly
-                );
+                typeof(UrbanIssueDetailsServiceModel).Assembly);
 
             services.Configure<CookiePolicyOptions>(options =>
             {               
@@ -44,8 +41,7 @@ namespace UrbanSolution.Web
             });
 
             services.AddDbContext<UrbanSolutionDbContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddIdentity<User, IdentityRole>()
                 .AddDefaultUI()
@@ -63,21 +59,24 @@ namespace UrbanSolution.Web
                     RequireUppercase = true,
                     RequireNonAlphanumeric = false
                 };
-                //options.SignIn.RequireConfirmedEmail = true;
             });
 
             services.AddDomainServices();
 
             services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
 
-            services.AddMvc()
+            services.AddMvc(options =>
+                {
+                    options.Filters.Add<AutoValidateAntiforgeryTokenAttribute>();
+                })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddTransient<ValidateIssueIdExistsAttribute>();
-            services.TryAddTransient<ValidateIssueAndManagerRegionsAreaEqualAttribute>();
+            services.AddTransient<ValidateIssueAndManagerRegionsAreaEqualAttribute>();
+            services.AddTransient<ValidateManagerIsMainManagerAttribute>();
+            services.AddTransient<ValidateUserAndRoleExistsAttribute>();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(
             IApplicationBuilder app, 
             IHostingEnvironment env, 

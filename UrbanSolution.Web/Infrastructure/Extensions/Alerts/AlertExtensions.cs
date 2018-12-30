@@ -1,8 +1,8 @@
 ﻿namespace UrbanSolution.Web.Infrastructure.Extensions
 {
+    using Alerts;
     using Microsoft.AspNetCore.Mvc;
-    using UrbanSolution.Web.Infrastructure.Extensions.Alerts;
-
+    
     public static class AlertExtensions
     {
         public static IActionResult WithSuccess(this IActionResult result, string title, string body)

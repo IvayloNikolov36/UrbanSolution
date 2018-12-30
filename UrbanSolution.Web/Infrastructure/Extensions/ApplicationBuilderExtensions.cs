@@ -10,7 +10,6 @@
 
     public static class ApplicationBuilderExtensions
     {
-
         private static readonly IdentityRole[] roles =
         {
             new IdentityRole(AdminRole),
@@ -57,6 +56,11 @@
                     FullName = fullName,
                     Age = age
                 };
+
+                if (role == ManagerRole)
+                {
+                    user.ManagedRegion = RegionType.All;
+                }
 
                 await userManager.CreateAsync(user, defaultPassword);
                 await userManager.AddToRoleAsync(user, role);

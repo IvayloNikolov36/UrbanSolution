@@ -1,5 +1,4 @@
-﻿
-namespace UrbanSolution.Web.Areas.Manager.Controllers
+﻿namespace UrbanSolution.Web.Areas.Manager.Controllers
 {
     using Infrastructure;
     using Microsoft.AspNetCore.Authorization;
@@ -11,15 +10,12 @@ namespace UrbanSolution.Web.Areas.Manager.Controllers
     [Authorize(Roles = WebConstants.ManagerRole)]
     public class BaseController : Controller
     {
-        protected BaseController(UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
+        protected BaseController(UserManager<User> userManager)
         {
             this.UserManager = userManager;
-            this.RoleManager = roleManager;
         }
 
         protected UserManager<User> UserManager { get; }
-
-        protected RoleManager<IdentityRole> RoleManager { get; }
 
     }
 }

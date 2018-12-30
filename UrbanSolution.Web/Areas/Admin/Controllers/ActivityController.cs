@@ -1,5 +1,4 @@
-﻿
-namespace UrbanSolution.Web.Areas.Admin.Controllers
+﻿namespace UrbanSolution.Web.Areas.Admin.Controllers
 {
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;

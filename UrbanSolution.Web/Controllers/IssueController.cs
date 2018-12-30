@@ -1,23 +1,25 @@
-﻿
-using UrbanSolution.Web.Infrastructure;
-using UrbanSolution.Web.Infrastructure.Extensions;
-
-namespace UrbanSolution.Web.Controllers
+﻿namespace UrbanSolution.Web.Controllers
 {
+    using Infrastructure;
+    using Infrastructure.Extensions;
+    using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Models;
     using Services;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using UrbanSolution.Models;
     using UrbanSolution.Services.Models;
 
     public class IssueController : Controller
     {
+        private readonly UserManager<User> userManager;
         private readonly IIssueService issues;
 
-        public IssueController(IIssueService issues)
+        public IssueController(IIssueService issues, UserManager<User> userManager)
         {
             this.issues = issues;
+            this.userManager = userManager;
         }
 
         public async Task<IActionResult> Index(int page = 1)
@@ -28,9 +30,16 @@ namespace UrbanSolution.Web.Controllers
 
             return this.View(model);
         }
-
+        
         public async Task<IActionResult> Details(int id)
-        {
+        {            
+            if(this.User.IsInRole(WebConstants.ManagerRole))
+            {
+                var user = await this.userManager.GetUserAsync(this.User);
+
+                this.ViewData[WebConstants.ViewDataManagerRegionKey] = user.ManagedRegion?.ToString();
+            }
+
             var issueModel = await this.issues.GetAsync<UrbanIssueDetailsServiceModel>(id);
 
             if (issueModel == null)

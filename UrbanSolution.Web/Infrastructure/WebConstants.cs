@@ -9,8 +9,8 @@
 
         public const string AdminRole = "Administrator";
         public const string ManagerRole = "Manager";
-        public const string BlogAuthorRole = "BlogAuthor";
-        public const string EventCreatorRole = "EventCreator";
+        public const string BlogAuthorRole = "Blog Author";
+        public const string EventCreatorRole = "Event Creator";
 
         public const string AdminUserName = "administrator";
         public const string ManagerUserName = "manager";
@@ -57,14 +57,12 @@
         public const string IssueUpdateSuccess = "Successfully updated issue.";
         public const string IssueDeleteSuccess = "Successfully deleted issue.";
         public const string IssueNotFound = "Issue with this id can't be found!";
-        public const string CantChangeIssue = "You do not have permissions to this issue!";
-
+        
+        //ViewDataKeys
         public const string ViewDataIssueId = "issueId";
-        public const string ViewDataUserId = "userId";
         public const string ViewDataManagerId = "managerId";
-        public const string ViewDateTitle = "title";
-        public const string ViewDateApprovedIssuesTitle = "Approved issues";
-        public const string ViewDateResolvedIssuesTitle = "Resolved issues";
+        public const string ViewDataManagerRegionKey = "ManagerRegionKey";
+        public const string ViewDataUsernameKey = "username";
 
         public const string EventCreationSuccess = "Event successfylly created.";
 
@@ -82,8 +80,8 @@
 
         public const string NoIssuesToShow = "There is no issues to show";
 
-
         //Google Map Regions Coordinates
+        public const double ZoomMapIssueDetails = 17;
 
         public const double CenterRegLat = 42.14431437;
         public const double CenterRegLong = 24.74481583;
@@ -117,5 +115,16 @@
         public const string CantViewManagersActivity = "You can't view other managers activity!";
         public const string CantEditResolved = "You can't edit resolved issue, published by another manager!";
         public const string CantDeleteResolved = "You can't delete resolved issue, published by another manager!";
+        public const string CantDeleteIssueForAnotherRegion = "You cant delete an issue which is for another region!";
+        public const string CantChangeIssue = "You can't approve, delete or edit issue from another region!";
+        public const string CantApproveIssueForAnotherRegion = "You can't approve issue for another region!";
+        public const string CantEditIssueForAnotherRegion = "You can't edit issue for another region!";
+
+        public const string InvalidIdentityDetails = "Invalid identity details";
+
+        //View Component
+        public const string ViewComponentDynamicMenuName = "DynamicMenu";
+        public const string ViewComponentIssueDetailsButtonsName = "IssueDetailsButtons";
+        public const string ViewComponentUrbanIssuesMapWithMarkersName = "UrbanIssuesMapWithMarkers";
     }
 }

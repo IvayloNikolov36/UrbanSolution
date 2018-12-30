@@ -1,5 +1,4 @@
-﻿using UrbanSolution.Services;
-
+﻿using UrbanSolution.Web.Infrastructure.Filters;
 
 namespace UrbanSolution.Web.Areas.Manager.Controllers
 {
@@ -8,36 +7,33 @@ namespace UrbanSolution.Web.Areas.Manager.Controllers
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Models;
-    using System.Threading.Tasks;
     using UrbanSolution.Models;
     using UrbanSolution.Services.Manager;
     using UrbanSolution.Services.Manager.Models;
+    using Microsoft.AspNetCore.Authorization;
+    using System.Threading.Tasks;
+    using UrbanSolution.Services.Models;
     using static Infrastructure.WebConstants;
 
     public class ResolvedController : BaseController
     {
         private readonly IResolvedService resolvedService;
-        private readonly IPictureService pictureService;
 
-        public ResolvedController(
-            UserManager<User> userManager, 
-            RoleManager<IdentityRole> roleManager,            
-            IResolvedService resolvedService,
-            IPictureService pictureService) 
-            : base(userManager, roleManager)
+        public ResolvedController(UserManager<User> userManager, IResolvedService resolvedService) 
+            : base(userManager)
         {
             this.resolvedService = resolvedService;
-            this.pictureService = pictureService;
         }
 
         public IActionResult Upload(int id)
         {
-            this.ViewData[WebConstants.ViewDataIssueId] = id; //TODO: ???
+            this.ViewData[ViewDataIssueId] = id;
 
             return View();
         }
 
         [HttpPost]
+        [ValidateModelState]
         public async Task<IActionResult> Upload(ResolvedIssueUploadModel model)
         {
             if (!ModelState.IsValid)
@@ -50,13 +46,13 @@ namespace UrbanSolution.Web.Areas.Manager.Controllers
             var resolvedId = await this.resolvedService
                 .UploadAsync(managerId, model.UrbanIssueId, model.PictureFile, model.Description);
 
-            return this.RedirectToAction("Details", "Resolved", new { id = resolvedId, area = "" })
+            return this.RedirectToAction("Details", "Resolved", new { id = resolvedId, area = "Manager" })
                 .WithSuccess("", ResolvedUploaded);
         }
 
         public async Task<IActionResult> Edit(int id)
         {
-            var resolvedToEdit = await this.resolvedService.GetAsync(id);
+            var resolvedToEdit = await this.resolvedService.GetAsync<ResolvedIssueEditServiceModel>(id);
 
             return this.View(resolvedToEdit);
         }
@@ -75,15 +71,14 @@ namespace UrbanSolution.Web.Areas.Manager.Controllers
 
             if (!isCompleted) // the manager is not the same manager who is published the resolved issue.
             {
-                return this.RedirectToAction("Details", "Resolved", new { id, area = "" })
+                return this.RedirectToAction("Details", "Resolved", new { id, area = "Manager" })
                     .WithDanger(NotAuthorized, CantEditResolved);
             }
 
-            return this.RedirectToAction("Details", "Resolved", new { id, area= "" })
+            return this.RedirectToAction("Details", "Resolved", new { id, area= "Manager" })
                 .WithSuccess("", ResolvedUpdated);
         }
 
-        [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
             var managerId = this.UserManager.GetUserId(User);
@@ -92,7 +87,7 @@ namespace UrbanSolution.Web.Areas.Manager.Controllers
 
             if (!canDelete)
             {
-                return this.RedirectToAction("Index", "UrbanIssue", new { area = "Manager" })
+                return this.RedirectToAction("Index", "Home")
                     .WithDanger(NotAuthorized, CantDeleteResolved);
             }
                 
@@ -100,5 +95,20 @@ namespace UrbanSolution.Web.Areas.Manager.Controllers
                     .WithSuccess("", ResolvedDeleted);
         }
 
+        [AllowAnonymous]
+        public async Task<IActionResult> Details(int id)
+        {
+            var detailsModel = await this.resolvedService
+                .GetAsync<ResolvedDetailsServiceModel>(id);           
+
+            if (detailsModel == null)
+            {
+                return this.RedirectToAction("Index", "UrbanIssue").WithDanger("", WebConstants.NoResolvedFound);
+            }
+
+            this.ViewData[ViewDataManagerId] = this.UserManager.GetUserId(this.User);
+
+            return this.View(detailsModel);
+        }
     }
 }

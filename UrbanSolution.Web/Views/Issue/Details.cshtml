@@ -1,76 +1,58 @@
-﻿@using UrbanSolution.Web.Infrastructure.Extensions
-@model UrbanIssueDetailsServiceModel
+﻿@model UrbanIssueDetailsServiceModel
 
 @inject IConfiguration Configuration
 @{
-    ViewData["Title"] = $"Details for {Model.Title}";
+    ViewData["Title"] = $@"Details for issue ""{Model.Title}""";
     var apiKey = Configuration.GetSection("Google:MapsApiKey").Value;    //TODO: remove after partial/component
 }
 
 <div row class="text-info">
     <h3 class="text-center">@this.ViewData["Title"]</h3>
-    <hr />
+    <br />
 </div>
 
 <div class="row">
-    <div class="form-group col-xs-6">
+    <div class="form-group col-md-5">
         <div class="row">
-            <h3>Published by <em>@Model.Publisher</em> on <em>@Model.PublishedOn.ToShortDateString()</em></h3>
-            <h3>@Model.Description</h3>
-            <h3>@Model.Address</h3>
-            <h3>Type: @Model.Type.ToFriendlyName()</h3>
-            <h3>Region: @Model.Region</h3>
+            <h4>
+                Published by <em class="text-info">@Model.Publisher</em> on
+                <em class="text-info">@Model.PublishedOn.ToShortDateString()</em>
+            </h4>
+            <h4>Address: <em class="text-info">@Model.AddressStreet</em></h4>
+            <div>
+                <h4>
+                    Type: <em class="text-info">@Model.Type.ToFriendlyName()</em>,
+                    Region: <em class="text-info">@Model.Region</em>
+                </h4>
+            </div>
+            
+            @* Buttons for approve/delete/edit... *@
+            @await Component.InvokeAsync("IssueDetailsButtons")
 
-            @if(Model.IsApproved && !Model.HasResolved)
-            {
-                <a class="btn btn-primary" asp-area="Manager" asp-controller="Resolved" asp-action="Upload" asp-route-id="@Model.Id">
-                    Upload Resolved
-                </a>
-            }
-            @if (Model.HasResolved)
-            {
-                 <a class="btn btn-primary" asp-area="" asp-controller="Resolved" asp-action="Details" asp-route-id="@Model.ResolvedId">View Resolved</a> 
-            }
-
-
-            @if (this.User.IsInRole(WebConstants.ManagerRole))
-            {
-                if (!Model.IsApproved)
-                {
-                    <a class="btn btn-primary" asp-area="Manager" asp-controller="UrbanIssue" asp-action="Approve" asp-route-id="@Model.Id">Approve</a>
-                }
-
-                if (!Model.HasResolved)
-                {
-                    <a class="btn btn-primary"  asp-area="Manager" asp-controller="UrbanIssue" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
-                    <a class="btn btn-danger"  asp-area="Manager" asp-controller="UrbanIssue" asp-action="Delete" asp-route-id=" @Model.Id">Delete</a>
-                }                
-            }
+            <h3><em>@Model.Description</em></h3>
         </div>
     </div>
-    <div class="form-group col-xs-6">
+    <div class="form-group col-md-5 col-md-offset-1">
         <div class="row">
             <div id="map" style="height: 400px; width: 600px;">
-                @*TODO/ make editor template for map*@
+                @*TODO/ make template for map*@
             </div>
-        </div>
+        </div>                      
+        
     </div>
 </div>
 
 
 @section Scripts {
-  
+
     <script>
-        var map;
         function initMap() {
             var myLatLng = { lat: @(Model.Latitude), lng: @(Model.Longitude) };
-            var mapOptions = { zoom: 17, center: myLatLng }
-            map = new google.maps.Map(document.getElementById('map'), mapOptions);
+            var mapOptions = { zoom: @(WebConstants.ZoomMapIssueDetails), center: myLatLng }
+            var map = new google.maps.Map(document.getElementById('map'), mapOptions);
             var marker = new google.maps.Marker({ position: myLatLng, map: map });
         }
     </script>
 
-    <script src="https://maps.googleapis.com/maps/api/js?key=@(apiKey)&callback=initMap"
-            async defer>
-    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=@(apiKey)&callback=initMap" async defer></script>
 }

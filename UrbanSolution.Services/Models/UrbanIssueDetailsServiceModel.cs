@@ -24,7 +24,7 @@ namespace UrbanSolution.Services.Models
 
         public IssueType Type { get; set; }
 
-        public string Address { get; set; }
+        public string AddressStreet { get; set; }
 
         public bool IsApproved { get; set; }
 

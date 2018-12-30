@@ -1,4 +1,6 @@
 ﻿
+using UrbanSolution.Services.Models;
+
 namespace UrbanSolution.Services.Manager.Implementations
 {
     using Data;
@@ -52,7 +54,10 @@ namespace UrbanSolution.Services.Manager.Implementations
 
         public async Task<bool> DeleteAsync(string managerId, int resolvedId)
         {
-            var resolvedIssue = await this.db.ResolvedIssues.Include(r => r.UrbanIssue).FirstOrDefaultAsync(r => r.Id == resolvedId);
+            var resolvedIssue = await this.db
+                .ResolvedIssues
+                .Include(r => r.UrbanIssue)
+                .FirstOrDefaultAsync(r => r.Id == resolvedId);
 
             var publisherId = resolvedIssue.PublisherId;
 
@@ -79,9 +84,13 @@ namespace UrbanSolution.Services.Manager.Implementations
             return true;
         }
 
-        public async Task<ResolvedIssueEditServiceModel> GetAsync(int id)
+        public async Task<TModel> GetAsync<TModel>(int id)
         {
-            var resolvedModel = await this.db.ResolvedIssues.Where(r => r.Id == id).To<ResolvedIssueEditServiceModel>().FirstOrDefaultAsync();
+            var resolvedModel = await this.db.
+                ResolvedIssues
+                .Where(r => r.Id == id)
+                .To<TModel>()
+                .FirstOrDefaultAsync();
 
             return resolvedModel;
         }
@@ -116,5 +125,7 @@ namespace UrbanSolution.Services.Manager.Implementations
 
             return true;
         }
+
+        
     }
 }

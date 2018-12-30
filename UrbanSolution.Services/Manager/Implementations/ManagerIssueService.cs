@@ -1,6 +1,4 @@
-﻿using UrbanSolution.Models.Enums;
-
-namespace UrbanSolution.Services.Manager.Implementations
+﻿namespace UrbanSolution.Services.Manager.Implementations
 {
     using Data;
     using Mapping;
@@ -10,6 +8,7 @@ namespace UrbanSolution.Services.Manager.Implementations
     using System.Linq;
     using System.Threading.Tasks;
     using UrbanSolution.Models;
+    using UrbanSolution.Models.Enums;
     using UrbanSolution.Services.Models;
 
     public class ManagerIssueService : IManagerIssueService
@@ -18,31 +17,48 @@ namespace UrbanSolution.Services.Manager.Implementations
         private readonly IPictureService pictureService;
         private readonly IManagerActivityService activity;
 
-        public ManagerIssueService(UrbanSolutionDbContext db, IPictureService pictureService, IManagerActivityService activity)
+        public ManagerIssueService(
+            UrbanSolutionDbContext db, 
+            IPictureService pictureService, 
+            IManagerActivityService activity)
         {
             this.db = db;
             this.pictureService = pictureService;
             this.activity = activity;
         }
 
-        public async Task UpdateAsync(string managerId, int id, string title, string description, RegionType region, IssueType type, string street)
+        public async Task<bool> UpdateAsync(
+            User manager, int id, string title, string description, 
+            RegionType region, IssueType type, string street)
         {
-            var issue = await this.db
+            var issueToUpdate = await this.db
                 .FindAsync<UrbanIssue>(id);
 
-            issue.Title = title;
-            issue.Description = description;
-            issue.Region = region;
-            issue.Type = type;
+            if (issueToUpdate.Region != manager.ManagedRegion)
+            {
+                return false;
+            }
+
+            issueToUpdate.Title = title;
+            issueToUpdate.Description = description;
+            issueToUpdate.Region = region;
+            issueToUpdate.Type = type;
 
             await this.db.SaveChangesAsync();
 
-            await this.activity.WriteManagerLogInfoAsync(managerId, ManagerActivityType.EditedIssue);
+            await this.activity.WriteManagerLogInfoAsync(manager.Id, ManagerActivityType.EditedIssue);
+
+            return true;
         }
 
-        public async Task DeleteAsync(string managerId, int issueId)
+        public async Task<bool> DeleteAsync(User manager, int issueId)
         {
             var issueToDelete = await this.db.FindAsync<UrbanIssue>(issueId);
+
+            if (issueToDelete.Region != manager.ManagedRegion)
+            {
+                return false;
+            }
 
             var pictureId = issueToDelete.CloudinaryImageId;
 
@@ -51,26 +67,38 @@ namespace UrbanSolution.Services.Manager.Implementations
 
             await this.db.SaveChangesAsync();
 
-            await this.activity.WriteManagerLogInfoAsync(managerId, ManagerActivityType.DeletedIssue);
+            await this.activity.WriteManagerLogInfoAsync(manager.Id, ManagerActivityType.DeletedIssue);
 
             await this.pictureService.DeleteImageAsync(pictureId);
 
+            return true;
         }
 
-        public async Task ApproveAsync(string managerId, int issueId)
+        public async Task<bool> ApproveAsync(User manager, int issueId)
         {
-            var issueFromDb = await this.db.FindAsync<UrbanIssue>(issueId);
+            var issueToApprove = await this.db.FindAsync<UrbanIssue>(issueId);
 
-            issueFromDb.IsApproved = true;
+            if (issueToApprove.Region != RegionType.All)
+            {
+                if (issueToApprove.Region != manager.ManagedRegion)
+                {
+                    return false;
+                }
+            }
+            
+            issueToApprove.IsApproved = true;
 
             await this.db.SaveChangesAsync();
 
-            await this.activity.WriteManagerLogInfoAsync(managerId, ManagerActivityType.ApprovedIssue);
+            await this.activity.WriteManagerLogInfoAsync(manager.Id, ManagerActivityType.ApprovedIssue);
+
+            return true;
         }
 
-        public async Task<IEnumerable<UrbanIssuesListingServiceModel>> AllAsync(bool isApproved, RegionType? region)
+        public async Task<IEnumerable<UrbanIssuesListingServiceModel>> AllAsync(
+            bool isApproved, RegionType? region)
         {
-            bool takeAllRegions = region == null;
+            bool takeAllRegions = region == RegionType.All;
 
             var issues = this.db
                 .UrbanIssues
@@ -97,7 +125,6 @@ namespace UrbanSolution.Services.Manager.Implementations
 
             return issueModel;
         }
-
 
         public async Task<bool> ExistsAsync(int issueId)
         {

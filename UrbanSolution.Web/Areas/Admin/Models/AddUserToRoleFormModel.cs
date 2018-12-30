@@ -1,7 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
-
+﻿
 namespace UrbanSolution.Web.Areas.Admin.Models
 {
+    using System.ComponentModel.DataAnnotations;
+
     public class UserToRoleFormModel
     {
         [Required]
