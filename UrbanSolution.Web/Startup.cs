@@ -2,7 +2,6 @@
 {
     using Data;
     using Infrastructure.Extensions;
-    using Infrastructure.Filters;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Hosting;
@@ -69,12 +68,7 @@
                 {
                     options.Filters.Add<AutoValidateAntiforgeryTokenAttribute>();
                 })
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
-            services.AddTransient<ValidateIssueIdExistsAttribute>();
-            services.AddTransient<ValidateIssueAndManagerRegionsAreaEqualAttribute>();
-            services.AddTransient<ValidateManagerIsMainManagerAttribute>();
-            services.AddTransient<ValidateUserAndRoleExistsAttribute>();
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);            
         }
 
         public void Configure(

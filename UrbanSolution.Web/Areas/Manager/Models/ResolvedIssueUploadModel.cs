@@ -1,7 +1,7 @@
 ﻿namespace UrbanSolution.Web.Areas.Manager.Models
 {
-    using Infrastructure;
     using Microsoft.AspNetCore.Http;
+    using Services.Utilities;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using UrbanSolution.Models.Utilities;
@@ -21,7 +21,7 @@
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {            
             if (!this.PictureFile.FileName.EndsWith(".jpg")
-                || PictureFile.Length > WebConstants.PictureUploadFileLength)
+                || PictureFile.Length > ServiceConstants.PictureUploadFileLength)
             {
                 yield return new ValidationResult("Your file submission should be a '.jpg' file with no more than 5.5mb size");
             }

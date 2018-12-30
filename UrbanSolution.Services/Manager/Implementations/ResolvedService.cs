@@ -1,13 +1,9 @@
-﻿
-using UrbanSolution.Services.Models;
-
-namespace UrbanSolution.Services.Manager.Implementations
+﻿namespace UrbanSolution.Services.Manager.Implementations
 {
     using Data;
     using Mapping;
     using Microsoft.AspNetCore.Http;
     using Microsoft.EntityFrameworkCore;
-    using Models;
     using System;
     using System.Linq;
     using System.Threading.Tasks;
@@ -21,7 +17,11 @@ namespace UrbanSolution.Services.Manager.Implementations
         private readonly IPictureService pictureService;
         private readonly IManagerActivityService activity;
 
-        public ResolvedService(UrbanSolutionDbContext db, IManagerIssueService issues, IPictureService pictureService, IManagerActivityService activity)
+        public ResolvedService(
+            UrbanSolutionDbContext db, 
+            IManagerIssueService issues, 
+            IPictureService pictureService, 
+            IManagerActivityService activity)
         {
             this.db = db;
             this.issues = issues;
@@ -29,7 +29,8 @@ namespace UrbanSolution.Services.Manager.Implementations
             this.activity = activity;
         }
 
-        public async Task<int> UploadAsync(string managerId, int issueId, IFormFile pictureFile, string description)
+        public async Task<int> UploadAsync(
+            string managerId, int issueId, IFormFile pictureFile, string description)
         {
             var picId = await this.pictureService.UploadImageAsync(managerId, pictureFile);
 
@@ -77,7 +78,7 @@ namespace UrbanSolution.Services.Manager.Implementations
 
             await this.db.SaveChangesAsync();
 
-            await this.pictureService.DeleteImageAsync(pictureId); //removes the picture from cloudinary and pictureInfo from DB (!!!Should be after removing resolvedIssue - DbUdateException inache hvarlq)
+            await this.pictureService.DeleteImageAsync(pictureId); //removes the picture from cloudinary and pictureInfo from DB 
 
             await this.activity.WriteManagerLogInfoAsync(managerId, ManagerActivityType.RemovedResolved);
 
@@ -125,7 +126,6 @@ namespace UrbanSolution.Services.Manager.Implementations
 
             return true;
         }
-
         
     }
 }

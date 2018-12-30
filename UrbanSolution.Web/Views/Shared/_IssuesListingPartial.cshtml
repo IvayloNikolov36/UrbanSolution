@@ -9,10 +9,12 @@
     };
 }
 
+@* When issues are listed in carousel (New Issues page) *@
 @if (Model.UseCarousel)
 {
     @Html.DisplayFor(m => m.Issues)
 }
+@* When issues are listed normally (Approved Issues page) *@
 else
 {
     <div class="row">
@@ -24,8 +26,7 @@ else
     </div>
 
     //show paging
-
-    if(Model.TotalIssues > Model.Issues.Count())
+    if (Model.TotalIssues > Model.Issues.Count())
     {
         @await Html.PartialAsync("_PagingPartial", pagesModel)
     }

@@ -75,9 +75,6 @@
         public const string NoAddressSet =
             "No address is set! Please, Find the place on the map and press Get Address button";
 
-        public const int PictureUploadFileLength = 5500000;
-
-
         public const string NoIssuesToShow = "There is no issues to show";
 
         //Google Map Regions Coordinates
@@ -126,5 +123,6 @@
         public const string ViewComponentDynamicMenuName = "DynamicMenu";
         public const string ViewComponentIssueDetailsButtonsName = "IssueDetailsButtons";
         public const string ViewComponentUrbanIssuesMapWithMarkersName = "UrbanIssuesMapWithMarkers";
+
     }
 }

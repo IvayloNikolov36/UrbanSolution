@@ -1,9 +1,8 @@
-﻿using UrbanSolution.Web.Infrastructure.Filters;
-
-namespace UrbanSolution.Web.Areas.Manager.Controllers
+﻿namespace UrbanSolution.Web.Areas.Manager.Controllers
 {
     using Infrastructure;
     using Infrastructure.Extensions;
+    using Infrastructure.Filters;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Models;
@@ -14,7 +13,7 @@ namespace UrbanSolution.Web.Areas.Manager.Controllers
     using System.Threading.Tasks;
     using UrbanSolution.Services.Models;
     using static Infrastructure.WebConstants;
-
+    
     public class ResolvedController : BaseController
     {
         private readonly IResolvedService resolvedService;
@@ -27,7 +26,7 @@ namespace UrbanSolution.Web.Areas.Manager.Controllers
 
         public IActionResult Upload(int id)
         {
-            this.ViewData[ViewDataIssueId] = id;
+            this.ViewData[ViewDataIssueId] = id; // resolved issue needs urbanIssueId for reference
 
             return View();
         }
@@ -36,11 +35,6 @@ namespace UrbanSolution.Web.Areas.Manager.Controllers
         [ValidateModelState]
         public async Task<IActionResult> Upload(ResolvedIssueUploadModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return this.View(model);
-            }
-           
             var managerId = this.UserManager.GetUserId(User);
 
             var resolvedId = await this.resolvedService

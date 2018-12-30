@@ -25,7 +25,14 @@
     <div class="col-md-4">
         @if ((string) ViewData[WebConstants.ViewDataManagerId] == Model.PublisherId)
         {          
-            @await Html.PartialAsync("_IssueViewButtonsForDeleteAndEdit", Model.Id)                      
+            <a asp-area="Manager" asp-controller="Resolved" asp-action="Edit" asp-route-id="@Model"
+               class="btn btn-warning">
+                Edit
+            </a>
+            <a asp-area="Manager" asp-controller="Resolved" asp-action="Delete" asp-route-id="@Model"
+               class="btn btn-danger">
+                Delete
+            </a>                      
         }
         <h4>Published by <em class="text-info">@Model.PublisherUserName</em></h4>
         <h4>on <em class="text-info">@Model.ResolvedOn.ToShortDateString()</em></h4>

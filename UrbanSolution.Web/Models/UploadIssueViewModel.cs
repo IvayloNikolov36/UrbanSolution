@@ -1,4 +1,6 @@
-﻿namespace UrbanSolution.Web.Models
+﻿using UrbanSolution.Services.Utilities;
+
+namespace UrbanSolution.Web.Models
 {
     using Infrastructure;
     using Microsoft.AspNetCore.Http;
@@ -49,10 +51,10 @@
                 yield return new ValidationResult($"The place should be in {WebConstants.CurrentTownEn}");
             }
 
-            if (!this.PictureFile.FileName.EndsWith(".jpg")
-                || PictureFile.Length > WebConstants.PictureUploadFileLength)
+            if (!this.PictureFile.FileName.EndsWith(ServiceConstants.PictureExtension)
+                || PictureFile.Length > ServiceConstants.PictureUploadFileLength)
             {
-                yield return new ValidationResult($"Your file submission should be a '.jpg' file with no more than 5.5mb size");
+                yield return new ValidationResult(ServiceConstants.MessageForImageUploadingRestrictions);
             }
         }
     }

@@ -50,7 +50,6 @@
 
         [HttpGet]
         [ServiceFilter(typeof(ValidateIssueIdExistsAttribute))]
-        [ServiceFilter(typeof(ValidateIssueAndManagerRegionsAreaEqualAttribute))]
         public async Task<IActionResult> Edit(int id)
         {
             var issue = await this.issues.GetAsync<UrbanIssueEditServiceViewModel>(id);
@@ -67,16 +66,16 @@
             {
                 this.SetModelSelectListItems(model);
 
-                return this.RedirectToAction(nameof(Edit), "UrbanIssue", new {id});
+                return this.View(model);
             }
 
             var manager = await this.UserManager.GetUserAsync(User);
 
-            var canUpdate = await this.managerIssues.UpdateAsync(
+            var isUpdated = await this.managerIssues.UpdateAsync(
                 manager, model.Id, model.Title, model.Description, 
-                model.Region, model.Type, model.AddressStreet);
+                model.Region, model.Type, model.AddressStreet, model.PictureFile);
 
-            if (!canUpdate)
+            if (!isUpdated)
             {
                 return this.RedirectToAction("Details", "Issue", new { id, Area = "" })
                     .WithDanger("", CantEditIssueForAnotherRegion);
@@ -88,14 +87,13 @@
 
         [HttpGet]
         [ServiceFilter(typeof(ValidateIssueIdExistsAttribute))]
-        //[ServiceFilter(typeof(ValidateIssueAndManagerRegionsAreaEqualAttribute))] -> checked in service
         public async Task<IActionResult> Delete(int id)
         {
             var manager = await this.UserManager.GetUserAsync(this.User);
 
-            var canDelete = await this.managerIssues.DeleteAsync(manager, id);
+            var isDeleted = await this.managerIssues.DeleteAsync(manager, id);
 
-            if (!canDelete)
+            if (!isDeleted)
             {
                 return this.RedirectToAction("Index", "UrbanIssue", new { Area = "Manager" })
                     .WithDanger("", CantDeleteIssueForAnotherRegion);
@@ -106,13 +104,12 @@
         }
 
         [ServiceFilter(typeof(ValidateIssueIdExistsAttribute))]
-        //[ServiceFilter(typeof(ValidateIssueAndManagerRegionsAreaEqualAttribute))]
         public async Task<IActionResult> Approve(int id)
         {
             var manager = await this.UserManager.GetUserAsync(User);
 
-            var canApprove = await this.managerIssues.ApproveAsync(manager, id);
-            if (!canApprove)
+            var isApproved = await this.managerIssues.ApproveAsync(manager, id);
+            if (!isApproved)
             {
                 return this.RedirectToAction(nameof(Index)).WithDanger("", CantApproveIssueForAnotherRegion);
             }

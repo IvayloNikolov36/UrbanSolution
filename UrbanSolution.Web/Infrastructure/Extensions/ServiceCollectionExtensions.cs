@@ -1,5 +1,6 @@
 ﻿namespace UrbanSolution.Web.Infrastructure.Extensions
 {
+    using Filters;
     using Microsoft.Extensions.DependencyInjection;
     using System.Linq;
     using System.Reflection;
@@ -21,6 +22,10 @@
                 })
                 .ToList()
                 .ForEach(s => services.AddScoped(s.Interface, s.Implementation));
+
+            services.AddTransient<ValidateIssueIdExistsAttribute>();
+            services.AddTransient<ValidateManagerIsMainManagerAttribute>();
+            services.AddTransient<ValidateUserAndRoleExistsAttribute>();
 
             return services;
         }

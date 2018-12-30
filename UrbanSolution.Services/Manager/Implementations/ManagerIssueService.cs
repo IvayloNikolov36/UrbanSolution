@@ -2,8 +2,8 @@
 {
     using Data;
     using Mapping;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.EntityFrameworkCore;
-    using Models;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
@@ -29,21 +29,35 @@
 
         public async Task<bool> UpdateAsync(
             User manager, int id, string title, string description, 
-            RegionType region, IssueType type, string street)
+            RegionType region, IssueType type, string street, IFormFile pictureFile)
         {
-            var issueToUpdate = await this.db
+            var issue = await this.db
                 .FindAsync<UrbanIssue>(id);
 
-            if (issueToUpdate.Region != manager.ManagedRegion)
+            var canUpdate = issue.Region == manager.ManagedRegion 
+                            || manager.ManagedRegion == RegionType.All;
+
+            if (!canUpdate)
             {
                 return false;
             }
 
-            issueToUpdate.Title = title;
-            issueToUpdate.Description = description;
-            issueToUpdate.Region = region;
-            issueToUpdate.Type = type;
+            var oldPictureId = issue.CloudinaryImageId;
 
+            if (pictureFile != null)
+            {
+                var pictureId = await this.pictureService.UploadImageAsync(manager.Id, pictureFile);
+
+                issue.CloudinaryImageId = pictureId;
+
+                await this.pictureService.DeleteImageAsync(oldPictureId);
+            }
+
+            issue.Title = title;
+            issue.Description = description;
+            issue.Region = region;
+            issue.Type = type;
+            
             await this.db.SaveChangesAsync();
 
             await this.activity.WriteManagerLogInfoAsync(manager.Id, ManagerActivityType.EditedIssue);
@@ -51,19 +65,22 @@
             return true;
         }
 
+
         public async Task<bool> DeleteAsync(User manager, int issueId)
         {
-            var issueToDelete = await this.db.FindAsync<UrbanIssue>(issueId);
+            var issue = await this.db.FindAsync<UrbanIssue>(issueId);
 
-            if (issueToDelete.Region != manager.ManagedRegion)
+            var canDelete =  issue.Region == manager.ManagedRegion || manager.ManagedRegion == RegionType.All; 
+
+            if (!canDelete)
             {
                 return false;
             }
 
-            var pictureId = issueToDelete.CloudinaryImageId;
+            var pictureId = issue.CloudinaryImageId;
 
             //First delete urbanIssue, than the image
-            this.db.UrbanIssues.Remove(issueToDelete);
+            this.db.UrbanIssues.Remove(issue);
 
             await this.db.SaveChangesAsync();
 
@@ -76,17 +93,16 @@
 
         public async Task<bool> ApproveAsync(User manager, int issueId)
         {
-            var issueToApprove = await this.db.FindAsync<UrbanIssue>(issueId);
+            var issue = await this.db.FindAsync<UrbanIssue>(issueId);
 
-            if (issueToApprove.Region != RegionType.All)
+            var canApprove = issue.Region == manager.ManagedRegion || manager.ManagedRegion == RegionType.All;
+
+            if (!canApprove)
             {
-                if (issueToApprove.Region != manager.ManagedRegion)
-                {
-                    return false;
-                }
+                return false;
             }
             
-            issueToApprove.IsApproved = true;
+            issue.IsApproved = true;
 
             await this.db.SaveChangesAsync();
 
@@ -144,23 +160,6 @@
 
             return total;
         }  
-
-        public async Task<bool> IsIssueInSameRegionAsync(int issueId, RegionType? managerRegion)
-        {
-            var issue = await this.GetAsync<IssueRegionServiceModel>(issueId);
-            var issueRegion = issue.Region;
-            if (managerRegion == null)
-            {
-                return true;
-            }
-
-            if (issueRegion != managerRegion)
-            {
-                return false;
-            }
-
-            return true;
-        }
 
         public async Task RemoveResolvedReferenceAsync(int issueId)
         {
