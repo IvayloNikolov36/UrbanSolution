@@ -1,4 +1,4 @@
-﻿@model MapRegionInfoComponentViewModel
+﻿@model MapIssueMarkerComponentViewModel
 
 <div class="form-group col-lg-12">
     <div id="map" style="height: 500px;">
@@ -8,8 +8,11 @@
 <script>
     var map;
     function initMap() {
-        var myLatLng = { lat: @(Model.Latitude.ToString().Replace(",", ".")), lng: @(Model.Longitude.ToString().Replace(",", ".")) };
-        var mapOptions = { zoom: @(Model.Zoom.ToString().Replace(",", ".")), center: myLatLng }
+
+        var myLatLng = { lat: @(Model.Latitude), lng: @(Model.Longitude) };
+
+        var mapOptions = { zoom: @(Model.Zoom), center: myLatLng }
+
         map = new google.maps.Map(document.getElementById('map'), mapOptions);
 
         $.get("@Url.Action("GetIssuesInfoBoxDetails", "IssuesApi")",
@@ -28,9 +31,10 @@
                         '</div>' +
                         '<h1 id="firstHeading" class="firstHeading">' + data[i].title + '</h1>' +
                         '<div id="bodyContent">' +
-                        '<div><img src="' + data[i].pictureThumbnailUrl + '"alt="Smiley face" height="80" width="80">' +
+                        '<div><img src="' + data[i].pictureThumbnailUrl +
+                        '"alt="Smiley face" height="90" width="90">' +
                         '<p>' + data[i].description + '</p>' +
-                        '<a href="/issue/details/'+ data[i].id +'"><h3 id="content">View Details</h3></a>' +
+                        '<a href="/issue/details/'+ data[i].id +'"><h3 id="content">Details</h3></a>' +
                         '</div>' +
                         '</div>';
 

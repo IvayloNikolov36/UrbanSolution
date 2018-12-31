@@ -1,9 +1,6 @@
 ﻿@model UrbanIssueDetailsServiceModel
-
-@inject IConfiguration Configuration
 @{
     ViewData["Title"] = $@"Details for issue ""{Model.Title}""";
-    var apiKey = Configuration.GetSection("Google:MapsApiKey").Value;    //TODO: remove after partial/component
 }
 
 <div row class="text-info">
@@ -12,6 +9,7 @@
 </div>
 
 <div class="row">
+
     <div class="form-group col-md-5">
         <div class="row">
             <h4>
@@ -25,34 +23,19 @@
                     Region: <em class="text-info">@Model.Region</em>
                 </h4>
             </div>
-            
+
             @* Buttons for approve/delete/edit... *@
             @await Component.InvokeAsync("IssueDetailsButtons")
 
             <h3><em>@Model.Description</em></h3>
         </div>
     </div>
+
     <div class="form-group col-md-5 col-md-offset-1">
-        <div class="row">
-            <div id="map" style="height: 400px; width: 600px;">
-                @*TODO/ make template for map*@
-            </div>
-        </div>                      
-        
+        @* Showing the map for the issue with marker for location *@
+        @await Component.InvokeAsync("IssueDetailsMap", Model)
     </div>
+
 </div>
 
 
-@section Scripts {
-
-    <script>
-        function initMap() {
-            var myLatLng = { lat: @(Model.Latitude), lng: @(Model.Longitude) };
-            var mapOptions = { zoom: @(WebConstants.ZoomMapIssueDetails), center: myLatLng }
-            var map = new google.maps.Map(document.getElementById('map'), mapOptions);
-            var marker = new google.maps.Marker({ position: myLatLng, map: map });
-        }
-    </script>
-
-    <script src="https://maps.googleapis.com/maps/api/js?key=@(apiKey)&callback=initMap" async defer></script>
-}

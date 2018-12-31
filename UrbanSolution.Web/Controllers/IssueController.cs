@@ -1,4 +1,6 @@
-﻿namespace UrbanSolution.Web.Controllers
+﻿using UrbanSolution.Web.Infrastructure.Filters;
+
+namespace UrbanSolution.Web.Controllers
 {
     using Infrastructure;
     using Infrastructure.Extensions;
@@ -30,7 +32,8 @@
 
             return this.View(model);
         }
-        
+
+        [ServiceFilter(typeof(ValidateIssueIdExistsAttribute))]
         public async Task<IActionResult> Details(int id)
         {            
             if(this.User.IsInRole(WebConstants.ManagerRole))

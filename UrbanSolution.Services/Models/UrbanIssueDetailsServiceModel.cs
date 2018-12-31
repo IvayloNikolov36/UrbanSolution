@@ -1,5 +1,4 @@
-﻿
-namespace UrbanSolution.Services.Models
+﻿namespace UrbanSolution.Services.Models
 {
     using AutoMapper;
     using Mapping;
@@ -20,7 +19,7 @@ namespace UrbanSolution.Services.Models
 
         public DateTime PublishedOn { get; set; }
 
-        public string Region { get; set; }
+        public RegionType Region { get; set; }
 
         public IssueType Type { get; set; }
 

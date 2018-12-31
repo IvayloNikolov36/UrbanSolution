@@ -20,18 +20,18 @@
             this.configuration = configuration;
         }
 
-        public async Task<IViewComponentResult> InvokeAsync(RegionType? region)
+        public async Task<IViewComponentResult> InvokeAsync(RegionType region)
         {
             (double mapRegLat, double mapRegLong, double mapRegZoom) = region.GetMapPositions();
 
             var apiKey = this.configuration.GetSection("Google:MapsApiKey").Value;
 
-            var model = new MapRegionInfoComponentViewModel
+            var model = new MapIssueMarkerComponentViewModel
             {
                 ApiKey = apiKey,
-                Latitude = mapRegLat,
-                Longitude = mapRegLong,
-                Zoom = mapRegZoom
+                Latitude = mapRegLat.ToString().Replace(",", "."),
+                Longitude = mapRegLong.ToString().Replace(",", "."),
+                Zoom = mapRegZoom.ToString().Replace(",", ".")
             };
 
             return this.View(model);

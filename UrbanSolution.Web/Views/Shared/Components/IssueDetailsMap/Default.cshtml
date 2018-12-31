@@ -1,0 +1,21 @@
+﻿@model MapIssueMarkerComponentViewModel
+
+<div class="form-group col-lg-12">
+    <div id="map" style="height: 400px; width: 600px;">
+    </div>
+</div>
+
+
+<script>
+    function initMap() {
+
+        var myLatLng = { lat: @(Model.Latitude), lng: @(Model.Longitude) };
+        var mapOptions = { zoom: @(Model.Zoom), center: myLatLng }
+        var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+        new google.maps.Marker({ position: myLatLng, map: map });
+    }
+</script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=@(Model.ApiKey)&callback=initMap" 
+        async defer>
+</script>

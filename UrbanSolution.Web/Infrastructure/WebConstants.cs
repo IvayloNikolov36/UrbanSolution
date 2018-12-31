@@ -123,6 +123,6 @@
         public const string ViewComponentDynamicMenuName = "DynamicMenu";
         public const string ViewComponentIssueDetailsButtonsName = "IssueDetailsButtons";
         public const string ViewComponentUrbanIssuesMapWithMarkersName = "UrbanIssuesMapWithMarkers";
-
+        public const string ViewComponentIssueDetailsMapName = "IssueDetailsMap";
     }
 }

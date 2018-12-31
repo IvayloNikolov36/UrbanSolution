@@ -32,11 +32,10 @@
             }
         }
 
-        public static Tuple<double, double, double> GetMapPositions(this RegionType? region)
+        public static Tuple<double, double, double> GetMapPositions(this RegionType region)
         {
                 switch (region)
-                {
-                    case null: //TODO: remove case null:
+                { 
                     case RegionType.All:
                     case RegionType.Central:
                         return new Tuple<double, double, double>(CenterRegLat, CenterRegLong, CenterRegZoom);
