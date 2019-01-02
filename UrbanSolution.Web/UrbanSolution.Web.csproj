@@ -17,6 +17,7 @@
     <ProjectReference Include="..\UrbanSolution.Data\UrbanSolution.Data.csproj" />
     <ProjectReference Include="..\UrbanSolution.Models\UrbanSolution.Models.csproj" />
     <ProjectReference Include="..\UrbanSolution.Services.Mapping\UrbanSolution.Services.Mapping.csproj" />
+    <ProjectReference Include="..\UrbanSolution.Services.Tests\UrbanSolution.Services.Tests.csproj" />
     <ProjectReference Include="..\UrbanSolution.Services\UrbanSolution.Services.csproj" />
   </ItemGroup>
 

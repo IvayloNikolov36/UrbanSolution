@@ -74,6 +74,8 @@ namespace UrbanSolution.Services.Implementations
 
         private void InitializeCloudinary()
         {
+
+            var key = configuration.GetSection("Cloudinary:CloudName").Value;
             this.cloudinary = new Cloudinary(
                 new Account(
                     configuration.GetSection("Cloudinary:CloudName").Value,

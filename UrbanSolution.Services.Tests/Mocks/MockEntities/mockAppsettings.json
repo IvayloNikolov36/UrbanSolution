@@ -1,0 +1,19 @@
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=.;Database=UrbanSolutionDb;Trusted_Connection=True;MultipleActiveResultSets=true;Integrated Security=True"
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Warning"
+    }
+  },
+  "Google": {
+    "MapsApiKey": "mocked9863"
+  },
+  "Cloudinary": {
+    "CloudName": "ggrhhgjgh", 
+    "ApiKey": "89885155778899",
+    "ApiSecret": "iu_iuoppjdkdlf_uyuuu"
+  },
+  "AllowedHosts": "*"
+}

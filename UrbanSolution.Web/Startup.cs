@@ -15,7 +15,6 @@
     using UrbanSolution.Models;
     using UrbanSolution.Services.Models;
     using UrbanSolution.Web.Areas.Admin.Models;
-    
 
     public class Startup
     {
@@ -28,7 +27,6 @@
    
         public void ConfigureServices(IServiceCollection services)
         {
-
             AutoMapperConfig.RegisterMappings(
                 typeof(AdminUsersListingViewModel).Assembly,
                 typeof(UrbanIssueDetailsServiceModel).Assembly);

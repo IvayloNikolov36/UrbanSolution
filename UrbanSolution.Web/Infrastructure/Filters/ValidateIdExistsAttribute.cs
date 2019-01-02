@@ -1,4 +1,7 @@
-﻿namespace UrbanSolution.Web.Infrastructure.Filters
+﻿using UrbanSolution.Data;
+using UrbanSolution.Models;
+
+namespace UrbanSolution.Web.Infrastructure.Filters
 {
     using Extensions;
     using Microsoft.AspNetCore.Mvc;
@@ -10,10 +13,12 @@
     public class ValidateIssueIdExistsAttribute : ActionFilterAttribute
     {
         private IManagerIssueService issues;
+        private UrbanSolutionDbContext db;
 
-        public ValidateIssueIdExistsAttribute(IManagerIssueService issues)
+        public ValidateIssueIdExistsAttribute(IManagerIssueService issues, UrbanSolutionDbContext db)
         {
             this.issues = issues;
+            this.db = db;
         }
 
         public override void OnActionExecuting(ActionExecutingContext context)
@@ -33,7 +38,8 @@
             }
             else
             {
-                var exists = this.issues.ExistsAsync((int)id).GetAwaiter().GetResult();
+                var exists = this.db.Find<UrbanIssue>(id) != null;
+                //var exists = this.issues.ExistsAsync((int)id).GetAwaiter().GetResult();
                 if (!exists)
                 {
                     context.Result = controller.RedirectToAction("Index")

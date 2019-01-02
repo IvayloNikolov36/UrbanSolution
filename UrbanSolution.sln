@@ -13,6 +13,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UrbanSolution.Services", "U
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UrbanSolution.Services.Mapping", "UrbanSolution.Services.Mapping\UrbanSolution.Services.Mapping.csproj", "{60769B97-3720-43AA-B249-41649F94E79A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{676B56C9-CD74-49AA-A451-BE02BD819F00}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UrbanSolution.Services.Tests", "UrbanSolution.Services.Tests\UrbanSolution.Services.Tests.csproj", "{2F48271D-D5B0-41DA-89B3-96FCDFC1588F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,9 +43,16 @@ Global
 		{60769B97-3720-43AA-B249-41649F94E79A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{60769B97-3720-43AA-B249-41649F94E79A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{60769B97-3720-43AA-B249-41649F94E79A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F48271D-D5B0-41DA-89B3-96FCDFC1588F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F48271D-D5B0-41DA-89B3-96FCDFC1588F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F48271D-D5B0-41DA-89B3-96FCDFC1588F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F48271D-D5B0-41DA-89B3-96FCDFC1588F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2F48271D-D5B0-41DA-89B3-96FCDFC1588F} = {676B56C9-CD74-49AA-A451-BE02BD819F00}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C23CB925-1701-4310-82AB-370C5F8E4100}
