@@ -63,6 +63,7 @@
         public const string ViewDataManagerId = "managerId";
         public const string ViewDataManagerRegionKey = "ManagerRegionKey";
         public const string ViewDataUsernameKey = "username";
+        public static string ViewDataUserIdKey = "userId";
 
         public const string EventCreationSuccess = "Event successfylly created.";
 
@@ -117,6 +118,15 @@
         public const string CantApproveIssueForAnotherRegion = "You can't approve issue for another region!";
         public const string CantEditIssueForAnotherRegion = "You can't edit issue for another region!";
 
+        public const string CantEditAnotherBloggerArticle = "You can't edit article, published by another blog author!";
+        public const string SuccessfullyEditedArticle = "Successfully edited article!";
+
+        public const string ArticleNotFound = "There is no article with this id!";
+
+        public const string CantDeleteArticle = "Can't delete article, published from another blog author!";
+
+        public const string SuccessfullyDeletedArticle = "Successfully deleted article!";
+
         public const string InvalidIdentityDetails = "Invalid identity details";
 
         //View Component
@@ -124,5 +134,6 @@
         public const string ViewComponentIssueDetailsButtonsName = "IssueDetailsButtons";
         public const string ViewComponentUrbanIssuesMapWithMarkersName = "UrbanIssuesMapWithMarkers";
         public const string ViewComponentIssueDetailsMapName = "IssueDetailsMap";
+        
     }
 }

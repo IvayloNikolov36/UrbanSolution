@@ -3,10 +3,25 @@
     ViewData["Title"] = Model.Title;
 }
 
-<h2>@ViewData["Title"]</h2>
+<h3 class="text-center text-info">@ViewData["Title"]</h3>
+<hr />
 
-<h4><em>published by @Model.Author on @Model.PublishDate.ToShortDateString()</em></h4>
+<div class="row">
+    <img src="@Model.PictureUrl" class="img-responsive" />
+</div>
 
-<div>
+<div class="form-group row">
+    <h4>
+        published by <em class="text-info">@Model.Author</em>
+        on <em class="text-info">@Model.PublishDate.ToShortDateString()</em>
+        @if ((string)ViewData[WebConstants.ViewDataUsernameKey] == Model.Author)
+        {
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-warning">Edit</a>
+            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-sm btn-danger">Delete</a>
+        }
+    </h4>
+</div>
+
+<div class="row">
     @Html.Raw(Model.Content)
 </div>

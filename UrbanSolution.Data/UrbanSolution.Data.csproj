@@ -9,6 +9,7 @@
     <Compile Remove="Migrations\20181203133427_Added_Rating_Table_And_One_To_One_Btw_Resolved_And_Urban_Issue.cs" />
     <Compile Remove="Migrations\20181203133830_AddedRatingTable.cs" />
     <Compile Remove="Migrations\20181224142002_AddedCloudinaryImagesTable.cs" />
+    <Compile Remove="Migrations\20190103131001_AddedArticleImageColumn.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -7,7 +7,11 @@
 
     public class BlogArticleDetailsServiceModel : IMapFrom<Article>, IHaveCustomMappings
     {
+        public int Id { get; set; }
+
         public string Title { get; set; }
+
+        public string PictureUrl { get; set; }
 
         public string Content { get; set; }
 
@@ -18,7 +22,8 @@
         public void CreateMappings(IMapperConfigurationExpression configuration)
         {
             configuration.CreateMap<Article, BlogArticleDetailsServiceModel>()
-                .ForMember(x => x.Author, m => m.MapFrom(u => u.Author.UserName));
+                .ForMember(x => x.Author, m => m.MapFrom(a => a.Author.UserName))
+                .ForMember(x => x.PictureUrl, m => m.MapFrom(a => a.CloudinaryImage.PictureUrl));
         }
     }
 }

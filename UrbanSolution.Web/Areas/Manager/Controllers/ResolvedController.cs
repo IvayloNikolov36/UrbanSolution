@@ -1,6 +1,5 @@
 ﻿namespace UrbanSolution.Web.Areas.Manager.Controllers
 {
-    using Infrastructure;
     using Infrastructure.Extensions;
     using Infrastructure.Filters;
     using Microsoft.AspNetCore.Identity;
@@ -97,7 +96,7 @@
 
             if (detailsModel == null)
             {
-                return this.RedirectToAction("Index", "UrbanIssue").WithDanger("", WebConstants.NoResolvedFound);
+                return this.RedirectToAction("Index", "UrbanIssue").WithDanger("", NoResolvedFound);
             }
 
             this.ViewData[ViewDataManagerId] = this.UserManager.GetUserId(this.User);

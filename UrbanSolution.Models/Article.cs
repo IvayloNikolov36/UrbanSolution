@@ -1,20 +1,23 @@
-﻿using UrbanSolution.Models.Utilities;
-
-namespace UrbanSolution.Models
+﻿namespace UrbanSolution.Models
 {
     using System;
     using System.ComponentModel.DataAnnotations;
+    using static Utilities.DataConstants;
 
     public class Article
     {
         public int Id { get; set; }
 
         [Required]
-        [StringLength(DataConstants.ArticleTitleMaxLength, MinimumLength = DataConstants.ArticleTitleMinLenght)]
+        [StringLength(ArticleTitleMaxLength, MinimumLength = ArticleTitleMinLenght)]
         public string Title { get; set; }
 
+        public int CloudinaryImageId { get; set; }
+
+        public CloudinaryImage CloudinaryImage { get; set; }
+
         [Required]
-        [MinLength(DataConstants.ArticleContentMinLength)]
+        [MinLength(ArticleContentMinLength)]
         public string Content { get; set; }
 
         public DateTime PublishDate { get; set; }
@@ -23,7 +26,5 @@ namespace UrbanSolution.Models
 
         public User Author { get; set; }
 
-        [Url]
-        public string PictureUrl { get; set; }
     }
 }

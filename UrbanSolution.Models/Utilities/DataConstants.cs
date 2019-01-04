@@ -22,7 +22,7 @@
         public const int UserMinAge = 14;
         public const int UserMaxAge = 80;
 
-        public const int ArticleTitleMaxLength = 50;
+        public const int ArticleTitleMaxLength = 80;
         public const int ArticleTitleMinLenght = 6;
 
         public const int ArticleContentMinLength = 200;

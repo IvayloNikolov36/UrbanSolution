@@ -1,30 +1,31 @@
 ﻿@model UrbanSolution.Web.Areas.Blog.Models.PublishArticleFormModel
-
 @{
     ViewData["Title"] = "Publish Article";
 }
 
-<h2>@ViewData["Title"]</h2>
-<hr/>
+<h3 class="text-info text-center">@ViewData["Title"]</h3>
+<hr />
 
-<script src="https://cloud.tinymce.com/stable/tinymce.min.js"></script>
-<script>
-    tinymce.init({
-        selector: '#Content'
-    });
-</script>
-
-<div class="row">
-    <div class="col-md-8">
-        <form method="post">
-            <div class="form-group">
-                <label asp-for="Title"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
+<div class="row text-center">
+    <div class="col-md-10 col-md-offset-1">
+        <form method="post" enctype="multipart/form-data">            
+            <div class="row">
+                <div class="form-group col-xs-6">
+                    <label asp-for="Title"></label>
+                    <input asp-for="Title" class="form-control"/>
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+                <div class="form-group col-xs-6">
+                    <label asp-for="PictureFile"></label>
+                    <div>
+                        <input asp-for="PictureFile" class="form-control" />
+                        <span asp-validation-for="PictureFile" class="text-danger"></span>
+                    </div>
+                </div>
             </div>
             <div class="form-group">
                 <label asp-for="Content"></label>
-                <textarea asp-for="Content" rows="17" class="form-control"></textarea>
+                <textarea asp-for="Content" rows="10" class="form-control"></textarea>
                 <span asp-validation-for="Content" class="text-danger"></span>
             </div>
             <button type="submit" class="btn btn-default">Publish Article</button>
@@ -33,6 +34,9 @@
 </div>
 
 @section Scripts {
+
     @await Html.PartialAsync("_ValidationScriptsPartial")
+
+    @await Html.PartialAsync("_TinyMceScripts")
 }
 

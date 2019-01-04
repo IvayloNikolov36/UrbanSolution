@@ -1,7 +1,7 @@
-﻿@using UrbanSolution.Web.Models
-@model UrbanSolution.Web.Areas.Blog.Models.ArticleListingViewModel
+﻿@model UrbanSolution.Web.Areas.Blog.Models.ArticleListingViewModel
 @{
     ViewData["Title"] = "Blog Articles";
+
     var pagesModel = new PagesModel
     {
         CurrentPage = Model.CurrentPage,
@@ -11,24 +11,35 @@
     };
 }
 
-<h2>@ViewData["Title"]</h2>
+<h3 class="text-center text-info">@ViewData["Title"]</h3>
+<hr />
 
 <div class="row">
-    <div class="col-md-6">
-        <ul class="list-group article-list">
-            @foreach (var article in Model.Articles)   //TODO: display template
-            {
-                <li class="list-group-item">
-                    <a asp-action="Details" asp-route-id="@article.Id" asp-route-title="@article.Title.ToFriendlyUrl()">@article.Title</a>
-                    <br />
-                    <small>published by @article.Author on @article.PublishDate.ToShortDateString()</small>
-                </li>
-            }
-        </ul>
-    </div>
+    @foreach (var article in Model.Articles) //TODO: display template
+    {
+        <div class="col-md-5 col-md-offset-1 list-group-item">
+            <a asp-action="Details" asp-route-id="@article.Id"
+               asp-route-title="@article.Title.ToFriendlyUrl()">
+                <h4 class="text-center text-info">@article.Title</h4>
+            </a>
+            <img src="@article.PictureUrl"/>
+            <h5>
+                published by <em class="text-info">@article.Author</em>
+                on <em class="text-info">@article.PublishDate</em>
+                <a asp-action="Details" asp-route-id="@article.Id" class="btn-sm btn-primary pull-right">
+                    Read More <span class="glyphicon glyphicon-chevron-right"></span>
+                </a>
+            </h5>
+        </div>
+    }
 </div>
 
-@if (Model.TotalPages > Model.Articles.Count())
+@if (Model.TotalArticles > Model.Articles.Count())
 {
     @await Html.PartialAsync("~/Views/Shared/_PagingPartial.cshtml", pagesModel)
 }
+
+
+
+
+

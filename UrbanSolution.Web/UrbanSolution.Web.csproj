@@ -26,7 +26,6 @@
     <Folder Include="Areas\Events\Data\" />
     <Folder Include="Areas\Identity\Services\" />
     <Folder Include="Areas\Manager\Data\" />
-    <Folder Include="wwwroot\images\upload\" />
   </ItemGroup>
 
   <ItemGroup>

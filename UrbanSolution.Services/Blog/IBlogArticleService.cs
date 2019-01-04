@@ -1,5 +1,6 @@
 ﻿namespace UrbanSolution.Services.Blog
 {
+    using Microsoft.AspNetCore.Http;
     using Models;
     using System.Collections.Generic;
     using System.Threading.Tasks;
@@ -10,8 +11,12 @@
 
         Task<int> TotalAsync();
 
-        Task<BlogArticleDetailsServiceModel> GetAsync(int id);
+        Task<TModel> GetAsync<TModel>(int id);
 
-        Task CreateAsync(string title, string content, string authorId);
+        Task CreateAsync(string title, string content, IFormFile picturefile, string authorId);
+
+        Task<bool> UpdateAsync(int id, string authorId, string title, string content);
+
+        Task<bool> DeleteAsync(int id, string authorId);
     }
 }

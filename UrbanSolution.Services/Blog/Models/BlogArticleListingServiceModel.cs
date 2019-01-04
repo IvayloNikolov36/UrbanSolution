@@ -11,6 +11,10 @@
 
         public string Title { get; set; }
 
+        public string PictureUrl { get; set; }
+
+        public string Content { get; set; }
+
         public DateTime PublishDate { get; set; }
 
         public string Author { get; set; }
@@ -19,7 +23,8 @@
         {
             configuration
                 .CreateMap<Article, BlogArticleListingServiceModel>()
-                .ForMember(a => a.Author, m => m.MapFrom(a => a.Author.UserName));
+                .ForMember(a => a.Author, m => m.MapFrom(a => a.Author.UserName))
+                .ForMember(a => a.PictureUrl, m => m.MapFrom(a => a.CloudinaryImage.PictureUrl));
         }
     }
 }
