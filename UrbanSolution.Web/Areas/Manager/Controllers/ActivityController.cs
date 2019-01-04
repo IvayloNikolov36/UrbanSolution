@@ -17,11 +17,12 @@
             this.activity = activity;
         }
 
+        [Route("MyActivity")]
         public async Task<IActionResult> Index()
         {
             var managerId = this.UserManager.GetUserId(this.User);
 
-            var managerActivity = await this.activity.AllAsync(managerId);
+            var managerActivity = await this.activity.GetAsync(managerId);
 
             return this.View(managerActivity);
         }
@@ -30,9 +31,9 @@
         [ServiceFilter(typeof(ValidateManagerIsMainManagerAttribute))]
         public async Task<IActionResult> AllManagersActivity()
         {                   
-            var managerActivity = await this.activity.AllAsync();
+            var allManagersActivity = await this.activity.AllAsync();
 
-            return this.View(managerActivity);
+            return this.View(allManagersActivity);
         }
     }
 }

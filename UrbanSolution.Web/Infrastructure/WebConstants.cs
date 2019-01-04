@@ -14,6 +14,7 @@
 
         public const string AdminUserName = "administrator";
         public const string ManagerUserName = "manager";
+        public const string ManagerAllUserName = "managerAll";
         public const string BlogAuthorUserName = "blogger";
         public const string EventCreatorUserName = "eventCreator";
 
@@ -63,7 +64,6 @@
         public const string ViewDataManagerId = "managerId";
         public const string ViewDataManagerRegionKey = "ManagerRegionKey";
         public const string ViewDataUsernameKey = "username";
-        public static string ViewDataUserIdKey = "userId";
 
         public const string EventCreationSuccess = "Event successfylly created.";
 

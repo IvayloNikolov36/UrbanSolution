@@ -1,5 +1,4 @@
-﻿
-namespace UrbanSolution.Services.Manager
+﻿namespace UrbanSolution.Services.Manager
 {
     using Models;
     using System.Collections.Generic;
@@ -10,7 +9,7 @@ namespace UrbanSolution.Services.Manager
     {
         Task WriteManagerLogInfoAsync(string managerId, ManagerActivityType activity);
 
-        Task<IEnumerable<ManagerActivitiesListingServiceModel>> AllAsync(string managerId);
+        Task<IEnumerable<ManagerActivitiesListingServiceModel>> GetAsync(string managerId);
 
         Task<IEnumerable<ManagerActivitiesListingServiceModel>> AllAsync();
     }

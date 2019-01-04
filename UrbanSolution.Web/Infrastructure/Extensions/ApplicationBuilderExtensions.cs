@@ -30,14 +30,18 @@
 
                 await CreateRoles(roleManager);
 
+                //create admin
                 await CreateUser(userManager, AdminUserName, AdminEmail, AdminFullName, UserDefaultAge, DefaultAdminPassword, AdminRole);
 
-                await CreateUser(userManager, ManagerUserName, ManagerEmail, ManagerFullName, UserDefaultAge, string.Format(DefaultManagerPassword, ""), ManagerRole);
+                //create main manager (for all regions)
+                await CreateUser(userManager, ManagerAllUserName, ManagerEmail, ManagerFullName, UserDefaultAge, string.Format(DefaultManagerPassword, ""), ManagerRole);
 
                 await CreateRegionalManagers(userManager);
 
+                //create blog author
                 await CreateUser(userManager, BlogAuthorUserName, BlogAuthorEmail, BlogAuthorFullName, UserDefaultAge, DefaultBlogAuthorPassword, BlogAuthorRole);
 
+                //create event creator
                 await CreateUser(userManager, EventCreatorUserName, EventCreatorEmail, EventCreatorFullName, UserDefaultAge, DefaultEventCreatorPassword, EventCreatorRole);
 
             }

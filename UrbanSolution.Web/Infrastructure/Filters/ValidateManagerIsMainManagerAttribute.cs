@@ -26,7 +26,7 @@
 
             var username = this.userManager.GetUserName(controller.HttpContext.User);
 
-            if (username != ManagerUserName)
+            if (username != ManagerAllUserName)
             {
                 context.Result = controller.RedirectToAction("Index", "Home", new { area = "" })
                     .WithDanger(NotAuthorized, CantViewManagersActivity);

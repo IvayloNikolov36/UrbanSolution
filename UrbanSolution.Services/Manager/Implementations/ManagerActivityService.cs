@@ -35,7 +35,7 @@ namespace UrbanSolution.Services.Manager.Implementations
             await this.db.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<ManagerActivitiesListingServiceModel>> AllAsync(string managerId)
+        public async Task<IEnumerable<ManagerActivitiesListingServiceModel>> GetAsync(string managerId)
         {
             var activity = await this.db.ManagerLogs
                 .Where(m => m.ManagerId == managerId)
