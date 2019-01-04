@@ -1,15 +1,16 @@
-﻿using System.Linq;
-using AutoMapper;
-using UrbanSolution.Models;
-using UrbanSolution.Services.Mapping;
-
-namespace UrbanSolution.Services.Events.Models
+﻿namespace UrbanSolution.Services.Events.Models
 {
+    using AutoMapper;
+    using Mapping;
+    using UrbanSolution.Models;
     using System;
+    using System.Linq;
     using System.Collections.Generic;
 
     public class EventDetailsServiceModel : IMapFrom<Event>, IHaveCustomMappings
     {
+        public int Id { get; set; }
+
         public string Title { get; set; }
 
         public string Description { get; set; }

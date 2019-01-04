@@ -1,17 +1,17 @@
 ﻿@inject IConfiguration Configuration
 @model UrbanSolution.Web.Areas.Events.Models.EventCreateFormModel
-
 @{
     ViewData["Title"] = "Create event";
     var apiKey = Configuration.GetSection("Google:MapsApiKey").Value;
 }
 
-<h2>@ViewData["Title"]</h2>
-
+<h3 class="text-center text-info">@ViewData["Title"]</h3>
 <hr />
+
 <div class="row">
-    <div class="col-md-7 col-md-offset-2">
-        <form method="post" asp-controller="Events" asp-action="Create">
+    <div class="col-md-8 col-md-offset-2">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <form asp-controller="Events" asp-action="Create" method="post" enctype="multipart/form-data">
             <div class="row">
                 <div class="form-group col-md-6">
                     <label asp-for="Title"></label>
@@ -21,10 +21,10 @@
                     </div>
                 </div>
                 <div class="form-group col-md-6">
-                    <label asp-for="PictureUrl"></label>
+                    <label asp-for="PictureFile"></label>
                     <div>
-                        <input asp-for="PictureUrl" class="form-control" />
-                        <span asp-validation-for="PictureUrl" class="text-danger"></span>
+                        <input asp-for="PictureFile" class="form-control" />
+                        <span asp-validation-for="PictureFile" class="text-danger"></span>
                     </div>
                 </div>
             </div>
@@ -34,7 +34,7 @@
                     <div>
                         <input asp-for="StartDate" class="form-control" />
                         <span asp-validation-for="StartDate" class="text-danger"></span>
-                    </div>                   
+                    </div>
                 </div>
                 <div class="form-group col-md-6">
                     <label asp-for="EndDate"></label>
@@ -47,7 +47,7 @@
 
 
             <label>Enter location in the map</label>
-            <input id="pac-input" class="controls" type="text"placeholder="Enter a location" />
+            <input id="pac-input" class="controls" type="text" placeholder="Enter a location" />
             <div class="form-group">
                 <div id="map" style="height: 400px;"></div>
             </div>
@@ -62,7 +62,7 @@
                 <div class="form-group col-sm-12">
                     <div class="input-group">
                         <span class="input-group-btn">
-                            <button class="btn btn-default" type="button" id="GetAddress" >Get Address</button>
+                            <button class="btn btn-default" type="button" id="GetAddress">Get Address</button>
                         </span>
                         <input asp-for="Address" class="form-control" placeholder="Adress..." />
                         <span asp-validation-for="Address" class="text-danger"></span>
@@ -77,7 +77,7 @@
                         <textarea asp-for="Description" rows="5" class="form-control"></textarea>
                         <span asp-validation-for="Description" class="text-danger"></span>
                     </div>
-                </div>                
+                </div>
             </div>
 
             <input type="hidden" asp-for="Latitude" />
@@ -146,19 +146,14 @@
                     coordinates.latitude = place.geometry.location.lat();
                     coordinates.longitude = place.geometry.location.lng();
 
-                    // Set the position of the marker using the place ID and location.
                     marker.setPlace({
                         placeId: place.place_id,
                         location: place.geometry.location
                     });
 
-
                     marker.setVisible(true);
 
-                    //var coordinates = marker.getPosition();
-
                     address = place.name.trim();
-
 
                     infowindowContent.children['place-name'].textContent = place.name;
                     infowindowContent.children['place-id'].textContent = place.place_id;
@@ -174,12 +169,9 @@
             $("#Latitude").val(coordinates.latitude);
             $("#Longitude").val(coordinates.longitude);
         });
-
-
     </script>
 
     <script src="https://maps.googleapis.com/maps/api/js?key=@(apiKey)&libraries=places&callback=initMap"
             async defer>
     </script>
-
 }

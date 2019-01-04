@@ -16,5 +16,13 @@
             "Your file submission should be a '.jpg' file with no more than 5.5mb size";
 
         public const string PictureExtension = ".jpg";
+
+        public const string EventStartDateRestriction =
+            "Start date of the event should be at least one day after creation!";
+
+        public const string EventEndDateRestriction =
+            "End date of the event should be at least one hour after start time!";
+
+        public const string NoCoordinatesValidationError = "Please find the adress in the map.";
     }
 }

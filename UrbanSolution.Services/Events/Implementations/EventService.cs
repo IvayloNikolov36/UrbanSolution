@@ -1,23 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using UrbanSolution.Data;
-using UrbanSolution.Models;
-using UrbanSolution.Services.Mapping;
-using UrbanSolution.Services.Utilities;
-
-
-namespace UrbanSolution.Services.Events.Implementations
+﻿namespace UrbanSolution.Services.Events.Implementations
 {
+    using Data;
+    using Mapping;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.EntityFrameworkCore;
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using UrbanSolution.Models;
+    using Utilities;
+
     public class EventService : IEventService
     {
-        private UrbanSolutionDbContext db;
+        private readonly UrbanSolutionDbContext db;
+        private readonly IPictureService pictureService;
 
-        public EventService(UrbanSolutionDbContext db)
+        public EventService(UrbanSolutionDbContext db, IPictureService pictureService)
         {
             this.db = db;
+            this.pictureService = pictureService;
         }
 
         public async Task<IEnumerable<TModel>> AllAsync<TModel>(int page)
@@ -33,10 +36,13 @@ namespace UrbanSolution.Services.Events.Implementations
             return eventsModel;
         }
 
-        public async Task<int> CreateAsync(string title, string description, DateTime starts, DateTime ends,
-            string pictureUrl,
-            string address, double latitude, double longitude, string creatorId)
+        public async Task<int> CreateAsync(
+            string title, string description, DateTime starts, 
+            DateTime ends, IFormFile pictureFile, string address, 
+            string latitude, string longitude, string creatorId)
         {
+            var picId = await this.pictureService.UploadImageAsync(creatorId, pictureFile);
+
             var eventObj = new Event
             {
                 Address = address,
@@ -44,17 +50,40 @@ namespace UrbanSolution.Services.Events.Implementations
                 Description = description,
                 EndDate = ends,
                 StartDate = starts,
-                Latitude = latitude,
-                Longitude = longitude,
+                Latitude = double.Parse(latitude, CultureInfo.InvariantCulture),
+                Longitude = double.Parse(longitude, CultureInfo.InvariantCulture),
                 Title = title,
-                PictureUrl = pictureUrl
+                CloudinaryImageId = picId
             };
 
             await this.db.Events.AddAsync(eventObj);
 
-            int eventId = await this.db.SaveChangesAsync();
+            await this.db.SaveChangesAsync();
 
-            return eventId;
+            return eventObj.Id;
+        }
+
+        public async Task<bool> EditAsync(int id, string creatorId, string userId, string title, string description, 
+            DateTime starts, DateTime ends, string address, string latitude, string longitude)
+        {
+            if (userId != creatorId)
+            {
+                return false;
+            }
+
+            var eventToUpdate = await this.db.FindAsync<Event>(id);
+
+            eventToUpdate.Title = title;
+            eventToUpdate.Description = description;
+            eventToUpdate.StartDate = starts;
+            eventToUpdate.EndDate = ends;
+            eventToUpdate.Address = address;
+            eventToUpdate.Latitude = double.Parse(latitude, CultureInfo.InvariantCulture);
+            eventToUpdate.Longitude = double.Parse(longitude, CultureInfo.InvariantCulture);
+
+            await this.db.SaveChangesAsync();
+
+            return true;
         }
 
         public async Task<TModel> GetAsync<TModel>(int id)

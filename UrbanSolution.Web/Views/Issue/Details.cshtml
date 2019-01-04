@@ -13,10 +13,18 @@
     <div class="form-group col-md-5">
         <div class="row">
             <h4>
-                Published by <em class="text-info">@Model.Publisher</em> on
-                <em class="text-info">@Model.PublishedOn.ToShortDateString()</em>
+                <em class="text-info">
+                    <i class="glyphicon glyphicon-cloud-upload"></i> @Model.Publisher
+                </em>
+                <em class="text-info">
+                    <i class="glyphicon glyphicon-hourglass"></i> @Model.PublishedOn.ToShortDateString()
+                </em>
             </h4>
-            <h4>Address: <em class="text-info">@Model.AddressStreet</em></h4>
+            <h4>
+                <em class="text-info">
+                    <i class="glyphicon glyphicon-home"></i> @Model.AddressStreet
+                </em>
+            </h4>
             <div>
                 <h4>
                     Type: <em class="text-info">@Model.Type.ToFriendlyName()</em>,
@@ -31,7 +39,7 @@
         </div>
     </div>
 
-    <div class="form-group col-md-5 col-md-offset-1">
+    <div class="form-group col-md-5">
         @* Showing the map for the issue with marker for location *@
         @await Component.InvokeAsync("IssueDetailsMap", Model)
     </div>

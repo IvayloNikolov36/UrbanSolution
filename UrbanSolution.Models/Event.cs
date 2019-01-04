@@ -1,29 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using UrbanSolution.Models.MappingTables;
-using UrbanSolution.Models.Utilities;
-
-namespace UrbanSolution.Models
+﻿namespace UrbanSolution.Models
 {
+    using MappingTables;
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+    using static Utilities.DataConstants;
+
     public class Event
     {
         public int Id { get; set; }
 
         [Required]
-        [StringLength(DataConstants.EventTitleMaxLength, MinimumLength = DataConstants.EventTitleMinLength)]
+        [StringLength(EventTitleMaxLength, MinimumLength = EventTitleMinLength)]
         public string Title { get; set; }
 
         [Required]
-        [StringLength(DataConstants.EventDescriptionMaxLength, MinimumLength = DataConstants.EventTitleMinLength)]
+        [StringLength(EventDescriptionMaxLength, MinimumLength = EventDescriptionMinLength)]
         public string Description { get; set; }
 
         public DateTime StartDate { get; set; }
 
         public DateTime EndDate { get; set; }
 
-        [Url]
-        public string PictureUrl { get; set; }
+        public int CloudinaryImageId { get; set; }
+
+        public CloudinaryImage CloudinaryImage { get; set; }
 
         [Required]
         public string Address { get; set; }

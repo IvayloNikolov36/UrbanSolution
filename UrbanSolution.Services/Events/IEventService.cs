@@ -1,21 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
-namespace UrbanSolution.Services.Events
+﻿namespace UrbanSolution.Services.Events
 {
+    using Microsoft.AspNetCore.Http;
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+
     public interface IEventService
     {
         Task<IEnumerable<TModel>> AllAsync<TModel>(int page);
 
-        Task<int> CreateAsync(string title, string description, DateTime starts, DateTime ends,
-            string pictureUrl,
-            string address, double latitude, double longitude, string creatorId);
+        Task<int> CreateAsync(string title, string description, DateTime starts, DateTime ends, 
+            IFormFile pictureFile, string address, string latitude, string longitude, string creatorId);
+
+        Task<bool> EditAsync(int id, string creatorId, string userId, string title, string description,
+            DateTime starts, DateTime ends, string address, string latitude, string longitude);
 
         Task<TModel> GetAsync<TModel>(int id);
 
+        Task<int> TotalCountAsync();
+
         Task<bool> ExistsAsync(int id);
 
-        Task<int> TotalCountAsync();
     }
 }

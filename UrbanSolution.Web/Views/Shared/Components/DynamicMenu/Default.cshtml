@@ -18,12 +18,24 @@
     <li class="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Manager <span class="caret"></span></a>
         <ul class="dropdown-menu">
+
+            <li><a asp-area="" asp-controller="Users" asp-action="PublishIssue">Publish issues</a></li>
+
             <li><a asp-area="Manager" asp-controller="UrbanIssue" asp-action="Index">New issues</a></li>
+
+            <li><a asp-area="" asp-controller="Issue" asp-action="Index">Approved Issues</a></li>
+
             <li role="separator" class="divider"></li>
+
             <li><a asp-area="Manager" asp-controller="Activity" asp-action="Index">My Activity</a></li>
+
             @if ((string)this.ViewData["username"] == WebConstants.ManagerUserName)
             {
-                <li><a asp-area="Manager" asp-controller="Activity" asp-action="AllManagersActivity">All Activity</a></li> 
+                <li>
+                    <a asp-area="Manager" asp-controller="Activity" asp-action="AllManagersActivity">
+                        All Activity
+                    </a>
+                </li>
             }
         </ul>
     </li>
@@ -34,6 +46,7 @@
         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Blogger <span class="caret"></span></a>
         <ul class="dropdown-menu">
             <li><a asp-area="Blog" asp-controller="Articles" asp-action="Create">Publish Article</a></li>
+            <li><a asp-area="Blog" asp-controller="Articles" asp-action="Index">Articles</a></li>
         </ul>
     </li>
 }
@@ -43,12 +56,22 @@
         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Events <span class="caret"></span></a>
         <ul class="dropdown-menu">
             <li><a asp-area="Events" asp-controller="Events" asp-action="Create">Create Event</a></li>
+            <li><a asp-area="Events" asp-controller="Events" asp-action="Index">Events</a></li>
         </ul>
-    </li>    
+    </li>
 }
 
-<li><a asp-area="" asp-controller="Users" asp-action="PublishIssue">Upload</a></li>
+@if (!User.IsInRole(WebConstants.BlogAuthorRole))
+{
+    <li><a asp-area="Blog" asp-controller="Articles" asp-action="Index">Articles</a></li>
+}
 
-<li><a asp-area="Blog" asp-controller="Articles" asp-action="Index">Articles</a></li>
+@if (!User.IsInRole(WebConstants.EventCreatorRole))
+{
+    <li><a asp-area="Events" asp-controller="Events" asp-action="Index">Events</a></li>
+}
 
-<li><a asp-area="Events" asp-controller="Events" asp-action="Index">Events</a></li>
+@if (!User.IsInRole(WebConstants.ManagerRole))
+{
+    <li><a asp-area="" asp-controller="Users" asp-action="PublishIssue"><i class="glyphicon glyphicon-send"></i> Issue</a></li>
+}

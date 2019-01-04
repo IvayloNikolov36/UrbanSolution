@@ -129,11 +129,17 @@
 
         public const string InvalidIdentityDetails = "Invalid identity details";
 
+        public const string CantEditEvent = "You can't edit event, created by another user!";
+
+        public const string CantDeleteEvent = "You can't delete event, created by another user!";
+
         //View Component
         public const string ViewComponentDynamicMenuName = "DynamicMenu";
         public const string ViewComponentIssueDetailsButtonsName = "IssueDetailsButtons";
         public const string ViewComponentUrbanIssuesMapWithMarkersName = "UrbanIssuesMapWithMarkers";
         public const string ViewComponentIssueDetailsMapName = "IssueDetailsMap";
-        
+
+
+        public const string EditEventSuccess = "Successfully edited event.";
     }
 }

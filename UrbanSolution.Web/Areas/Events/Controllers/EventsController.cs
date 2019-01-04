@@ -1,28 +1,28 @@
-﻿using System;
-using System.Globalization;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using UrbanSolution.Models;
-using UrbanSolution.Services.Events;
-using UrbanSolution.Services.Events.Models;
-using UrbanSolution.Web.Areas.Events.Models;
-using UrbanSolution.Web.Infrastructure;
-using UrbanSolution.Web.Infrastructure.Extensions;
-using UrbanSolution.Web.Infrastructure.Filters;
+﻿using UrbanSolution.Web.Infrastructure;
 
 namespace UrbanSolution.Web.Areas.Events.Controllers
 {
-    [Area(WebConstants.EventsArea)]
-    [Authorize(Roles = WebConstants.EventCreatorRole)]
+    using Infrastructure.Extensions;
+    using Infrastructure.Filters;
+    using Models;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.AspNetCore.Mvc;
+    using System;
+    using System.Threading.Tasks;
+    using UrbanSolution.Models;
+    using UrbanSolution.Services.Events;
+    using UrbanSolution.Services.Events.Models;
+    using static Infrastructure.WebConstants;
+
+    [Area(EventsArea)]
+    [Authorize(Roles = EventCreatorRole)]
     public class EventsController : Controller
     {
         private readonly IEventService events;
         private readonly UserManager<User> userManager;
 
-        public EventsController(IEventService events, UserManager<User> userManager)
+        public EventsController( IEventService events, UserManager<User> userManager)
         {
             this.events = events;
             this.userManager = userManager;
@@ -47,29 +47,51 @@ namespace UrbanSolution.Web.Areas.Events.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            var model = new EventCreateFormModel
-            {
-                StartDate = DateTime.UtcNow.AddDays(1),
-                EndDate = DateTime.UtcNow.AddDays(1).AddHours(1)
-            };
+            var model = this.GetEventDateTimeProperties();
             
-            return this.View();
+            return this.View(model);
         }
 
         [HttpPost]
-        //[ValidateModelState]
+        [ValidateModelState]
         public async Task<IActionResult> Create(EventCreateFormModel model)
         {
-            var creatorId = (await this.userManager.GetUserAsync(this.User)).Id;
+            var creator = await this.userManager.GetUserAsync(this.User);
 
-            var latitude = double.Parse(model.Latitude.Trim(), CultureInfo.InvariantCulture);
-            var longitude = double.Parse(model.Longitude.Trim(), CultureInfo.InvariantCulture);
+            var eventId = await this.events.CreateAsync(model.Title, model.Description, model.StartDate,
+                model.EndDate, model.PictureFile, model.Address, model.Latitude, model.Longitude, creator.Id);
 
-            await this.events.CreateAsync(model.Title, model.Description, model.StartDate, model.EndDate, model.PictureUrl, model.Address, latitude, longitude, creatorId);
+            return this.RedirectToAction("Details", "Events", new { Area = "Events", id = eventId })
+                .WithSuccess("", EventCreationSuccess);
+        }
 
-            this.TempData.AddSuccessMessage(WebConstants.EventCreationSuccess);
+        public IActionResult Edit(int id)
+        {
+            var model = this.events.GetAsync<EventEditServiceModel>(id);
 
-            return this.RedirectToAction(nameof(Index));
+            return this.ViewOrNotFound(model);
+        }
+
+        [HttpPost]                                      
+        [ValidateModelState]
+        public async Task<IActionResult> Edit(int id, EventEditServiceModel model)
+        {
+            //TODO: use ValidateIdExistsFilter
+
+            var user = await this.userManager.GetUserAsync(this.User);
+
+            var isEdited = await this.events.EditAsync(
+                id, model.CreatorId, user.Id, model.Title, model.Description, 
+                model.StartDate, model.EndDate, model.Address, model.Latitude, model.Longitude);
+
+            if (!isEdited)
+            {
+                return this.RedirectToAction("Details", "Events", new {Area = "Events", id})
+                    .WithDanger("", CantEditEvent);
+            }
+
+            return this.RedirectToAction("Details", "Events", new { Area = "Events", id })
+                .WithSuccess("", EditEventSuccess); 
         }
 
         [HttpGet]
@@ -77,8 +99,23 @@ namespace UrbanSolution.Web.Areas.Events.Controllers
         public async Task<IActionResult> Details(int id)
         {
             var eventModel = await this.events.GetAsync<EventDetailsServiceModel>(id);
-            
-            return this.View(eventModel);
+
+            var user = await this.userManager.GetUserAsync(this.User);
+
+            this.ViewData[ViewDataUsernameKey] = user.UserName;
+
+            return this.ViewOrNotFound(eventModel);
+        }
+
+        private EventCreateFormModel GetEventDateTimeProperties()
+        {
+            var model = new EventCreateFormModel
+            {
+                StartDate = DateTime.UtcNow.AddDays(1).AddMinutes(15),
+                EndDate = DateTime.UtcNow.AddDays(1).AddHours(1).AddMinutes(15)
+            };
+
+            return model;
         }
     }
 }

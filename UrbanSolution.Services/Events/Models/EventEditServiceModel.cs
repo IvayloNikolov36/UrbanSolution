@@ -1,14 +1,15 @@
-﻿namespace UrbanSolution.Web.Areas.Events.Models
+﻿namespace UrbanSolution.Services.Events.Models
 {
-    using Microsoft.AspNetCore.Http;
+    using Mapping;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
-    using static Services.Utilities.ServiceConstants;
+    using UrbanSolution.Models;
+    using static Utilities.ServiceConstants;
     using static UrbanSolution.Models.Utilities.DataConstants;
 
-    public class EventCreateFormModel : IValidatableObject
-    {        
+    public class EventEditServiceModel : IMapFrom<Event>, IValidatableObject
+    {
         [Required]
         [StringLength(EventTitleMaxLength, MinimumLength = EventTitleMinLength)]
         public string Title { get; set; }
@@ -24,15 +25,14 @@
         public DateTime EndDate { get; set; }
 
         [Required]
-        public IFormFile PictureFile { get; set; }
-
-        [Required]
         public string Address { get; set; }
 
         [Required]
         public string Latitude { get; set; }
 
         public string Longitude { get; set; }
+
+        public string CreatorId { get; set; }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
@@ -51,5 +51,6 @@
                 yield return new ValidationResult(NoCoordinatesValidationError);
             }
         }
+
     }
 }
