@@ -2,7 +2,6 @@
 {
     using Data;
     using FluentAssertions;
-    using Mapping;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -16,6 +15,7 @@
     public class ManagerActivityServiceTests
     {
         private int managerId;
+        private int logsCount;
 
         private const string DefaultUserName = "Default{0}";
 
@@ -40,6 +40,9 @@
             var managerLogs = this.CreateManagerLogs(manager.Id);
             var secondManagerLogs = this.CreateManagerLogs(secondManager.Id);
             var allLogs = managerLogs.Concat(secondManagerLogs);
+
+            logsCount = allLogs.Count();
+
             await this.db.AddRangeAsync(allLogs);
 
             await this.db.SaveChangesAsync();
@@ -47,15 +50,11 @@
             //Act
             var result = await service.GetAsync(manager.Id);
 
-            var expected = managerLogs.OrderByDescending(x => x.DateTime)
-                .AsQueryable().To<ManagerActivitiesListingServiceModel>().ToList();
-
             //Assert
             result.Should().NotBeNull();
             result.Should().BeOfType<List<ManagerActivitiesListingServiceModel>>();
-            result.Should().HaveCount(2);
-            result.Should().BeEquivalentTo(expected);
-            
+            result.Should().BeInDescendingOrder(x => x.DateTime);
+            result.Should().NotContain(a => a.UserName == secondManager.UserName);
         }
 
         [Fact]
@@ -70,23 +69,22 @@
 
             var managerLogs = this.CreateManagerLogs(manager.Id);
             var secondManagerLogs = this.CreateManagerLogs(secondManager.Id);
-            var allLogs = managerLogs.Concat(secondManagerLogs);
-            await this.db.AddRangeAsync(allLogs);
+
+            logsCount = managerLogs.Count + secondManagerLogs.Count;
+
+            await this.db.AddRangeAsync(managerLogs);
+            await this.db.AddRangeAsync(secondManagerLogs);
 
             await this.db.SaveChangesAsync();
 
             //Act
-            var result = await service.AllAsync();
-
-            var expected = allLogs.OrderByDescending(x => x.DateTime)
-                .AsQueryable().To<ManagerActivitiesListingServiceModel>().ToList();
+            var result = (await service.AllAsync()).ToList();
 
             //Assert
             result.Should().NotBeNull();
             result.Should().BeOfType<List<ManagerActivitiesListingServiceModel>>();
-            result.Should().HaveCount(4);
-            result.Should().BeEquivalentTo(expected);
-            
+            result.Should().HaveCount(logsCount);
+            result.Should().BeInDescendingOrder(x => x.DateTime);
         }
 
         private List<ManagerLog> CreateManagerLogs(string managerId)
@@ -99,7 +97,7 @@
 
             var secondLog = new ManagerLog
             {
-                DateTime = new DateTime(2018, 11, 6),
+                DateTime = new DateTime(2017, 11, 6),
                 ManagerId = managerId,
                 Activity = ManagerActivityType.EditedIssue
             };

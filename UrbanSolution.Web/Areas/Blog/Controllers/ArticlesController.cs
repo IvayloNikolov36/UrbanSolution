@@ -62,7 +62,7 @@
         {            
             var userId = this.userManager.GetUserId(User);
 
-            await this.articles.CreateAsync(model.Title, model.Content, model.PictureFile, userId);
+            var articleId = await this.articles.CreateAsync(model.Title, model.Content, model.PictureFile, userId);
 
             return RedirectToAction(nameof(Index));
         }
@@ -73,7 +73,6 @@
 
             return this.ViewOrNotFound(model);
         }
-
 
         [ServiceFilter(typeof(ValidateArticleIdExistsAttribute))]
         [ValidateModelState]

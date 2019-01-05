@@ -11,7 +11,7 @@
     using System.Linq;
     using System.Threading.Tasks;
     using UrbanSolution.Models;
-    using Utilities;
+    using static Utilities.ServiceConstants;
 
     public class BlogArticleService : IBlogArticleService
     {
@@ -34,14 +34,13 @@
             var articles = await this.db
                 .Articles
                 .OrderByDescending(a => a.PublishDate)
-                .Skip((page - 1) * ServiceConstants.BlogArticlesPageSize)
-                .Take(ServiceConstants.BlogArticlesPageSize)
+                .Skip((page - 1) * BlogArticlesPageSize)
+                .Take(BlogArticlesPageSize)
                 .To<BlogArticleListingServiceModel>()
                 .ToListAsync();
 
             return articles;
         }
-
 
         public async Task<int> TotalAsync()
         {
@@ -61,7 +60,7 @@
             return article;
         }
 
-        public async Task CreateAsync(string title, string content, IFormFile pictureFile, string authorId)
+        public async Task<int> CreateAsync(string title, string content, IFormFile pictureFile, string authorId)
         {
             var sanitizedContent = this.htmlService.Sanitize(content);
 
@@ -79,6 +78,8 @@
             await this.db.Articles.AddAsync(article);
 
             await this.db.SaveChangesAsync();
+
+            return article.Id;
         }
 
         public async Task<bool> UpdateAsync(int id, string authorId, string title, string content)
@@ -111,9 +112,14 @@
                 return false;
             }
 
+            var articlePicId = article.CloudinaryImageId;
+
+            //First delete article, than the image
             this.db.Articles.Remove(article);
 
             await this.db.SaveChangesAsync();
+
+            await this.pictureService.DeleteImageAsync(articlePicId);
 
             return true;
         }

@@ -153,9 +153,7 @@
             const int NewImageId = 25;
 
             //Arrange
-            var pictureService = new Mock<IPictureService>();
-
-            pictureService.Setup(p => p.UploadImageAsync(It.IsAny<string>(), It.IsAny<IFormFile>())).Returns(Task.FromResult(NewImageId));
+            var pictureService = IPictureServiceMock.New(NewImageId);
 
             var service = new ResolvedService(db, null, pictureService.Object, this.managerActivityMock.Object);
 
