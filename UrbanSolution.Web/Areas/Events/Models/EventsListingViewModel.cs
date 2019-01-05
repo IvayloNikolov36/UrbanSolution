@@ -3,6 +3,7 @@
     using Services.Utilities;
     using System;
     using System.Collections.Generic;
+    using UrbanSolution.Services.Events.Models;
 
     public class EventsListingViewModel
     {

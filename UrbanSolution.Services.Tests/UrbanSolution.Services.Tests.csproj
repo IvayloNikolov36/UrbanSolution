@@ -36,6 +36,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\UrbanSolution.Data\UrbanSolution.Data.csproj" />
+    <ProjectReference Include="..\UrbanSolution.Models\UrbanSolution.Models.csproj" />
     <ProjectReference Include="..\UrbanSolution.Services.Mapping\UrbanSolution.Services.Mapping.csproj" />
     <ProjectReference Include="..\UrbanSolution.Services\UrbanSolution.Services.csproj" />
   </ItemGroup>

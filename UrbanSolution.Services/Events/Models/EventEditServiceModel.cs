@@ -32,8 +32,6 @@
 
         public string Longitude { get; set; }
 
-        public string CreatorId { get; set; }
-
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             if (this.StartDate <= DateTime.UtcNow.AddDays(1))

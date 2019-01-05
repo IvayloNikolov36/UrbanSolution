@@ -1,6 +1,4 @@
-﻿using UrbanSolution.Web.Infrastructure;
-
-namespace UrbanSolution.Web.Areas.Events.Controllers
+﻿namespace UrbanSolution.Web.Areas.Events.Controllers
 {
     using Infrastructure.Extensions;
     using Infrastructure.Filters;
@@ -81,8 +79,8 @@ namespace UrbanSolution.Web.Areas.Events.Controllers
             var user = await this.userManager.GetUserAsync(this.User);
 
             var isEdited = await this.events.EditAsync(
-                id, model.CreatorId, user.Id, model.Title, model.Description, 
-                model.StartDate, model.EndDate, model.Address, model.Latitude, model.Longitude);
+                id, user.Id, model.Title, model.Description,model.StartDate, model.EndDate, 
+                model.Address, model.Latitude, model.Longitude);
 
             if (!isEdited)
             {

@@ -23,7 +23,7 @@
             this.pictureService = pictureService;
         }
 
-        public async Task<IEnumerable<TModel>> AllAsync<TModel>(int page)
+        public async Task<IEnumerable<TModel>> AllAsync<TModel>(int page = 1)
         {
             var eventsModel = await this.db
                 .Events
@@ -63,15 +63,17 @@
             return eventObj.Id;
         }
 
-        public async Task<bool> EditAsync(int id, string creatorId, string userId, string title, string description, 
+        public async Task<bool> EditAsync(int id, string userId, string title, string description, 
             DateTime starts, DateTime ends, string address, string latitude, string longitude)
         {
+            var eventToUpdate = await this.db.FindAsync<Event>(id);
+
+            var creatorId = eventToUpdate.CreatorId;
+
             if (userId != creatorId)
             {
                 return false;
             }
-
-            var eventToUpdate = await this.db.FindAsync<Event>(id);
 
             eventToUpdate.Title = title;
             eventToUpdate.Description = description;
