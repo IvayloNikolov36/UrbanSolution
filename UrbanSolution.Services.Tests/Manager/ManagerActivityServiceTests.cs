@@ -16,7 +16,6 @@
     {
         private int managerId;
         private int logsCount;
-
         private const string DefaultUserName = "Default{0}";
 
         private readonly UrbanSolutionDbContext db;

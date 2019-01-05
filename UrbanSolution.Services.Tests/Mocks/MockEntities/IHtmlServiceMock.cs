@@ -5,12 +5,12 @@
 
     public class IHtmlServiceMock
     {
-        public static Mock<IHtmlService> New()
+        public static Mock<IHtmlService> New(string content)
         {
             var htmlServiceMock = new Mock<IHtmlService>();
 
-            htmlServiceMock.Setup(h => h.Sanitize(It.IsAny<string>()))
-                .Returns(It.IsAny<string>());
+            htmlServiceMock.Setup(h => h.Sanitize(content))
+                .Returns(content);
 
             return htmlServiceMock;
         }

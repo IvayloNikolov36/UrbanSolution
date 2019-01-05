@@ -1,9 +1,12 @@
-﻿namespace UrbanSolution.Services.Tests.Blog
+﻿using Microsoft.AspNetCore.Http;
+
+namespace UrbanSolution.Services.Tests.Blog
 {
     using Data;
     using FluentAssertions;
     using Mocks;
     using Mocks.MockEntities;
+    using Moq;
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
@@ -125,17 +128,17 @@
         [Fact]
         public async Task CreateAsyncShould_SetTheCorrectParametersForArtcilePropertiesAnd_ReturnsArticleId()
         {
+            this.id = 0;
             const int NewImageId = 258;
             const int FirstArticleId = 1;
             const string Title = "Title";
-            const string Content = "<p>Content</p>";
-
+            const string Content = "Content123";
             const string AuthorId = "8945opi7563k87";
 
             //Arrange
             var pictureService = IPictureServiceMock.New(NewImageId);
 
-            var htmlServiceMock = IHtmlServiceMock.New();
+            var htmlServiceMock = IHtmlServiceMock.New(Content);
 
             var service = new BlogArticleService(db, htmlServiceMock.Object, pictureService.Object);
 
@@ -146,10 +149,15 @@
             //Assert
             resultId.Should().Be(FirstArticleId);
 
-            savedEntry.Title = Title;
-            savedEntry.Content = Content;
-            savedEntry.AuthorId = AuthorId;
-            savedEntry.CloudinaryImageId = NewImageId;
+            htmlServiceMock.Verify(h => h.Sanitize(It.IsAny<string>()), Times.Once);
+
+            pictureService.Verify(p => 
+                p.UploadImageAsync(It.IsAny<string>(), It.IsAny<IFormFile>()), Times.Once);
+
+            savedEntry.Title.Should().Match(Title);
+            savedEntry.Content.Should().Match(Content);
+            savedEntry.AuthorId.Should().Match(AuthorId);
+            savedEntry.CloudinaryImageId.Should().Be(NewImageId);
             savedEntry.PublishDate.Should().NotBeCloseTo(DateTime.UtcNow);
         }
 
@@ -160,7 +168,7 @@
             const string ContentForUpdate = "<p>Content</p>";
 
             //Arrange
-            var htmlServiceMock = IHtmlServiceMock.New();
+            var htmlServiceMock = IHtmlServiceMock.New(ContentForUpdate);
 
             var service = new BlogArticleService(db, htmlServiceMock.Object, null);
 
@@ -179,19 +187,21 @@
             //Assert
             result.Should().BeTrue();
 
+            htmlServiceMock.Verify(h => h.Sanitize(It.IsAny<string>()), Times.Once);
+
             updatedEntry.Title = TitleForUpdate;
             updatedEntry.Content = ContentForUpdate;
         }
 
         [Fact]
-        public async Task UpdateAsyncShould__ShouldReturnsFalseIf_EventCreatorIsAnotherUser()
+        public async Task UpdateAsyncShould_ReturnsFalseIf_EventCreatorIsAnotherUser()
         {
             const string AuthorIdWhoWantsToUpdate = "789ioptee89897714w78ex5";
             const string TitleForUpdate = "Title";
             const string ContentForUpdate = "<p>Content</p>";
 
             //Arrange
-            var htmlServiceMock = IHtmlServiceMock.New();
+            var htmlServiceMock = IHtmlServiceMock.New(ContentForUpdate);
 
             var service = new BlogArticleService(db, htmlServiceMock.Object, null);
 
@@ -208,10 +218,12 @@
 
             //Assert
             result.Should().BeFalse();
+
+            htmlServiceMock.Verify(h => h.Sanitize(It.IsAny<string>()), Times.Never);
         }
 
         [Fact]
-        public async Task DeleteAsyncShould_ReturnsTrueIf_EventCreatorIsAnotherUser_AndShouldDeleteArticle_AndArticleImageFormImagesTable()
+        public async Task DeleteAsyncShould_ReturnsTrueIf_EventCreatorIsAnotherUser_AndShouldDeleteArticle_AndImage()
         {
             int imageToDeleteId = 58963;
 
@@ -236,17 +248,23 @@
 
             //Assert
             result.Should().BeTrue();
+
+            picServiceMock.Verify(p => p.DeleteImageAsync(It.IsAny<int>()), Times.Once);
+
             this.db.Articles.Should().NotContain(a => a.Id == article.Id);
         }
 
         [Fact]
-        public async Task DeleteAsyncShould_ReturnsFalseIf_EventCreatorIsAnotherUser_And_ShouldNotDeleteArticle()
+        public async Task DeleteAsyncShould_ReturnsFalseIf_EventCreatorIsAnotherUser_And_ShouldNotDeleteArticle_AndImage()
         {
+            int imageToDeleteId = 58963;
             const string anotherAuthorId = "899f4fgg5f57dmmmmmmm";
 
             //Arrange
-            var service = new BlogArticleService(db, null, null);
+            var picServiceMock = IPictureServiceMock.New(imageToDeleteId);           
 
+            var service = new BlogArticleService(db, null, picServiceMock.Object);
+                
             var author = this.CreateBlogAuthor();
             await this.db.AddAsync(author);
 
@@ -260,6 +278,9 @@
 
             //Assert
             result.Should().BeFalse();
+
+            picServiceMock.Verify(p => p.DeleteImageAsync(It.IsAny<int>()), Times.Never);
+
             this.db.Articles.Should().Contain(a => a.Id == article.Id);
         }
 

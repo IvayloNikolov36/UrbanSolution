@@ -2,16 +2,17 @@
 {
     using Data;
     using FluentAssertions;
-    using Implementations;
     using Microsoft.AspNetCore.Http;
-    using Microsoft.EntityFrameworkCore;
     using Mocks;
     using Moq;
-    using UrbanSolution.Models;
     using System;
+    using System.Linq;
     using System.Threading.Tasks;
+    using UrbanSolution.Models;
+    using UrbanSolution.Models.Enums;
     using UrbanSolution.Services.Manager.Models;
     using UrbanSolution.Services.Manager.Implementations;
+    using UrbanSolution.Services.Manager;
     using Xunit;
 
     public class ManagerResolvedServiceTests
@@ -19,25 +20,28 @@
         private int issueId;
         private int imageId;
 
+        private const int DefaultPicId = 8965129;
         private const string DefaultDescription = "Description";
         private const string ChangedDescription = "ChangedDescription";
         private const string DefaultUserName = "DefaultManagerUserName";
 
         private readonly UrbanSolutionDbContext db;
-        private readonly Mock<ManagerActivityService> managerActivityMock;
 
         public ManagerResolvedServiceTests()
         {
             AutomapperInitializer.Initialize();
             this.db = InMemoryDatabase.Get();
-            this.managerActivityMock = new Mock<ManagerActivityService>(this.db);
         }
 
         [Fact]
         public async Task DeleteAsyncShould_ReturnsFalse_IfManagerId_IsNotEqualTo_ResolvedPublisherId()
         {
             //Arrange
-            var service = new ResolvedService(db, null, null, null);
+            var issueService = new Mock<IManagerIssueService>();
+            var pictureService = IPictureServiceMock.New(DefaultPicId);
+            var activityService = new Mock<IManagerActivityService>();
+
+            var service = new ResolvedService(db, issueService.Object, pictureService.Object, activityService.Object);
 
             var manager = this.CreateUser(null);
             var publisher = this.CreateUser(null);
@@ -52,22 +56,32 @@
             await db.SaveChangesAsync();
 
             //Act
+
             var result = await service.DeleteAsync(manager.Id, resolved.Id);
 
             //Assert
+
             result.Should().BeFalse();
+
+            issueService.Verify(i => i.RemoveResolvedReferenceAsync(It.IsAny<int>()), Times.Never);
+
+            pictureService.Verify(p => p.DeleteImageAsync(It.IsAny<int>()), Times.Never);
+
+            activityService.Verify(a => 
+                a.WriteManagerLogInfoAsync(It.IsAny<string>(), It.IsAny<ManagerActivityType>()), Times.Never);
+
         }
 
         [Fact]
         public async Task DeleteAsyncShould_ReturnsTrueAnd_DeletesCorrectResolvedIssue()
         {
             //Arrange
-            var cloudinaryService = new Mock<CloudinaryService>(ConfigurationMock.New());
-            var pictureService = new Mock<PictureService>(db, cloudinaryService.Object);
 
-            var managerIssueService = new Mock<ManagerIssueService>(db, pictureService.Object, this.managerActivityMock.Object);
+            var activityService = new Mock<IManagerActivityService>();
+            var pictureService = IPictureServiceMock.New(DefaultPicId);
+            var issueService = new Mock<IManagerIssueService>();
 
-            var service = new ResolvedService(db, managerIssueService.Object, pictureService.Object, this.managerActivityMock.Object);
+            var service = new ResolvedService(db, issueService.Object, pictureService.Object, activityService.Object);
 
             var (managerId, secondIssueId, secondResolvedId, resolved) = 
                 await this.CreateEntities(db);
@@ -81,8 +95,14 @@
             db.ResolvedIssues.Should().HaveCount(1);
             db.ResolvedIssues.Should().BeEquivalentTo(resolved);
 
-            (await db.UrbanIssues.FirstAsync(i => i.Id == secondIssueId))
-                .ResolvedIssue.Should().BeNull();
+            db.UrbanIssues.First(i => i.Id == secondIssueId).ResolvedIssue.Should().BeNull();
+
+            issueService.Verify(i => i.RemoveResolvedReferenceAsync(It.IsAny<int>()), Times.Once);
+
+            pictureService.Verify(p => p.DeleteImageAsync(It.IsAny<int>()), Times.Once);
+
+            activityService.Verify(a =>
+                a.WriteManagerLogInfoAsync(It.IsAny<string>(), It.IsAny<ManagerActivityType>()), Times.Once);
         }
 
         [Fact]
@@ -98,34 +118,24 @@
             var result = await service.GetAsync<ResolvedIssueEditServiceModel>(resolved.Id);
 
             //Assert
+
+            result.Should().BeOfType<ResolvedIssueEditServiceModel>();
+
+            //check properties are mapped correctly
             result.Id.Should().Be(resolved.Id);
             result.CloudinaryImageId.Should().Be(resolved.CloudinaryImageId);
             result.Description.Should().Be(resolved.Description);
-        }
-
-
-        [Fact]
-        public async Task UpdateAsyncShould_ReturnsFalse_IfManagerId_IsNotEqualTo_ResolvedPublisherId()
-        {
-            //Arrange
-            var service = new ResolvedService(db, null, null, this.managerActivityMock.Object);
-
-            var (managerId, secondIssueId, secondResolvedId, resolved) =
-                await this.CreateEntities(db);
-
-            //Act
-            var result = 
-                await service.UpdateAsync(managerId, resolved.Id, resolved.Description, pictureFile: null);
-
-            //Assert
-            result.Should().BeTrue();
         }
 
         [Fact]
         public async Task UpdateAsyncShould_ReturnsTrueAnd_ChangesDescriptionProperty()
         {
             //Arrange
-            var service = new ResolvedService(db, null, null, this.managerActivityMock.Object);
+            var issueService = new Mock<IManagerIssueService>();
+            var pictureService = IPictureServiceMock.New(DefaultPicId);
+            var activityService = new Mock<IManagerActivityService>();
+
+            var service = new ResolvedService(db, issueService.Object, pictureService.Object, activityService.Object);
 
             var manager = this.CreateUser(null);
             await db.AddRangeAsync(manager);
@@ -133,32 +143,37 @@
             var issue = this.CreateIssue();
             await db.AddAsync(issue);
 
-            var resolved = this.CreateResolved(manager.Id, issue.Id, int.MaxValue);
+            var resolved = this.CreateResolved(manager.Id, issue.Id, DefaultPicId);
             await db.AddAsync(resolved);
 
             await db.SaveChangesAsync();
 
             //Act
-            var result = await service.UpdateAsync(manager.Id, resolved.Id, ChangedDescription, null);
+            var result = await service.UpdateAsync(manager.Id, resolved.Id, ChangedDescription, pictureFile: null);
 
             //Assert
             result.Should().BeTrue();
+
             resolved.Description.Should().NotMatch(DefaultDescription);
             resolved.Description.Should().Match(ChangedDescription);
+
+            pictureService.Verify(p => p.DeleteImageAsync(It.IsAny<int>()), Times.Never);
+
+            activityService.Verify(a =>
+                a.WriteManagerLogInfoAsync(It.IsAny<string>(), It.IsAny<ManagerActivityType>()), Times.Once);
         }
 
         [Fact]
-        public async Task UpdateAsyncShould_ReturnsTrueAnd_ChangesResolvedPictureIfIformFileIsGiven()
+        public async Task UpdateAsyncShould_ReturnsTrueAnd_ChangesResolvedPictureFileHasPassed()
         {
-            const int NewImageId = 25;
-
             //Arrange
-            var pictureService = IPictureServiceMock.New(NewImageId);
+            var issueService = new Mock<IManagerIssueService>();
+            var pictureService = IPictureServiceMock.New(DefaultPicId);
+            var activityService = new Mock<IManagerActivityService>();
 
-            var service = new ResolvedService(db, null, pictureService.Object, this.managerActivityMock.Object);
+            var service = new ResolvedService(db, issueService.Object, pictureService.Object, activityService.Object);
 
-            var (managerId, secondIssueId, secondResolvedId, resolved) =
-                await this.CreateEntities(db);
+            var (managerId, secondIssueId, secondResolvedId, resolved) = await this.CreateEntities(db);
 
             var file = new Mock<IFormFile>();           
 
@@ -169,10 +184,17 @@
 
             //Assert
             result.Should().BeTrue();
+
             resolved.CloudinaryImage.Should().NotBe(oldImage);
-            resolved.CloudinaryImageId.Should().Be(NewImageId);
+            resolved.CloudinaryImageId.Should().Be(DefaultPicId);
+
             resolved.Description.Should().NotMatch(DefaultDescription);
             resolved.Description.Should().Match(ChangedDescription);
+
+            pictureService.Verify(p => p.DeleteImageAsync(It.IsAny<int>()), Times.Once);
+
+            activityService.Verify(a =>
+                a.WriteManagerLogInfoAsync(It.IsAny<string>(), It.IsAny<ManagerActivityType>()), Times.Once);
         }
 
         private async Task<(string, int, int, ResolvedIssue)> CreateEntities(
