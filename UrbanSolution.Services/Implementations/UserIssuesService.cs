@@ -1,4 +1,6 @@
 ﻿
+using UrbanSolution.Services.Models;
+
 namespace UrbanSolution.Services.Implementations
 {
     using Data;
@@ -19,7 +21,8 @@ namespace UrbanSolution.Services.Implementations
             this.pictureService = pictureService;
         }
 
-        public async Task UploadAsync(string userId, string title, string description, IFormFile pictureFile, string issueType, string region, string address, string latitude, string longitude)
+        public async Task<int> UploadAsync(string userId, string title, string description, 
+            IFormFile pictureFile, string issueType, string region, string address, string latitude, string longitude)
         {
             var picId = await this.pictureService.UploadImageAsync(userId, pictureFile);
 
@@ -40,6 +43,8 @@ namespace UrbanSolution.Services.Implementations
             this.db.Add(issue);
 
             await this.db.SaveChangesAsync();
+
+            return issue.Id;
         }
     }
 }

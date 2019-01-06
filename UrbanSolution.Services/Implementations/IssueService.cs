@@ -19,14 +19,13 @@
             this.db = db;
         }
 
-        public async Task<IEnumerable<UrbanIssuesListingServiceModel>> AllAsync(
-            bool isApproved, int page = 1)
+        public async Task<IEnumerable<UrbanIssuesListingServiceModel>> AllAsync(bool isApproved, int page = 1)
         {
             var issues = await this.db
                 .UrbanIssues.Where(i => i.IsApproved == isApproved)
                 .OrderByDescending(i => i.PublishedOn)
                 .Skip((page - 1) * IssuesPageSize)
-                .Take(count: IssuesPageSize)
+                .Take(IssuesPageSize)
                 .To<UrbanIssuesListingServiceModel>()
                 .ToListAsync();
 

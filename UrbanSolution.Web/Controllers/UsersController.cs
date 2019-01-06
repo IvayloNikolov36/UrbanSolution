@@ -18,15 +18,11 @@
     {
         private readonly IUserIssuesService issues;
         private readonly UserManager<User> userManager;
-        private readonly ICloudinaryService cloudinary;
-        private readonly IPictureService pictureService;
 
-        public UsersController(IUserIssuesService issues, UserManager<User> userManager, ICloudinaryService cloudinary, IPictureService pictureService)
+        public UsersController(IUserIssuesService issues, UserManager<User> userManager)
         {
             this.issues = issues;
             this.userManager = userManager;
-            this.cloudinary = cloudinary;          
-            this.pictureService = pictureService;
         }
 
         public IActionResult PublishIssue()
@@ -49,23 +45,22 @@
 
             var userId = this.userManager.GetUserId(User);
 
-            await this.issues.UploadAsync(userId, model.Title, model.Description, model.PictureFile, model.IssueType,model.Region, model.Address, model.Latitude, model.Longitude);
+            var issueId = await this.issues.UploadAsync(userId, model.Title, model.Description, model.PictureFile, model.IssueType,model.Region, model.Address, model.Latitude, model.Longitude);
 
-            return this.RedirectToAction(nameof(HomeController.Index), "Home").WithSuccess("", WebConstants.IssueUploaded);
+            return this.RedirectToAction("Details", "Issue", new { area = "", id = issueId })
+                .WithSuccess("", WebConstants.IssueUploaded);
         }
 
         private void SetModelSelectListItems(PublishIssueViewModel model)
         {
-            model.Regions = Enum.
-                GetNames(typeof(RegionType))
+            model.Regions = Enum.GetNames(typeof(RegionType))
                 .Select(r => new SelectListItem
                 {
                     Text = r,
                     Value = r
                 }).ToList();
 
-            model.IssueTypes = Enum
-                .GetNames(typeof(IssueType))
+            model.IssueTypes = Enum.GetNames(typeof(IssueType))
                 .Select(i => new SelectListItem
                 {
                     Text = (Enum.Parse<IssueType>(i)).ToFriendlyName(),

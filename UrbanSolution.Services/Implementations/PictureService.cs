@@ -1,9 +1,7 @@
-﻿
-namespace UrbanSolution.Services.Implementations
+﻿namespace UrbanSolution.Services.Implementations
 {
     using Data;
     using Microsoft.AspNetCore.Http;
-    using System;
     using System.Threading.Tasks;
     using UrbanSolution.Models;
 
@@ -11,11 +9,14 @@ namespace UrbanSolution.Services.Implementations
     {
         private readonly UrbanSolutionDbContext db;
         private readonly ICloudinaryService cloudinary;
+        private readonly IPictureInfoWriterService pictureInfoWriter;
 
-        public PictureService(UrbanSolutionDbContext db, ICloudinaryService cloudinary)
+        public PictureService(
+            UrbanSolutionDbContext db, ICloudinaryService cloudinary, IPictureInfoWriterService pictureInfoWriter)
         {
             this.db = db;
             this.cloudinary = cloudinary;
+            this.pictureInfoWriter = pictureInfoWriter;
         }
 
         public async Task<int> UploadImageAsync(string userId, IFormFile pictureFile)
@@ -26,7 +27,7 @@ namespace UrbanSolution.Services.Implementations
 
             var cloudinaryThumbnailPictureUrl = this.cloudinary.GetImageThumbnailUrl(uploadResult.PublicId);
 
-            var pictureId = await this.WritePictureInfoAsync(userId, cloudinaryPictureUrl, cloudinaryThumbnailPictureUrl, uploadResult.PublicId, uploadResult.CreatedAt, uploadResult.Length);
+            var pictureId = await this.pictureInfoWriter.WriteToDbAsync(userId, cloudinaryPictureUrl, cloudinaryThumbnailPictureUrl, uploadResult.PublicId, uploadResult.CreatedAt, uploadResult.Length);
 
             return pictureId;
         }
@@ -44,23 +45,5 @@ namespace UrbanSolution.Services.Implementations
             await this.cloudinary.DeleteImages(picturePublicId);
         }
 
-        private async Task<int> WritePictureInfoAsync(string uploaderId, string pictureUrl, string pictureThumbnailUrl, string picturePublicId, DateTime uploadedOn, long pictureLength)
-        {
-            var cloudinaryImage = new CloudinaryImage
-            {
-                UploaderId = uploaderId,
-                PictureUrl = pictureUrl,
-                PictureThumbnailUrl = pictureThumbnailUrl,
-                PicturePublicId = picturePublicId,
-                UploadedOn = uploadedOn,
-                Length = pictureLength
-            };
-
-            await this.db.CloudinaryImages.AddAsync(cloudinaryImage);
-
-            await this.db.SaveChangesAsync();
-
-            return cloudinaryImage.Id;
-        }
     }
 }
