@@ -64,6 +64,7 @@
         public const string ViewDataManagerId = "managerId";
         public const string ViewDataManagerRegionKey = "ManagerRegionKey";
         public const string ViewDataUsernameKey = "username";
+        public const string ViewDataUserKey = "user";
 
         public const string EventCreationSuccess = "Event successfylly created.";
 
@@ -141,5 +142,7 @@
 
 
         public const string EditEventSuccess = "Successfully edited event.";
+
+        public const string CommentPostedSucces = "Successfully posted comment";
     }
 }

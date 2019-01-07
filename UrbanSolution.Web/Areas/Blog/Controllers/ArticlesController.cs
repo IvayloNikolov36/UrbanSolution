@@ -109,5 +109,6 @@
             return this.RedirectToAction("Index", new { Area = "Blog" })
                 .WithSuccess("", SuccessfullyDeletedArticle);
         }
+
     }
 }

@@ -1,6 +1,11 @@
-﻿@model UrbanSolution.Services.Blog.Models.BlogArticleDetailsServiceModel
+﻿@inject IAntiforgery AF
+@model UrbanSolution.Services.Blog.Models.BlogArticleDetailsServiceModel
 @{
     ViewData["Title"] = Model.Title;
+
+    var userName = (string)ViewData[WebConstants.ViewDataUsernameKey];
+
+    var isAuthenticated = this.User.Identity.IsAuthenticated;             //TODO: make a component view
 }
 
 <h3 class="text-center text-info">@ViewData["Title"]</h3>
@@ -14,10 +19,10 @@
     <h4>
         published by <em class="text-info">@Model.Author</em>
         on <em class="text-info">@Model.PublishDate.ToShortDateString()</em>
-        @if ((string)ViewData[WebConstants.ViewDataUsernameKey] == Model.Author)
+        @if (userName == Model.Author)
         {
-            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-warning">Edit</a>
-            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-sm btn-danger">Delete</a>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-warning">Edit</a>
+        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-sm btn-danger">Delete</a>
         }
     </h4>
 </div>
@@ -25,3 +30,94 @@
 <div class="row">
     @Html.Raw(Model.Content)
 </div>
+
+@if (isAuthenticated)
+{
+    <div class="form-group row">
+        <div class="col-md-6 col-md-offset-3">
+            <div class="panel panel-default">
+                <div class="panel-heading"><em class="text-info">Leave a Comment:</em></div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <div class="form-group row">
+                            <div class="col-md-12">
+                                <textarea id="CommentContent" rows="3" class="form-control"></textarea>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <button type="submit" id="Submit" class="btn btn-default"><em class="text-info">Submit</em></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (Model.HasComments)
+{
+    <div class="form-group row" id="allComments">
+        <div class="col-md-8 col-md-offset-2">
+            <div class="panel panel-default">
+                <div class="panel-heading"><em class="text-info">All comments:</em></div>
+                <div class="panel-body">
+                    <div class="form-group" id="commentsContainer">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        $.get("@Url.Action("All", "ArticleComments", new { Area = "" , id = Model.Id })",
+            function(data) {
+                for (var i = 0; i < data.length; i++) {
+                    $("#commentsContainer").append(
+                        '<div>' +
+                            '<div class="panel panel-default">' +
+                                '<div class="panel-heading"><em>Posted by: <em class="text-info">' + data[i].publisher +
+                                '</em> at: ' + data[i].postedOn + ' </em></div>' +
+                                '<div class="panel-body">' +
+                                    '<div class="form-group">' +
+                                        '<h4>' + data[i].content + '</h4>' +
+                                    '</div>' +
+                               '</div>' +
+                            '</div>' +
+                        '</div>');
+                }
+            });
+
+        $("#Submit").click(function() {
+            var content = $("#CommentContent").val();
+            var aft = "@AF.GetTokens(this.Context).RequestToken";
+            $.ajax({
+                type: "POST",
+                url: "/articlecomments/submit/@Model.Id",
+                data: {
+                    content: content,
+                    aft
+                },
+                success: function (commentResult) {
+                    console.log(commentResult);
+                    $("#commentsContainer").prepend(
+                        '<div>' +
+                        '<div class="panel panel-default">' +
+                        '<div class="panel-heading"><em>Posted by: <em class="text-info">' + commentResult.publisher +
+                        '</em> at: ' + commentResult.postedOn + ' </em></div>' +
+                        '<div class="panel-body">' +
+                        '<div class="form-group">' +
+                        '<h4>' + commentResult.content + '</h4>' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>');
+                    $("#CommentContent").val("");
+                }
+            });
+        });
+    </script>
+}

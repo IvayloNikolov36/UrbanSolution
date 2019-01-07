@@ -1,7 +1,4 @@
-﻿
-using UrbanSolution.Services.Models;
-
-namespace UrbanSolution.Services.Implementations
+﻿namespace UrbanSolution.Services.Implementations
 {
     using Data;
     using Microsoft.AspNetCore.Http;
@@ -46,5 +43,6 @@ namespace UrbanSolution.Services.Implementations
 
             return issue.Id;
         }
+
     }
 }

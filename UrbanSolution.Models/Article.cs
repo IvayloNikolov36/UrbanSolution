@@ -1,4 +1,6 @@
-﻿namespace UrbanSolution.Models
+﻿using System.Collections.Generic;
+
+namespace UrbanSolution.Models
 {
     using System;
     using System.ComponentModel.DataAnnotations;
@@ -25,6 +27,8 @@
         public string AuthorId { get; set; }
 
         public User Author { get; set; }
+
+        public ICollection<Comment> Comments { get; set; } = new List<Comment>();
 
     }
 }

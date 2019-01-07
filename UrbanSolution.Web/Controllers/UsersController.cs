@@ -49,11 +49,11 @@
 
             return this.RedirectToAction("Details", "Issue", new { area = "", id = issueId })
                 .WithSuccess("", WebConstants.IssueUploaded);
-        }
+        }       
 
         private void SetModelSelectListItems(PublishIssueViewModel model)
         {
-            model.Regions = Enum.GetNames(typeof(RegionType))
+            model.Regions = Enum.GetNames(typeof(RegionType)).Where(regionName => !regionName.EndsWith("All"))
                 .Select(r => new SelectListItem
                 {
                     Text = r,

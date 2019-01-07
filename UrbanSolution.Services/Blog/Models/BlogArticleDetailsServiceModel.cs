@@ -3,6 +3,7 @@
     using AutoMapper;
     using Mapping;
     using System;
+    using System.Linq;
     using UrbanSolution.Models;
 
     public class BlogArticleDetailsServiceModel : IMapFrom<Article>, IHaveCustomMappings
@@ -19,11 +20,14 @@
 
         public string Author { get; set; }
 
+        public bool HasComments { get; set; }
+
         public void CreateMappings(IMapperConfigurationExpression configuration)
         {
             configuration.CreateMap<Article, BlogArticleDetailsServiceModel>()
                 .ForMember(x => x.Author, m => m.MapFrom(a => a.Author.UserName))
-                .ForMember(x => x.PictureUrl, m => m.MapFrom(a => a.CloudinaryImage.PictureUrl));
+                .ForMember(x => x.PictureUrl, m => m.MapFrom(a => a.CloudinaryImage.PictureUrl))
+                .ForMember(x => x.HasComments, m => m.MapFrom(a => a.Comments.Any()));
         }
     }
 }

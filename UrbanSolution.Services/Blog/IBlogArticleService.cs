@@ -18,5 +18,6 @@
         Task<bool> UpdateAsync(int id, string authorId, string title, string content);
 
         Task<bool> DeleteAsync(int id, string authorId);
+
     }
 }

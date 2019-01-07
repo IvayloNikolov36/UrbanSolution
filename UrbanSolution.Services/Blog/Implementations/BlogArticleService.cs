@@ -1,4 +1,6 @@
-﻿namespace UrbanSolution.Services.Blog.Implementations
+﻿using UrbanSolution.Services.Models;
+
+namespace UrbanSolution.Services.Blog.Implementations
 {
     using Microsoft.AspNetCore.Http;
     using Data;
@@ -53,6 +55,7 @@
         {
             var article = await this.db
                 .Articles
+                .Include(a => a.Comments)
                 .Where(a => a.Id == id)
                 .To<TModel>()
                 .FirstOrDefaultAsync();
@@ -124,5 +127,6 @@
             return true;
         }
 
+      
     }
 }
