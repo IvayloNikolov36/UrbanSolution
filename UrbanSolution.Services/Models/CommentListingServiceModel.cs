@@ -7,6 +7,8 @@ namespace UrbanSolution.Services.Models
 {
     public class CommentListingServiceModel : IMapFrom<Comment>, IHaveCustomMappings
     {
+        public int Id { get; set; }
+
         public string Content { get; set; }
 
         public string Publisher { get; set; }

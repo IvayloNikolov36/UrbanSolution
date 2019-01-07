@@ -142,7 +142,6 @@
 
 
         public const string EditEventSuccess = "Successfully edited event.";
-
-        public const string CommentPostedSucces = "Successfully posted comment";
+        public static string EventNotFound = "No event found!";
     }
 }

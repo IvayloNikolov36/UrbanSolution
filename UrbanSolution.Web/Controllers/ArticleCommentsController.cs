@@ -1,8 +1,11 @@
 ﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using UrbanSolution.Models;
 using UrbanSolution.Services;
+using UrbanSolution.Services.Models;
+using UrbanSolution.Web.Infrastructure;
 
 namespace UrbanSolution.Web.Controllers
 {
@@ -43,9 +46,26 @@ namespace UrbanSolution.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
-            var comment = this.comments.GetAsync(id);
+            var comment = await this.comments.GetAsync(id);
 
             return new JsonResult(comment);
+        }
+
+        [HttpGet]
+        //[Authorize(Roles = WebConstants.AdminRole + "," + WebConstants.BlogAuthorRole)]
+        public async Task<IActionResult> Delete(int id, int articleId, string articleAuthor)
+        {
+            //TODO: 
+            //var user = await this.userManager.GetUserAsync(this.User);
+
+            var isDeleted = await this.comments.DeleteAsync(id, articleId);
+
+            if (!isDeleted)
+            {
+                return this.BadRequest();
+            }
+
+            return NoContent();
         }
     }
 }

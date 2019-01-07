@@ -2,7 +2,7 @@
 {
     public enum AdminActivityType
     {
-        AddToRole = 1,
-        RemoveFromRole = 2
+        AddedToRole = 1,
+        RemovedFromRole = 2
     }
 }

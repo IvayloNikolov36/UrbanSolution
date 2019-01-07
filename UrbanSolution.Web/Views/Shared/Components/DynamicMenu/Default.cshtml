@@ -1,14 +1,4 @@
 ﻿
-<li><a asp-area="" asp-controller="Issue" asp-action="Index">Home</a></li>
-
-@if (!User.IsInRole(WebConstants.ManagerRole))
-{
-    <li>
-        <a asp-area="" asp-controller="Users" asp-action="PublishIssue">
-            <i class="glyphicon glyphicon-send"></i> Issue
-        </a>
-    </li>
-}
 @if (User.IsInRole(WebConstants.AdminRole))
 {
     <li class="dropdown">
@@ -16,10 +6,15 @@
         <ul class="dropdown-menu">
             <li><a asp-area="Admin" asp-controller="Users" asp-action="Index">Users</a></li>
             <li role="separator" class="divider"></li>
-            <li><a asp-area="Admin" asp-controller="Activity" asp-action="Index">Activity</a></li>
+            <li>
+                <a asp-area="Admin" asp-controller="Activity" asp-action="Index">
+                    <i class="glyphicon glyphicon-eye-open"></i> Activity
+                </a>
+            </li>
         </ul>
     </li>
 }
+
 @if (User.IsInRole(WebConstants.ManagerRole))
 {
     <li class="dropdown">
@@ -68,6 +63,17 @@
             <li><a asp-area="Events" asp-controller="Events" asp-action="Create">Create Event</a></li>
             <li><a asp-area="Events" asp-controller="Events" asp-action="Index">Events</a></li>
         </ul>
+    </li>
+}
+
+<li><a asp-area="" asp-controller="Issue" asp-action="Index">Home</a></li>
+
+@if (!User.IsInRole(WebConstants.ManagerRole))
+{
+    <li>
+        <a asp-area="" asp-controller="Users" asp-action="PublishIssue">
+            <i class="glyphicon glyphicon-send"></i> Issue
+        </a>
     </li>
 }
 @if (!User.IsInRole(WebConstants.BlogAuthorRole))

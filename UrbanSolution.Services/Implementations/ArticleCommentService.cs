@@ -68,5 +68,21 @@
 
             return comments;
         }
+
+        public async Task<bool> DeleteAsync(int commentId, int articleId)
+        {
+            var commentToDelete = await this.db.FindAsync<Comment>(commentId);
+
+            if (commentToDelete == null)
+            {
+                return false;
+            }
+
+            this.db.Remove(commentToDelete);
+
+            await this.db.SaveChangesAsync();
+
+            return true;
+        }
     }
 }

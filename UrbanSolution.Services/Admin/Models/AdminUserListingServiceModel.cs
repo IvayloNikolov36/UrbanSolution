@@ -12,7 +12,7 @@
 
         public string Email { get; set; }
 
-        public IEnumerable<string> UserRoles { get; set; }
+        public List<string> UserRoles { get; set; }
 
     }
 }

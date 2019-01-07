@@ -1,5 +1,4 @@
-﻿
-namespace UrbanSolution.Web.Areas.Admin.Models
+﻿namespace UrbanSolution.Web.Areas.Admin.Models
 {
     using System.Collections.Generic;
     using Microsoft.AspNetCore.Mvc.Rendering;

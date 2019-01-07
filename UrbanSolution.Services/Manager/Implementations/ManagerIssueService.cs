@@ -140,36 +140,5 @@
             await this.db.SaveChangesAsync();
         }
 
-        //TODO: remove ???
-        //not used
-
-        //public async Task<TModel> GetAsync<TModel>(int issueId)
-        //{
-        //    var issueModel = await this.db.UrbanIssues
-        //        .Where(i => i.Id == issueId)
-        //        .To<TModel>()
-        //        .FirstOrDefaultAsync();
-
-        //    return issueModel;
-        //}
-
-        //public async Task<int> TotalAsync(bool isApproved)
-        //{
-        //    var total = await this.db
-        //        .UrbanIssues
-        //        .Where(i => i.IsApproved == isApproved)
-        //        .CountAsync();
-
-        //    return total;
-        //}
-
-        //public async Task<bool> ExistsAsync(int issueId)
-        //{
-        //    var exists = await this.db
-        //        .UrbanIssues
-        //        .AnyAsync(i => i.Id == issueId);
-
-        //    return exists;
-        //}
     }
 }

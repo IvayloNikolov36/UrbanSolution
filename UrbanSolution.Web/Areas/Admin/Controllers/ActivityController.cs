@@ -11,7 +11,9 @@
     {
         private readonly IAdminActivityService activities;
 
-        public ActivityController(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IAdminActivityService activities) 
+        public ActivityController(UserManager<User> userManager, 
+            RoleManager<IdentityRole> roleManager, 
+            IAdminActivityService activities) 
             : base(userManager, roleManager)
         {
             this.activities = activities;

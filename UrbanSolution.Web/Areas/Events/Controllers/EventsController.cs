@@ -30,6 +30,7 @@
         public async Task<IActionResult> Index(int page = 1)
         {
             var allEvents = await this.events.AllAsync<EventsListingServiceModel>(page);
+
             var totalEvents = await this.events.TotalCountAsync();
 
             var model = new EventsListingViewModel
@@ -70,12 +71,11 @@
             return this.ViewOrNotFound(model);
         }
 
-        [HttpPost]                                      
+        [HttpPost]
+        [ServiceFilter(typeof(ValidateEventIdExistsAttribute))]
         [ValidateModelState]
         public async Task<IActionResult> Edit(int id, EventEditServiceModel model)
         {
-            //TODO: use ValidateIdExistsFilter
-
             var user = await this.userManager.GetUserAsync(this.User);
 
             var isEdited = await this.events.EditAsync(
@@ -93,6 +93,7 @@
         }
 
         [HttpGet]
+        [ServiceFilter(typeof(ValidateEventIdExistsAttribute))]
         [AllowAnonymous]
         public async Task<IActionResult> Details(int id)
         {

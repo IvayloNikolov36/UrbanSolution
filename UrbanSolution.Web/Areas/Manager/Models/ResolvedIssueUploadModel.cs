@@ -9,7 +9,7 @@
     public class ResolvedIssueUploadModel : IValidatableObject
     {
         [Range(1, int.MaxValue)]
-        public int UrbanIssueId { get; set; } //TODO: check if it is real urbanIssueId
+        public int UrbanIssueId { get; set; }
 
         [Required]
         public IFormFile PictureFile { get; set; }

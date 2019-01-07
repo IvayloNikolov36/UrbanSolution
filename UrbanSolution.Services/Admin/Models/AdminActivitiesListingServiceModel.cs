@@ -1,4 +1,6 @@
-﻿namespace UrbanSolution.Services.Admin.Models
+﻿using UrbanSolution.Services.Utilities;
+
+namespace UrbanSolution.Services.Admin.Models
 {
     using AutoMapper;
     using Mapping;
@@ -11,13 +13,15 @@
 
         public string Activity { get; set; }
 
-        public DateTime DateTime { get; set; }
+        public DateTime CreatedOn { get; set; }
+
+        public string ForRole { get; set; }
 
         public void CreateMappings(IMapperConfigurationExpression configuration)
         {
             configuration.CreateMap<AdminLog, AdminActivitiesListingServiceModel>()
                 .ForMember(x => x.EditedUserUserName, m => m.MapFrom(e => e.EditedUser.UserName))
-                .ForMember(x => x.Activity, m => m.MapFrom(e => e.Activity.ToString()));
+                .ForMember(x => x.Activity, m => m.MapFrom(e => e.Activity.ToFriendlyName()));  
         }
     }
 }

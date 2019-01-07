@@ -27,6 +27,7 @@
             services.AddTransient<ValidateManagerIsMainManagerAttribute>();
             services.AddTransient<ValidateUserAndRoleExistsAttribute>();
             services.AddTransient<ValidateArticleIdExistsAttribute>();
+            services.AddTransient<ValidateEventIdExistsAttribute>();
 
             return services;
         }

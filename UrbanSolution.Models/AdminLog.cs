@@ -1,8 +1,8 @@
-﻿using System;
-using UrbanSolution.Models.Enums;
-
-namespace UrbanSolution.Models
+﻿namespace UrbanSolution.Models
 {
+    using System;
+    using Enums;
+
     public class AdminLog
     {
         public int Id { get; set; }
@@ -17,7 +17,9 @@ namespace UrbanSolution.Models
 
         public AdminActivityType Activity { get; set; }
 
-        public DateTime DateTime { get; set; }
+        public string ForRole { get; set; } 
+
+        public DateTime CreatedOn { get; set; }
 
     }
 }

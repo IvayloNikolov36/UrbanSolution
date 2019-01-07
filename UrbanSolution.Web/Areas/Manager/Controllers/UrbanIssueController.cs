@@ -62,7 +62,7 @@
         [HttpPost]
         public async Task<IActionResult> Edit(int id, UrbanIssueEditServiceViewModel model)
         {
-            if (!this.ModelState.IsValid)                 //TODO: make a filter
+            if (!this.ModelState.IsValid)              
             {
                 this.SetModelSelectListItems(model);
 
@@ -121,10 +121,8 @@
         {
             model.Regions = Enum.GetNames(typeof(RegionType))
                 .Select(r => new SelectListItem
-                {
-                    Text = r,
-                    Value = r
-                }).ToList();
+                { Text = r, Value = r })
+                .ToList();
 
             model.IssueTypes = Enum.GetNames(typeof(IssueType))
                 .Select(i => new SelectListItem

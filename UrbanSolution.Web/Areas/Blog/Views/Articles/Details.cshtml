@@ -6,6 +6,10 @@
     var userName = (string)ViewData[WebConstants.ViewDataUsernameKey];
 
     var isAuthenticated = this.User.Identity.IsAuthenticated;             //TODO: make a component view
+
+    var showActionButtons = User.IsInRole(WebConstants.AdminRole) || (User.IsInRole(WebConstants.BlogAuthorRole) && userName == Model.Author);
+
+    var displayAttribute = showActionButtons ? "inline" : "none";
 }
 
 <h3 class="text-center text-info">@ViewData["Title"]</h3>
@@ -21,8 +25,8 @@
         on <em class="text-info">@Model.PublishDate.ToShortDateString()</em>
         @if (userName == Model.Author)
         {
-        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-warning">Edit</a>
-        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-sm btn-danger">Delete</a>
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-warning">Edit</a>
+            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-sm btn-danger">Delete</a>
         }
     </h4>
 </div>
@@ -46,7 +50,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-2">
-                                <button type="submit" id="Submit" class="btn btn-default"><em class="text-info">Submit</em></button>
+                                <button type="submit" id="submitComment" class="btn btn-default"><em class="text-info">Submit</em></button>
                             </div>
                         </div>
                     </div>
@@ -72,26 +76,59 @@
 }
 
 @section Scripts {
+
     <script>
-        $.get("@Url.Action("All", "ArticleComments", new { Area = "" , id = Model.Id })",
+
+        @*$('button.deleteComent').click(function (e) {
+            e.preventDefault();
+            var articleAuthor = @Model.Author;
+            var articleId = @Model.Id;
+            var commentId = $("#submitDelete").attr("data-id");
+            console.log(e);
+            var aft = "@AF.GetTokens(this.Context).RequestToken";
+            $.ajax({
+                type: "GET",
+                url: `/articlecomments/delete/${commentId}`,
+                data: {
+                    articleAuthor: articleAuthor,
+                    articleId: articleId,
+                    id: commentId,
+                    aft
+                }
+                
+            });
+        });*@
+
+        $.get("@Url.Action("All", "ArticleComments", new {Area = "", id = Model.Id})",
             function(data) {
                 for (var i = 0; i < data.length; i++) {
-                    $("#commentsContainer").append(
+                    var divCommentToAppend =
                         '<div>' +
                             '<div class="panel panel-default">' +
-                                '<div class="panel-heading"><em>Posted by: <em class="text-info">' + data[i].publisher +
-                                '</em> at: ' + data[i].postedOn + ' </em></div>' +
-                                '<div class="panel-body">' +
-                                    '<div class="form-group">' +
-                                        '<h4>' + data[i].content + '</h4>' +
-                                    '</div>' +
-                               '</div>' +
+                            '<div class="panel-heading"><em>Posted by: <em class="text-info">' +
+                            data[i].publisher +
+                            '</em> at: ' +
+                            data[i].postedOn +
+                            ' </em> <button id="submitDelete" class="btn btn-sm btn-danger deleteComent" data-id="' +
+                            data[i].id +
+                            '">Delete</button></div>' +
+                            '<div class="panel-body">' +
+                            '<div class="form-group">' +
+                            '<h4>' +
+                            data[i].content +
+                            '</h4>' +
                             '</div>' +
-                        '</div>');
+                            '</div>' +
+                            '</div>' +
+                            '</div>';
+
+                    $("#commentsContainer").append(divCommentToAppend);
                 }
             });
 
-        $("#Submit").click(function() {
+       
+        //post comment
+        $("#submitComment").click(function() {
             var content = $("#CommentContent").val();
             var aft = "@AF.GetTokens(this.Context).RequestToken";
             $.ajax({
@@ -101,16 +138,22 @@
                     content: content,
                     aft
                 },
-                success: function (commentResult) {
-                    console.log(commentResult);
+                success: function(commentResult) {
                     $("#commentsContainer").prepend(
                         '<div>' +
                         '<div class="panel panel-default">' +
-                        '<div class="panel-heading"><em>Posted by: <em class="text-info">' + commentResult.publisher +
-                        '</em> at: ' + commentResult.postedOn + ' </em></div>' +
+                        '<div class="panel-heading"><em>Posted by: <em class="text-info">' +
+                        commentResult.publisher +
+                        '</em> at: ' +
+                        commentResult.postedOn +
+                        ' </em> <button  id="submitDelete" class="btn btn-sm btn-danger deleteComent" data-id="' +
+                        commentResult.id +
+                        '">Delete</button></div>' +
                         '<div class="panel-body">' +
                         '<div class="form-group">' +
-                        '<h4>' + commentResult.content + '</h4>' +
+                        '<h4>' +
+                        commentResult.content +
+                        '</h4>' +
                         '</div>' +
                         '</div>' +
                         '</div>' +

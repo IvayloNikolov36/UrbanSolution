@@ -18,12 +18,6 @@
         Task<IEnumerable<UrbanIssuesListingServiceModel>> AllAsync(bool isApproved, RegionType? region);      
 
         Task RemoveResolvedReferenceAsync(int issueId);
-
-        //not used
-        //Task<TModel> GetAsync<TModel>(int issueId);
-
-        //Task<int> TotalAsync(bool isApproved);        
-
-        //Task<bool> ExistsAsync(int issueId);  
+ 
     }
 }
