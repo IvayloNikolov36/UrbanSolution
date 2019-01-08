@@ -8,8 +8,8 @@
     {
         Task<IEnumerable<AdminUserListingServiceModel>> AllAsync();
 
-        Task<bool> AddToRole(string adminId, string userId, string role);
+        Task<bool> AddToRoleAsync(string adminId, string userId, string role);
 
-        Task<bool> RemoveFromRole(string adminId, string userId, string role);
+        Task<bool> RemoveFromRoleAsync(string adminId, string userId, string role);
     }
 }

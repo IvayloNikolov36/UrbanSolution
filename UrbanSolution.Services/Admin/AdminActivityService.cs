@@ -31,7 +31,7 @@
             return activity;
         }
 
-        public async Task WriteInfoAsync(string adminId, string userId, string role, AdminActivityType activity)
+        public async Task<int> WriteInfoAsync(string adminId, string userId, string role, AdminActivityType activity)
         {
             var logInfo = new AdminLog
             {
@@ -44,6 +44,8 @@
 
             await this.db.AdminLogs.AddAsync(logInfo);
             await this.db.SaveChangesAsync();
+
+            return logInfo.Id;
         }
    
     }

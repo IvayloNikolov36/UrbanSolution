@@ -47,7 +47,7 @@
         }
 
 
-        public async Task<bool> AddToRole(string adminId, string userId, string role)
+        public async Task<bool> AddToRoleAsync(string adminId, string userId, string role)
         {
             var user = await this.userManager.FindByIdAsync(userId);
 
@@ -65,7 +65,7 @@
             return true;
         }
 
-        public async Task<bool> RemoveFromRole(string adminId, string userId, string role)
+        public async Task<bool> RemoveFromRoleAsync(string adminId, string userId, string role)
         {
             var user = await this.userManager.FindByIdAsync(userId);
 

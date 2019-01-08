@@ -9,6 +9,6 @@ namespace UrbanSolution.Services.Admin
     {
         Task<IEnumerable<AdminActivitiesListingServiceModel>> AllAsync(string adminId);
 
-        Task WriteInfoAsync(string adminId, string userId, string role, AdminActivityType activity);
+        Task<int> WriteInfoAsync(string adminId, string userId, string role, AdminActivityType activity);
     }
 }
