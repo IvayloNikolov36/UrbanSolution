@@ -1,55 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FluentAssertions;
-using UrbanSolution.Data;
-using UrbanSolution.Models;
-using UrbanSolution.Models.Enums;
-using UrbanSolution.Services.Admin;
-using UrbanSolution.Services.Admin.Models;
-using Xunit;
-
-namespace UrbanSolution.Services.Tests.Admin
+﻿namespace UrbanSolution.Services.Tests.Admin
 {
-    public class AdminActivityServiceTests
+    using Data;
+    using FluentAssertions;
+    using Seed;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using UrbanSolution.Models.Enums;
+    using UrbanSolution.Services.Admin;
+    using UrbanSolution.Services.Admin.Models;
+    using Xunit;
+
+    public class AdminActivityServiceTests : BaseServiceTest
     {
-        private const string DefaultUsername = "Username";
         private const string ManagerRole = "Manager";
         private const string BloggerRole = "Blog Author";
-
-        private readonly UrbanSolutionDbContext db;
-
-        public AdminActivityServiceTests()
-        {
-            this.db = InMemoryDatabase.Get();
-            AutomapperInitializer.Initialize();
-        }
 
         [Fact]
         public async Task AllAsyncShould_ReturnsCorrectModelWith_CorrectData()
         {
-            var admin = this.CreateUser();
-            var user = this.CreateUser();
+            var admin = UserCreator.Create();
+            var user = UserCreator.Create();
+            await this.Db.AddRangeAsync(admin, user);
 
-            await this.db.AddRangeAsync(admin, user);
+            var adminLog = AdminLogCreator.Create(admin.Id, user.Id, ManagerRole);
+            var secondAdminLog = AdminLogCreator.Create(admin.Id, user.Id, BloggerRole);
+            await this.Db.AddRangeAsync(adminLog, secondAdminLog);
 
-            var adminLog = this.CreateAdminLog(admin.Id, user.Id, ManagerRole);
-            var secondAdminLog = this.CreateAdminLog(admin.Id, user.Id, BloggerRole);
+            await this.Db.SaveChangesAsync();
 
-            await this.db.AddRangeAsync(adminLog, secondAdminLog);
-
-            await this.db.SaveChangesAsync();
-
-            var service = new AdminActivityService(this.db);
+            var service = new AdminActivityService(this.Db);
 
             //Act
             var result = await service.AllAsync(admin.Id);
 
-            var expectedCount = this.db.AdminLogs.Count();
+            var expectedCount = this.Db.AdminLogs.Count();
 
-            var editedUsersUserNames = this.db.AdminLogs
+            var editedUsersUserNames = this.Db.AdminLogs
                 .Where(al => al.AdminId == admin.Id)
                 .OrderByDescending(al => al.CreatedOn)
                 .Select(al => al.EditedUser.UserName).ToList();
@@ -80,11 +68,11 @@ namespace UrbanSolution.Services.Tests.Admin
             AdminActivityType activityType = AdminActivityType.AddedToRole;
 
             //Arrange
-            var service = new AdminActivityService(this.db);
+            var service = new AdminActivityService(this.Db);
 
             //Act
             var result = await service.WriteInfoAsync(adminId, userId, Role, activityType);
-            var savedLog = this.db.AdminLogs.First(al => al.Id == result);
+            var savedLog = this.Db.AdminLogs.First(al => al.Id == result);
 
             //Assert
             result.Should().BeOfType(typeof(int));
@@ -96,25 +84,5 @@ namespace UrbanSolution.Services.Tests.Admin
             savedLog.ForRole.Should().Match(Role);
         }
 
-        private User CreateUser()
-        {
-            return new User
-            {
-                Id = Guid.NewGuid().ToString(),
-                UserName = DefaultUsername
-            };
-        }
-
-        private AdminLog CreateAdminLog(string adminId, string userId, string forRole)
-        {
-            return new AdminLog
-            {
-                Activity = AdminActivityType.AddedToRole,
-                AdminId = adminId,
-                CreatedOn = DateTime.UtcNow,
-                EditedUserId = userId,
-                ForRole = forRole
-            };
-        }
     }
 }

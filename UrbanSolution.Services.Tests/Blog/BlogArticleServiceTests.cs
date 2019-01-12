@@ -1,13 +1,14 @@
-﻿using Microsoft.AspNetCore.Http;
-
-namespace UrbanSolution.Services.Tests.Blog
+﻿namespace UrbanSolution.Services.Tests.Blog
 {
     using Data;
     using FluentAssertions;
+    using Mapping;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.EntityFrameworkCore;
     using Mocks;
     using Mocks.MockEntities;
     using Moq;
-    using System;
+    using Seed;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using UrbanSolution.Models;
@@ -15,179 +16,163 @@ namespace UrbanSolution.Services.Tests.Blog
     using UrbanSolution.Services.Blog.Models;
     using Utilities;
     using Xunit;
+    using System.Linq;
 
-    public class BlogArticleServiceTests
+    public class BlogArticleServiceTests : BaseServiceTest
     {
-        private int id;
-        private const int DefaultImageId = 5599;
-        private const string DefaultUserName = "Username{0}";
+        private const int imageToDeleteId = 58963;
+        private const string TitleForUpdate = "Title";
+        private const string ContentForUpdate = "Content";
 
-        private readonly UrbanSolutionDbContext db;
-
-        public BlogArticleServiceTests()
-        {
-            AutomapperInitializer.Initialize();
-            this.db = InMemoryDatabase.Get();
-        }
-
-        [Fact]
-        public async Task AllAsyncShould_ReturnsCorrectArticles_WithDefaultPageEqualToOne()
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(4)]
+        public async Task AllAsyncShould_ReturnsCorrectArticles_WithDefaultPageEqualToOne(int page)
         {
             //Arrange
-            var service = new BlogArticleService(db, null, null);
+            var service = new BlogArticleService(Db, null, null);
 
-            var user = this.CreateBlogAuthor();
-            var secondUser = this.CreateBlogAuthor();
-            var thirdUser = this.CreateBlogAuthor();
-            await this.db.AddRangeAsync(user, secondUser, thirdUser);
+            var user = UserCreator.Create();
+            var secondUser = UserCreator.Create();
+            var thirdUser = UserCreator.Create();
+            await this.Db.AddRangeAsync(user, secondUser, thirdUser);
 
-            var image = this.CreateImage(null, string.Empty);
-            await this.db.AddAsync(image);
+            var image = ImageInfoCreator.Create();
+            await this.Db.AddAsync(image);
 
-            var article = this.CreateArticle(user.Id, null);
-            var secondArticle = this.CreateArticle(secondUser.Id, null);
-            var thirdArticle = this.CreateArticle(thirdUser.Id, null);
-            await this.db.AddRangeAsync(article, secondArticle, thirdArticle);
+            var article = ArticleCreator.Create(user.Id, null);
+            var secondArticle = ArticleCreator.Create(secondUser.Id, null);
+            var thirdArticle = ArticleCreator.Create(thirdUser.Id, null);
+            var fourthArticle = ArticleCreator.Create(thirdUser.Id, null);
+            await this.Db.AddRangeAsync(article, secondArticle, thirdArticle, fourthArticle);
 
-            await this.db.SaveChangesAsync();
-
-            //Act
-            var result = await service.AllAsync();  //Skip(page-1 * BlogArticlesPageSize ).Take(BlogArticlesPageSize)
-
-            //Assert
-            result.Should().HaveCount(ServiceConstants.BlogArticlesPageSize); //2
-            result.Should().BeOfType<List<BlogArticleListingServiceModel>>();
-            result.Should().BeInDescendingOrder(x => x.PublishDate);
-            result.Should().NotContain(a => a.Id == thirdArticle.Id);
-        }
-
-        [Fact]
-        public async Task AllAsyncShould_ReturnsCorrectArticles_WithPageParameter()
-        {
-            //Arrange
-            var service = new BlogArticleService(db, null, null);
-
-            var user = this.CreateBlogAuthor();
-            var secondUser = this.CreateBlogAuthor();
-            var thirdUser = this.CreateBlogAuthor();
-            await this.db.AddRangeAsync(user, secondUser, thirdUser);
-
-            var image = this.CreateImage(null, string.Empty);
-            await this.db.AddAsync(image);
-
-            var article = this.CreateArticle(user.Id, null);
-            var secondArticle = this.CreateArticle(secondUser.Id, null);
-            var thirdArticle = this.CreateArticle(thirdUser.Id, null);
-            var fourthArticle = this.CreateArticle(thirdUser.Id, null);
-            await this.db.AddRangeAsync(article, secondArticle, thirdArticle, fourthArticle);
-
-            await this.db.SaveChangesAsync();
+            await this.Db.SaveChangesAsync();
 
             //Act
-            var result = await service.AllAsync(page: 2);
+            var result = await service.AllAsync(page: page);
+
+            var expectedResult = await this.Db
+                .Articles
+                .OrderByDescending(a => a.PublishDate)
+                .Skip((page - 1) * ServiceConstants.BlogArticlesPageSize)
+                .Take(ServiceConstants.BlogArticlesPageSize)
+                .To<BlogArticleListingServiceModel>()
+                .ToListAsync();
 
             //Assert
-            result.Should().HaveCount(ServiceConstants.BlogArticlesPageSize); //2
             result.Should().BeOfType<List<BlogArticleListingServiceModel>>();
+
+            result.Should().HaveCount(expectedResult.Count);
+
             result.Should().BeInDescendingOrder(x => x.PublishDate);
 
-            result.Should().NotContain(a => a.Id == article.Id);
-            result.Should().NotContain(a => a.Id == secondArticle.Id);
-            result.Should().Contain(a => a.Id == thirdArticle.Id);
-            result.Should().Contain(a => a.Id == fourthArticle.Id);
+            result.Should().BeEquivalentTo(expectedResult);
         }
 
         [Fact]
         public async Task GetAsyncShould_ReturnsCorrectArticleModel()
         {
             //Arrange
-            var service = new BlogArticleService(db, null, null);
+            var user = UserCreator.Create();
+            await this.Db.AddAsync(user);
 
-            var user = this.CreateBlogAuthor();
-            await this.db.AddAsync(user);
+            var image = ImageInfoCreator.CreateWithFullData(user.Id);
+            await this.Db.AddAsync(image);
 
-            var image = this.CreateImage(null, string.Empty);
-            await this.db.AddAsync(image);
+            var article = ArticleCreator.Create(user.Id, image.Id);
+            var secondArticle = ArticleCreator.Create(user.Id, image.Id);
+            var thirdArticle = ArticleCreator.Create(user.Id, image.Id);
+            await this.Db.AddRangeAsync(article, secondArticle, thirdArticle);
 
-            var article = this.CreateArticle(user.Id, null);
-            var secondArticle = this.CreateArticle(user.Id, null);
-            var thirdArticle = this.CreateArticle(user.Id, null);
-            await this.db.AddRangeAsync(article, secondArticle, thirdArticle);
+            await this.Db.SaveChangesAsync();
 
-            await this.db.SaveChangesAsync();
+            var service = new BlogArticleService(Db, null, null);
 
             //Act
             var result = await service.GetAsync<BlogArticleDetailsServiceModel>(secondArticle.Id);
 
+            var expected = await this.Db
+                .Articles
+                .Include(a => a.Comments)
+                .Where(a => a.Id == secondArticle.Id)
+                .To<BlogArticleDetailsServiceModel>()
+                .FirstOrDefaultAsync();
+
+            var secondResult = await service.GetAsync<EditArticleServiceViewModel>(article.Id);
+
+            var secondExpected = await this.Db.Articles.Include(a => a.Comments).Where(a => a.Id == article.Id)
+                .To<EditArticleServiceViewModel>().FirstOrDefaultAsync();
+
             //Assert
-            result.Should().NotBeNull();
             result.Should().BeOfType<BlogArticleDetailsServiceModel>();
-            result.Id.Should().Be(secondArticle.Id);
+            result.Should().BeEquivalentTo(expected);
+
+            secondResult.Should().BeOfType<EditArticleServiceViewModel>();
+            secondResult.Should().BeEquivalentTo(secondExpected);
         }
 
         [Fact]
-        public async Task CreateAsyncShould_SetTheCorrectParametersForArtcilePropertiesAnd_ReturnsArticleId()
+        public async Task CreateAsyncShould_SetTheCorrectParametersForArticlePropertiesAnd_ReturnsArticleId()
         {
-            this.id = 0;
             const int NewImageId = 258;
-            const int FirstArticleId = 1;
             const string Title = "Title";
             const string Content = "Content123";
             const string AuthorId = "8945opi7563k87";
 
             //Arrange
-            var pictureService = IPictureServiceMock.New(NewImageId);
+            var picService = IPictureServiceMock.New(NewImageId);
 
-            var htmlServiceMock = IHtmlServiceMock.New(Content);
+            var htmlService = IHtmlServiceMock.New(Content);
 
-            var service = new BlogArticleService(db, htmlServiceMock.Object, pictureService.Object);
+            var service = new BlogArticleService(Db, htmlService.Object, picService.Object);
 
             //Act
             var resultId = await service.CreateAsync(Title, Content, null, AuthorId);
-            var savedEntry = await db.FindAsync<Article>(resultId);
+
+            var savedEntry = await Db.FindAsync<Article>(resultId);
 
             //Assert
-            resultId.Should().Be(FirstArticleId);
+            resultId.Should().Be(savedEntry.Id);
 
-            htmlServiceMock.Verify(h => h.Sanitize(It.IsAny<string>()), Times.Once);
+            htmlService.Verify(h => h.Sanitize(It.IsAny<string>()), Times.Once);
 
-            pictureService.Verify(p => 
+            picService.Verify(p => 
                 p.UploadImageAsync(It.IsAny<string>(), It.IsAny<IFormFile>()), Times.Once);
 
+            savedEntry.Id.Should().Be(resultId);
             savedEntry.Title.Should().Match(Title);
             savedEntry.Content.Should().Match(Content);
             savedEntry.AuthorId.Should().Match(AuthorId);
             savedEntry.CloudinaryImageId.Should().Be(NewImageId);
-            savedEntry.PublishDate.Should().NotBeCloseTo(DateTime.UtcNow);
         }
 
         [Fact]
         public async Task UpdateAsyncShould_UpdateTheCorrectPropertiesAnd_ShouldReturnsTrueIf_EventCreatorIsTheSame()
         {
-            const string TitleForUpdate = "Title";
-            const string ContentForUpdate = "<p>Content</p>";
-
             //Arrange
-            var htmlServiceMock = IHtmlServiceMock.New(ContentForUpdate);
+            var htmlService = IHtmlServiceMock.New(ContentForUpdate);
 
-            var service = new BlogArticleService(db, htmlServiceMock.Object, null);
+            var service = new BlogArticleService(Db, htmlService.Object, null);
 
-            var author = this.CreateBlogAuthor();
-            await this.db.AddAsync(author);
+            var author = UserCreator.Create();
+            await this.Db.AddAsync(author);
 
-            var article = this.CreateArticle(author.Id, null);
-            await this.db.AddAsync(article);
+            var article = ArticleCreator.Create(author.Id, null);
+            await this.Db.AddAsync(article);
 
-            await this.db.SaveChangesAsync();
+            await this.Db.SaveChangesAsync();
 
             //Act
             var result = await service.UpdateAsync(article.Id, author.Id, TitleForUpdate, ContentForUpdate);
-            var updatedEntry = await db.FindAsync<Article>(article.Id);
+
+            var updatedEntry = await Db.FindAsync<Article>(article.Id);
 
             //Assert
             result.Should().BeTrue();
 
-            htmlServiceMock.Verify(h => h.Sanitize(It.IsAny<string>()), Times.Once);
+            htmlService.Verify(h => h.Sanitize(It.IsAny<string>()), Times.Once);
 
             updatedEntry.Title = TitleForUpdate;
             updatedEntry.Content = ContentForUpdate;
@@ -196,25 +181,23 @@ namespace UrbanSolution.Services.Tests.Blog
         [Fact]
         public async Task UpdateAsyncShould_ReturnsFalseIf_EventCreatorIsAnotherUser()
         {
-            const string AuthorIdWhoWantsToUpdate = "789ioptee89897714w78ex5";
-            const string TitleForUpdate = "Title";
-            const string ContentForUpdate = "<p>Content</p>";
-
+            const string UpdaterId = "789io87714w78ex5";
+            
             //Arrange
             var htmlServiceMock = IHtmlServiceMock.New(ContentForUpdate);
 
-            var service = new BlogArticleService(db, htmlServiceMock.Object, null);
+            var service = new BlogArticleService(Db, htmlServiceMock.Object, null);
 
-            var author = this.CreateBlogAuthor();
-            await this.db.AddAsync(author);
+            var author = UserCreator.Create();
+            await this.Db.AddAsync(author);
 
-            var article = this.CreateArticle(author.Id, null);
-            await this.db.AddAsync(article);
+            var article = ArticleCreator.Create(author.Id, null);
+            await this.Db.AddAsync(article);
 
-            await this.db.SaveChangesAsync();
+            await this.Db.SaveChangesAsync();
 
             //Act
-            var result = await service.UpdateAsync(article.Id, AuthorIdWhoWantsToUpdate, TitleForUpdate, ContentForUpdate);
+            var result = await service.UpdateAsync(article.Id, UpdaterId, TitleForUpdate, ContentForUpdate);
 
             //Assert
             result.Should().BeFalse();
@@ -225,23 +208,21 @@ namespace UrbanSolution.Services.Tests.Blog
         [Fact]
         public async Task DeleteAsyncShould_ReturnsTrueIf_EventCreatorIsAnotherUser_AndShouldDeleteArticle_AndImage()
         {
-            int imageToDeleteId = 58963;
-
             //Arrange
             var picServiceMock = IPictureServiceMock.New(imageToDeleteId);
 
-            var service = new BlogArticleService(db, null, picServiceMock.Object);
+            var service = new BlogArticleService(Db, null, picServiceMock.Object);
 
-            var author = this.CreateBlogAuthor();
-            await this.db.AddAsync(author);
+            var author = UserCreator.Create();
+            await this.Db.AddAsync(author);
 
-            var image = this.CreateImage(imageToDeleteId, author.Id);
-            await this.db.AddAsync(image);
+            var image = ImageInfoCreator.CreateWithFullData(author.Id);
+            await this.Db.AddAsync(image);
 
-            var article = this.CreateArticle(author.Id, imageToDeleteId);
-            await this.db.AddAsync(article);
+            var article = ArticleCreator.Create(author.Id, imageToDeleteId);
+            await this.Db.AddAsync(article);
 
-            await this.db.SaveChangesAsync();
+            await this.Db.SaveChangesAsync();
 
             //Act
             var result = await service.DeleteAsync(article.Id, author.Id);
@@ -251,27 +232,26 @@ namespace UrbanSolution.Services.Tests.Blog
 
             picServiceMock.Verify(p => p.DeleteImageAsync(It.IsAny<int>()), Times.Once);
 
-            this.db.Articles.Should().NotContain(a => a.Id == article.Id);
+            this.Db.Articles.Should().NotContain(a => a.Id == article.Id);
         }
 
         [Fact]
         public async Task DeleteAsyncShould_ReturnsFalseIf_EventCreatorIsAnotherUser_And_ShouldNotDeleteArticle_AndImage()
         {
-            int imageToDeleteId = 58963;
-            const string anotherAuthorId = "899f4fgg5f57dmmmmmmm";
+            const string anotherAuthorId = "899f4fgg5f57dm888m";
 
             //Arrange
             var picServiceMock = IPictureServiceMock.New(imageToDeleteId);           
 
-            var service = new BlogArticleService(db, null, picServiceMock.Object);
+            var service = new BlogArticleService(Db, null, picServiceMock.Object);
                 
-            var author = this.CreateBlogAuthor();
-            await this.db.AddAsync(author);
+            var author = UserCreator.Create();
+            await this.Db.AddAsync(author);
 
-            var article = this.CreateArticle(author.Id, null);
-            await this.db.AddAsync(article);
+            var article = ArticleCreator.Create(author.Id, null);
+            await this.Db.AddAsync(article);
 
-            await this.db.SaveChangesAsync();
+            await this.Db.SaveChangesAsync();
 
             //Act
             var result = await service.DeleteAsync(article.Id, anotherAuthorId);
@@ -281,48 +261,8 @@ namespace UrbanSolution.Services.Tests.Blog
 
             picServiceMock.Verify(p => p.DeleteImageAsync(It.IsAny<int>()), Times.Never);
 
-            this.db.Articles.Should().Contain(a => a.Id == article.Id);
+            this.Db.Articles.Should().Contain(a => a.Id == article.Id);
         }
-
-        private User CreateBlogAuthor()
-        {
-            var user = new User
-            {
-                Id = Guid.NewGuid().ToString(),
-                UserName = string.Format(DefaultUserName, ++this.id)
-            };
-
-            return user;
-        }
-
-        private CloudinaryImage CreateImage(int? imageId, string uploaderId)
-        {
-            var image = new CloudinaryImage
-            {
-                Id = imageId ?? DefaultImageId,
-                PictureUrl = Guid.NewGuid().ToString(),
-                Length = long.MaxValue,
-                PicturePublicId = Guid.NewGuid().ToString(),
-                PictureThumbnailUrl = Guid.NewGuid().ToString(),
-                UploadedOn = DateTime.UtcNow,
-                UploaderId = uploaderId 
-            };
-
-            return image;
-        }
-
-        private Article CreateArticle(string userId, int? cloudinaryImageId)
-        {
-            var article = new Article
-            {
-                AuthorId = userId,
-                CloudinaryImageId = cloudinaryImageId ?? DefaultImageId,
-                Content = Guid.NewGuid().ToString(),
-                PublishDate = new DateTime(2018, 12, 05),
-                Title = Guid.NewGuid().ToString(),
-            };
-
-            return article;
-        }
+        
     }
 }

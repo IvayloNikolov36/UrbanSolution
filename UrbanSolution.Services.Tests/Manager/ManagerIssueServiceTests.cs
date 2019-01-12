@@ -1,13 +1,13 @@
 ﻿namespace UrbanSolution.Services.Tests.Manager
 {
-    using Data;
     using FluentAssertions;
     using FluentAssertions.Common;
+    using Mapping;
     using Microsoft.AspNetCore.Http;
+    using Microsoft.EntityFrameworkCore;
     using Models;
     using Mocks;
     using Moq;
-    using System;
     using System.Linq;
     using System.Threading.Tasks;
     using UrbanSolution.Models;
@@ -15,43 +15,32 @@
     using UrbanSolution.Models.Enums;
     using UrbanSolution.Services.Manager;
     using Xunit;
+    using Seed;
+    using System.Collections.Generic;
 
-    public class ManagerIssueServiceTests
+    public class ManagerIssueServiceTests : BaseServiceTest
     {
-        private int issueId;
-        private int picId;
-        private string issueTitle = "issue{0}";
-
         private const int DefaultImageId = 999;
-        private const string DefaultUserName = "DefaultUserName";
-        private const string DefaultPictureUrl = "Pictureurl";
         private const int DefaultPicId = 5879;
-
-        private readonly UrbanSolutionDbContext db;
-
-        public ManagerIssueServiceTests()
-        {
-            AutomapperInitializer.Initialize();
-            this.db = InMemoryDatabase.Get();
-        }
 
         [Fact]
         public async Task UpdateAsyncShould_ReturnsFalseIfManagerRegionIsNotEqualToIssueRegion()
         {
             //Arrange
-            var pictureService = IPictureServiceMock.New(DefaultPicId);
+            var picService = IPictureServiceMock.New(DefaultPicId);
+
             var activityService = new Mock<IManagerActivityService>();
 
             var service = new ManagerIssueService( 
-                db, pictureService.Object, activityService.Object);
+                Db, picService.Object, activityService.Object);
 
-            var manager = this.CreateUser(RegionType.Western);
-            await db.AddAsync(manager);
+            var manager = UserCreator.Create(RegionType.Western);
+            await Db.AddAsync(manager);
 
-            var issue = this.CreateIssue(RegionType.North);
-            await db.AddAsync(issue);
+            var issue = UrbanIssueCreator.CreateIssue(RegionType.North);
+            await Db.AddAsync(issue);
 
-            await db.SaveChangesAsync();
+            await Db.SaveChangesAsync();
 
             //Act
             var result = await service.UpdateAsync(manager, issue.Id, null, null, issue.Region, IssueType.DamagedRoads, null, null);
@@ -59,9 +48,9 @@
             //Assert
             result.Should().BeFalse();
 
-            pictureService.Verify(p => p.UploadImageAsync(It.IsAny<string>(), It.IsAny<IFormFile>()), Times.Never);
+            picService.Verify(p => p.UploadImageAsync(It.IsAny<string>(), It.IsAny<IFormFile>()), Times.Never);
 
-            pictureService.Verify(p => p.DeleteImageAsync(It.IsAny<int>()), Times.Never);
+            picService.Verify(p => p.DeleteImageAsync(It.IsAny<int>()), Times.Never);
 
             activityService.Verify(a => a.WriteManagerLogInfoAsync(It.IsAny<string>(), It.IsAny<ManagerActivityType>()), Times.Never);
 
@@ -76,15 +65,15 @@
             var activityService = new Mock<IManagerActivityService>();
 
             var service = new ManagerIssueService(
-                db, pictureService.Object, activityService.Object);
+                Db, pictureService.Object, activityService.Object);
 
-            var manager = this.CreateUser(RegionType.All);
-            await db.AddAsync(manager);
+            var manager = UserCreator.Create(RegionType.All);
+            await Db.AddAsync(manager);
 
-            var issue = this.CreateIssue(RegionType.Western);
-            await db.AddAsync(issue);
+            var issue = UrbanIssueCreator.CreateIssue(RegionType.Western);
+            await Db.AddAsync(issue);
 
-            await db.SaveChangesAsync();
+            await Db.SaveChangesAsync();
 
             //Act
             var result = await service.UpdateAsync(
@@ -110,15 +99,15 @@
             var activityService = new Mock<IManagerActivityService>();
 
             var service = new ManagerIssueService(
-                db, pictureService.Object, activityService.Object);
+                Db, pictureService.Object, activityService.Object);
 
-            var manager = this.CreateUser(RegionType.All);
-            await db.AddAsync(manager);
+            var manager = UserCreator.Create(RegionType.All);
+            await Db.AddAsync(manager);
 
-            var issue = this.CreateIssue(RegionType.Western);
-            await db.AddAsync(issue);
+            var issue = UrbanIssueCreator.CreateIssue(RegionType.Western);
+            await Db.AddAsync(issue);
 
-            await db.SaveChangesAsync();
+            await Db.SaveChangesAsync();
 
             var pictureFile = new Mock<IFormFile>();
 
@@ -131,7 +120,6 @@
 
             pictureService.Verify(p => p.UploadImageAsync(It.IsAny<string>(), It.IsAny<IFormFile>()), Times.Once);
 
-            //for deleting older image
             pictureService.Verify(p => p.DeleteImageAsync(It.IsAny<int>()), Times.Once);
 
             activityService.Verify(a => a.WriteManagerLogInfoAsync(It.IsAny<string>(), It.IsAny<ManagerActivityType>()), Times.Once);
@@ -146,15 +134,15 @@
             var activityService = new Mock<IManagerActivityService>();
 
             var service = new ManagerIssueService(
-                db, pictureService.Object, activityService.Object);
+                Db, pictureService.Object, activityService.Object);
 
-            var manager = this.CreateUser(RegionType.Western);
-            await db.AddAsync(manager);
+            var manager = UserCreator.Create(RegionType.Western);
+            await Db.AddAsync(manager);
 
-            var issue = this.CreateIssue(RegionType.Western);
-            await db.AddAsync(issue);
+            var issue = UrbanIssueCreator.CreateIssue(RegionType.Western);
+            await Db.AddAsync(issue);
 
-            await db.SaveChangesAsync();
+            await Db.SaveChangesAsync();
 
             //Act
             var result = await service.UpdateAsync(
@@ -178,15 +166,15 @@
             var activityService = new Mock<IManagerActivityService>();
 
             var service = new ManagerIssueService(
-                db, pictureService.Object, activityService.Object);
+                Db, pictureService.Object, activityService.Object);
 
-            var manager = this.CreateUser(RegionType.Western);
-            await db.AddAsync(manager);
+            var manager = UserCreator.Create(RegionType.Western);
+            await Db.AddAsync(manager);
 
-            var issue = this.CreateIssue(RegionType.Western);
-            await db.AddAsync(issue);
+            var issue = UrbanIssueCreator.CreateIssue(RegionType.Western);
+            await Db.AddAsync(issue);
 
-            await db.SaveChangesAsync();
+            await Db.SaveChangesAsync();
 
             var formFileMock = new Mock<IFormFile>();
 
@@ -213,15 +201,15 @@
 
             var activityService = new Mock<IManagerActivityService>();
 
-            var service = new ManagerIssueService(db, pictureService.Object, activityService.Object);
+            var service = new ManagerIssueService(Db, pictureService.Object, activityService.Object);
 
-            var manager = this.CreateUser(RegionType.Central);
-            await db.AddAsync(manager);
+            var manager = UserCreator.Create(RegionType.Central);
+            await Db.AddAsync(manager);
 
-            var issue = this.CreateIssue(RegionType.Western);
-            await db.AddAsync(issue);
+            var issue = UrbanIssueCreator.CreateIssue(RegionType.Western);
+            await Db.AddAsync(issue);
 
-            await db.SaveChangesAsync();
+            await Db.SaveChangesAsync();
 
             //Act
             var result = await service.DeleteAsync(manager, issue.Id);
@@ -243,22 +231,22 @@
 
             var activityService = new Mock<IManagerActivityService>();
 
-            var service = new ManagerIssueService(db, pictureService.Object, activityService.Object);
+            var service = new ManagerIssueService(Db, pictureService.Object, activityService.Object);
 
-            var manager = this.CreateUser(RegionType.Western);
-            var secondManager = this.CreateUser(RegionType.All);
-            await db.AddRangeAsync(manager, secondManager);
+            var manager = UserCreator.Create(RegionType.Western);
+            var secondManager = UserCreator.Create(RegionType.All);
+            await Db.AddRangeAsync(manager, secondManager);
 
-            var pic = this.CreateImage();
-            var secondPic = this.CreateImage();
-            await db.AddRangeAsync(pic, secondPic);
+            var pic = ImageInfoCreator.Create();
+            var secondPic = ImageInfoCreator.Create();
+            await Db.AddRangeAsync(pic, secondPic);
 
-            var issue = this.CreateIssue(RegionType.Western, pic.Id);
-            var secondIssue = this.CreateIssue(RegionType.South, secondPic.Id);
+            var issue = UrbanIssueCreator.CreateIssue(RegionType.Western, pic.Id);
+            var secondIssue = UrbanIssueCreator.CreateIssue(RegionType.South, secondPic.Id);
 
-            await db.AddRangeAsync(issue, secondIssue);
+            await Db.AddRangeAsync(issue, secondIssue);
 
-            await db.SaveChangesAsync();
+            await Db.SaveChangesAsync();
 
             //Act
             var result = await service.DeleteAsync(manager, issue.Id);
@@ -282,15 +270,15 @@
             //Arrange
             var activityService = new Mock<IManagerActivityService>();
 
-            var service = new ManagerIssueService(db, null, activityService.Object);
+            var service = new ManagerIssueService(Db, null, activityService.Object);
 
-            var manager = this.CreateUser(RegionType.Central);
-            await db.AddAsync(manager);
+            var manager = UserCreator.Create(RegionType.Central);
+            await Db.AddAsync(manager);
 
-            var issue = this.CreateIssue(RegionType.Western);
-            await db.AddAsync(issue);
+            var issue = UrbanIssueCreator.CreateIssue(RegionType.Western);
+            await Db.AddAsync(issue);
 
-            await db.SaveChangesAsync();
+            await Db.SaveChangesAsync();
 
             //Act
             var result = await service.ApproveAsync(manager, issue.Id);
@@ -304,142 +292,104 @@
         [Fact]
         public async Task ApproveAsyncShould_ReturnsTrue_IfManagerRegionIsEqualToIssueRegion_OrManagerIsForAllRegionsAnd_SetsIssuePropertyIsApprovedToTrue()
         {
-            //Arrange
+            //Arrange            
+            var manager = UserCreator.Create(RegionType.Western);
+            await Db.AddAsync(manager);
+
+            var issue = UrbanIssueCreator.CreateIssue(RegionType.Western, DefaultImageId);
+            await Db.AddAsync(issue);
+
+            await Db.SaveChangesAsync();
+
             var activityService = new Mock<IManagerActivityService>();
 
-            var service = new ManagerIssueService(db, null, activityService.Object);
-
-            var manager = this.CreateUser(RegionType.Western);
-            var secondManager = this.CreateUser(RegionType.All);
-            await db.AddRangeAsync(manager, secondManager);
-
-            var issue = this.CreateIssue(RegionType.Western, DefaultImageId);
-            var secondIssue = this.CreateIssue(RegionType.Thracia, DefaultImageId);
-            await db.AddRangeAsync(issue, secondIssue);
-
-            await db.SaveChangesAsync();
+            var service = new ManagerIssueService(Db, null, activityService.Object);
 
             //Act
             var result = await service.ApproveAsync(manager, issue.Id);
 
-            var secondResult = await service.ApproveAsync(secondManager, secondIssue.Id);
+            var dbEntryIsApproved = this.Db.UrbanIssues.FirstOrDefault(i => i.Id == issue.Id)?.IsApproved;
 
             //Assert
             result.Should().BeTrue();
 
-            secondResult.Should().BeTrue();
-
-            this.db.UrbanIssues.FirstOrDefault(i => i.Id == issue.Id)?.IsApproved.Should().BeTrue();
-
-            this.db.UrbanIssues.FirstOrDefault(i => i.Id == secondIssue.Id)?.IsApproved.Should().BeTrue();
+            dbEntryIsApproved.Should().BeTrue();
 
             activityService.Verify(a => 
-                a.WriteManagerLogInfoAsync(It.IsAny<string>(), It.IsAny<ManagerActivityType>()), Times.Exactly(2));
+                a.WriteManagerLogInfoAsync(It.IsAny<string>(), It.IsAny<ManagerActivityType>()), Times.Once);
         }
 
-        [Fact]
-        public async Task AllAsyncShould_ReturnsApprovedIssuesWith_CorrectModel()
+        [Theory]
+        [InlineData(true, RegionType.Western)]
+        [InlineData(true, RegionType.Eastern)]
+        [InlineData(true, RegionType.North)]
+        [InlineData(true, RegionType.South)]
+        [InlineData(true, RegionType.Central)]
+        [InlineData(true, RegionType.Thracia)]
+        [InlineData(false, RegionType.Western)]
+        [InlineData(false, RegionType.Eastern)]
+        [InlineData(false, RegionType.North)]
+        [InlineData(false, RegionType.South)]
+        [InlineData(false, RegionType.Central)]
+        [InlineData(false, RegionType.Thracia)]
+        public async Task AllAsyncShould_ReturnsApprovedAndNotApprovedIssuesWith_CorrectModel(bool isApproved, RegionType concreteRegion)
         {
             //Arrange
-            var service = new ManagerIssueService(db, null, null);
+            var service = new ManagerIssueService(Db, null, null);
 
-            var user = this.CreateUser(null);
-            await db.AddAsync(user);
+            var user = UserCreator.Create(null);
+            await Db.AddAsync(user);
 
-            var pic = this.CreateImage();        
-            await db.AddAsync(pic);
+            var pic = ImageInfoCreator.Create();        
+            await Db.AddAsync(pic);
 
-            var issue = this.CreateIssueWithAllProperties(true, RegionType.Western, user.Id, pic.Id);
-            var secondIssue = this.CreateIssueWithAllProperties(true, RegionType.Thracia, user.Id, pic.Id);
-            var thirdIssue = this.CreateIssueWithAllProperties(false, RegionType.Western, user.Id, pic.Id);
-            var fourthIssue = this.CreateIssueWithAllProperties(false, RegionType.North, user.Id, pic.Id);        
-            await db.UrbanIssues.AddRangeAsync(issue, secondIssue, thirdIssue, fourthIssue);
+            var issue = UrbanIssueCreator.CreateIssue(true, RegionType.Western, user.Id, pic.Id);
+            var secondIssue = UrbanIssueCreator.CreateIssue(true, RegionType.Thracia, user.Id, pic.Id);
+            var thirdIssue = UrbanIssueCreator.CreateIssue(false, RegionType.Western, user.Id, pic.Id);
+            var fourthIssue = UrbanIssueCreator.CreateIssue(false, RegionType.North, user.Id, pic.Id);
+            var fifthIssue = UrbanIssueCreator.CreateIssue(false, RegionType.Thracia, user.Id, pic.Id);
+            var sixthIssue = UrbanIssueCreator.CreateIssue(false, RegionType.Western, user.Id, pic.Id);
+            var seventhIssue = UrbanIssueCreator.CreateIssue(true, RegionType.South, user.Id, pic.Id);
+            await Db.UrbanIssues.AddRangeAsync(issue, secondIssue, thirdIssue, fourthIssue, fifthIssue, sixthIssue, seventhIssue);
 
-            await db.SaveChangesAsync();
-
-            //Act
-            var result = await service.AllAsync(isApproved: true, region: RegionType.All); 
-
-            var result2 = await service.AllAsync(true, RegionType.Thracia);
-
-            var result3 = await service.AllAsync(true, RegionType.North);
-
-            //Assert
-            result.Should().AllBeOfType<UrbanIssuesListingServiceModel>();
-
-            result.Should().HaveCount(2);
-            result.Where(i => i.IsApproved).Should().HaveCount(2);
-            result.Where(i => !i.IsApproved).Should().BeEmpty();
-
-            result2.Should().HaveCount(1);
-            result2.Where(i => i.IsApproved).Should().HaveCount(1);
-            result2.Where(i => !i.IsApproved).Should().BeEmpty();
-
-            result3.Should().BeEmpty();
-        }
-
-        [Fact]
-        public async Task AllAsyncShould_ReturnsNotApprovedIssuesWith_CorrectModel()
-        {
-            //Arrange
-            var service = new ManagerIssueService(db, null, null);
-
-            var user = this.CreateUser(null);
-            await db.AddAsync(user);
-
-            var pic = this.CreateImage();
-            await db.AddAsync(pic);
-
-            var issue = this.CreateIssueWithAllProperties(false, RegionType.Western, user.Id, pic.Id);
-            var secondIssue = this.CreateIssueWithAllProperties(true, RegionType.Thracia, user.Id, pic.Id);
-            var thirdIssue = this.CreateIssueWithAllProperties(false, RegionType.Western, user.Id, pic.Id);
-            var fourthIssue = this.CreateIssueWithAllProperties(false, RegionType.North, user.Id, pic.Id);
-            await db.UrbanIssues.AddRangeAsync(issue, secondIssue, thirdIssue, fourthIssue);
-
-            await db.SaveChangesAsync();
+            await Db.SaveChangesAsync();
 
             //Act
-            var result = await service.AllAsync(isApproved: false, region: RegionType.All);
+            var resultAllRegions = await service.AllAsync(isApproved, RegionType.All);
+            var expectedAllRegions = await this.Db.UrbanIssues.Where(i => i.IsApproved == isApproved).To<UrbanIssuesListingServiceModel>().ToListAsync();
 
-            var result2 = await service.AllAsync(isApproved: false, region: RegionType.North);
-
-            var result3 = await service.AllAsync(isApproved: false, region: RegionType.Eastern);
+            var resultConcreteRegion = await service.AllAsync(isApproved, concreteRegion);
+            var expectedConcreteRegion = await this.Db.UrbanIssues.Where(i => i.IsApproved == isApproved)
+                .Where(i => i.Region == concreteRegion).To<UrbanIssuesListingServiceModel>().ToListAsync();
 
             //Assert
-            result.Should().AllBeOfType<UrbanIssuesListingServiceModel>();
+            resultAllRegions.Should().BeOfType<List<UrbanIssuesListingServiceModel>>();
+            resultAllRegions.Should().HaveCount(expectedAllRegions.Count);
+            resultAllRegions.Should().BeEquivalentTo(expectedAllRegions);
 
-            result.Should().HaveCount(3);
-            result.Where(i => !i.IsApproved).Should().HaveCount(3);
-            result.Where(i => i.IsApproved).Should().BeEmpty();
-
-            result2.Should().HaveCount(1);
-            result2.Where(i => !i.IsApproved).Should().HaveCount(1);
-            result2.Where(i => i.IsApproved).Should().BeEmpty();
-
-            result3.Should().BeEmpty();
+            resultConcreteRegion.Should().HaveCount(expectedConcreteRegion.Count);
+            resultConcreteRegion.Should().HaveCount(expectedConcreteRegion.Count);
+            resultConcreteRegion.Should().BeEquivalentTo(expectedConcreteRegion);
         }
 
         [Fact]
         public async Task RemoveResolvedReferenceAsyncShould_SettsIssuePropertyResolvedIssueToNull()
         {
             //Arrange
-            var service = new ManagerIssueService(db, null, null);
+            var service = new ManagerIssueService(Db, null, null);
 
-            var user = this.CreateUser(null);
-            await db.AddAsync(user);
+            var user = UserCreator.Create(null);
+            await Db.AddAsync(user);
 
-            var pic = this.CreateImage();
-            await db.AddAsync(pic);
+            var pic = ImageInfoCreator.Create();
+            await Db.AddAsync(pic);
 
-            var issue = this.CreateIssueWithAllProperties(true, RegionType.Western, user.Id, pic.Id);
-            await db.AddAsync(issue);
+            var issue = UrbanIssueCreator.CreateIssue(true, RegionType.Western, user.Id, pic.Id);
+            await Db.AddAsync(issue);
 
-            var resolved = new ResolvedIssue
-            {
-                Id = ++issueId,
-                UrbanIssueId = issue.Id
-            };
-            await db.AddAsync(resolved);
+            var resolved = ResolvedCreator.Create(user.Id, issue.Id, pic.Id);
+
+            await Db.AddAsync(resolved);
 
             var hasResolvedBefore = issue.ResolvedIssue != null; //true
 
@@ -452,71 +402,6 @@
             hasResolvedAfter.Should().BeFalse();
 
             hasResolvedAfter.Should().IsSameOrEqualTo(!hasResolvedBefore);
-        }
-        
-
-        private User CreateUser(RegionType? region)
-        {
-            var user = new User
-            {
-                Id = Guid.NewGuid().ToString(),
-                UserName = DefaultUserName,
-                ManagedRegion = region ?? RegionType.All
-            };
-
-            return user;
-        }
-
-        private UrbanIssue CreateIssue(RegionType region)
-        {
-            var issue = new UrbanIssue
-            {
-                Id = ++issueId,
-                Region = region
-            };
-
-            return issue;
-        }
-
-        private UrbanIssue CreateIssue(RegionType region, int imageId)
-        {
-            var issue = new UrbanIssue
-            {
-                Id = ++issueId,
-                Region = region,
-                CloudinaryImageId = imageId
-            };
-
-            return issue;
-        }
-
-        private UrbanIssue CreateIssueWithAllProperties(bool isApproved, RegionType region, string publisherId, int picId)
-        {
-            var issue = new UrbanIssue
-            {
-                Id = ++issueId,
-                Title = string.Format(issueTitle, issueId),
-                PublishedOn = DateTime.UtcNow,
-                Latitude = 42D,
-                Longitude = 42D,
-                Region = region,
-                IsApproved = isApproved,
-                PublisherId = publisherId,
-                CloudinaryImageId = picId
-            };
-
-            return issue;
-        }
-
-        private CloudinaryImage CreateImage()
-        {
-            var image = new CloudinaryImage
-            {
-                Id = ++picId,
-                PictureThumbnailUrl = DefaultPictureUrl
-            };
-
-            return image;
         }
 
     }

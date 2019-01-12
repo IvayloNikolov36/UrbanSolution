@@ -2,117 +2,92 @@
 {
     using Data;
     using FluentAssertions;
-    using System;
+    using Mapping;
+    using Microsoft.EntityFrameworkCore;
+    using Seed;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using UrbanSolution.Models;
-    using UrbanSolution.Models.Enums;
     using UrbanSolution.Services.Manager.Implementations;
     using UrbanSolution.Services.Manager.Models;
     using Xunit;
 
-    public class ManagerActivityServiceTests
+    public class ManagerActivityServiceTests : BaseServiceTest
     {
-        private int managerId;
-        private int logsCount;
-        private const string DefaultUserName = "Default{0}";
-
-        private readonly UrbanSolutionDbContext db;
-
-        public ManagerActivityServiceTests()
-        {
-            AutomapperInitializer.Initialize();
-            this.db = InMemoryDatabase.Get();
-        }
 
         [Fact]
         public async Task GetAsyncShould_ReturnsManagerActivitySorted()
         {
             //Arrange
-            var service = new ManagerActivityService(db);
+            var manager = UserCreator.Create();
+            var secondManager = UserCreator.Create();
+            await this.Db.AddRangeAsync(manager, secondManager);
 
-            var manager = this.CreateManager();
-            var secondManager = this.CreateManager();
-            await this.db.AddRangeAsync(manager, secondManager);
+            var managerLogs = ManagerLogCreator.Create(manager.Id);
+            var secondManagerLogs = ManagerLogCreator.Create(secondManager.Id);
+            await this.Db.AddRangeAsync(managerLogs);
+            await this.Db.AddRangeAsync(secondManagerLogs);
 
-            var managerLogs = this.CreateManagerLogs(manager.Id);
-            var secondManagerLogs = this.CreateManagerLogs(secondManager.Id);
-            var allLogs = managerLogs.Concat(secondManagerLogs);
+            await this.Db.SaveChangesAsync();
 
-            logsCount = allLogs.Count();
-
-            await this.db.AddRangeAsync(allLogs);
-
-            await this.db.SaveChangesAsync();
+            var service = new ManagerActivityService(Db);
 
             //Act
             var result = await service.GetAsync(manager.Id);
 
+            var expected = await this.Db.ManagerLogs
+                .Where(m => m.ManagerId == manager.Id)
+                .OrderByDescending(a => a.DateTime)
+                .To<ManagerActivitiesListingServiceModel>()
+                .ToListAsync();
+
             //Assert
             result.Should().NotBeNull();
+
             result.Should().BeOfType<List<ManagerActivitiesListingServiceModel>>();
+
             result.Should().BeInDescendingOrder(x => x.DateTime);
-            result.Should().NotContain(a => a.UserName == secondManager.UserName);
+
+            result.Should().BeEquivalentTo(expected);
         }
 
         [Fact]
         public async Task AllAsyncShould_ReturnsAllManagersActivitySorted()
         {
             //Arrange
-            var service = new ManagerActivityService(db);
+            var manager = UserCreator.Create();
+            var secondManager = UserCreator.Create();
+            await this.Db.AddRangeAsync(manager, secondManager);
 
-            var manager = this.CreateManager();
-            var secondManager = this.CreateManager();
-            await this.db.AddRangeAsync(manager, secondManager);
+            var managerLogs = ManagerLogCreator.Create(manager.Id);
+            var secondManagerLogs = ManagerLogCreator.Create(secondManager.Id);
+            await this.Db.AddRangeAsync(managerLogs);
+            await this.Db.AddRangeAsync(secondManagerLogs);
 
-            var managerLogs = this.CreateManagerLogs(manager.Id);
-            var secondManagerLogs = this.CreateManagerLogs(secondManager.Id);
+            await this.Db.SaveChangesAsync();
 
-            logsCount = managerLogs.Count + secondManagerLogs.Count;
-
-            await this.db.AddRangeAsync(managerLogs);
-            await this.db.AddRangeAsync(secondManagerLogs);
-
-            await this.db.SaveChangesAsync();
+            var service = new ManagerActivityService(Db);
 
             //Act
-            var result = (await service.AllAsync()).ToList();
+            var result = await service.AllAsync();
+
+            var expected = await this.Db.ManagerLogs
+                .OrderByDescending(a => a.DateTime)
+                .To<ManagerActivitiesListingServiceModel>()
+                .ToListAsync();
 
             //Assert
             result.Should().NotBeNull();
+
             result.Should().BeOfType<List<ManagerActivitiesListingServiceModel>>();
-            result.Should().HaveCount(logsCount);
+
             result.Should().BeInDescendingOrder(x => x.DateTime);
+
+            result.Should().HaveCount(expected.Count);
+
+            result.Should().BeEquivalentTo(expected);          
         }
 
-        private List<ManagerLog> CreateManagerLogs(string managerId)
-        {
-            var log = new ManagerLog
-            {
-                DateTime = new DateTime(2018, 12, 4),
-                ManagerId = managerId
-            };
-
-            var secondLog = new ManagerLog
-            {
-                DateTime = new DateTime(2017, 11, 6),
-                ManagerId = managerId,
-                Activity = ManagerActivityType.EditedIssue
-            };
-
-            return new List<ManagerLog>{ log, secondLog };
-        }
-
-        private User CreateManager()
-        {
-            var manager = new User
-            {
-                Id = Guid.NewGuid().ToString(),
-                UserName = string.Format(DefaultUserName, ++managerId)
-            };
-
-            return manager;
-        }
+        //TODO: WriteManagerLogInfoAsync method tests
     }
 }

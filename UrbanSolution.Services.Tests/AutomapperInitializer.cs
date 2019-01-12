@@ -4,20 +4,20 @@
     using Models;
     using UrbanSolution.Models;
 
-    public class AutomapperInitializer
+    public static class AutomapperInitializer
     {
-        private static bool isInitialized = false;
+        private static bool isInitialized;
 
         public static void Initialize()
         {
-            if (!isInitialized)
-            {
-                AutoMapperConfig.RegisterMappings(
-                    typeof(UrbanIssuesListingServiceModel).Assembly,
-                    typeof(UrbanIssue).Assembly);
+            if (isInitialized) return;
 
-                isInitialized = true;
-            }
+            AutoMapperConfig.RegisterMappings(
+                typeof(UrbanIssuesListingServiceModel).Assembly,
+                typeof(UrbanIssue).Assembly,
+                typeof(BaseServiceTest).Assembly);
+
+            isInitialized = true;
         }
     }
 }
