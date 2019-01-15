@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Event Details";
     var apiKey = Configuration.GetSection("Google:MapsApiKey").Value;    //TODO: remove after partial/component
+    var userName = (string) ViewData[WebConstants.ViewDataUsernameKey];
 }
 
 <h3 class="text-info">@ViewData["Title"]</h3>
@@ -12,12 +13,22 @@
         <div class="row">
             <h3>@Model.Description</h3>
             <h3 class="text-info">@Model.Address</h3>
-            <h4>Participants: </h4>
-            
-            <h5>created by: <em class="text-info">@Model.CreatorUserName</em></h5>
-            @if (Model.CreatorUserName == (string)ViewData[WebConstants.ViewDataUsernameKey])
+
+            @if (!Model.Participants.Contains(userName))
             {
-                <a asp-controller="Events" asp-action="Edit" asp-route-id="@Model.Id"
+                <h4>Participants: <em class="text-info">@Model.Participants.Count</em></h4>
+                <a asp-controller="Events" asp-action="Participate" asp-route-id="@Model.Id"
+                   class="btn btn-sm btn-default">Participate</a>
+            }
+            else
+            {
+                <h4>Participants: <em class="text-info">You and @(Model.Participants.Count - 1) more</em></h4>
+            }
+
+            <h5>created by: <em class="text-info">@Model.CreatorUserName</em></h5>
+            @if (Model.CreatorUserName == userName)
+            {
+                <a asp-controller="EventCreator" asp-action="Edit" asp-route-id="@Model.Id"
                    class="btn btn-sm btn-warning">Edit</a>
             }
         </div>

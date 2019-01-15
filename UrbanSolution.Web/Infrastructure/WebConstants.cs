@@ -134,6 +134,10 @@
 
         public const string CantDeleteEvent = "You can't delete event, created by another user!";
 
+        public const string AlreadyEventParticipant = "You are already a participant of this event!";
+
+        public const string SuccessParticipation = "You are now a participant of this event.";
+
         //View Component
         public const string ViewComponentDynamicMenuName = "DynamicMenu";
         public const string ViewComponentIssueDetailsButtonsName = "IssueDetailsButtons";

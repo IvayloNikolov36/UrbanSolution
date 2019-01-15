@@ -17,9 +17,9 @@
 
         Task<TModel> GetAsync<TModel>(int id);
 
-        Task<int> TotalCountAsync();
+        Task<int> TotalCountAsync();      
 
-        Task<bool> ExistsAsync(int id);
+        Task<bool> Participate(int id, string userId);
 
     }
 }

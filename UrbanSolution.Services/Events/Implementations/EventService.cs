@@ -1,4 +1,6 @@
-﻿namespace UrbanSolution.Services.Events.Implementations
+﻿using UrbanSolution.Models.MappingTables;
+
+namespace UrbanSolution.Services.Events.Implementations
 {
     using Data;
     using Mapping;
@@ -98,11 +100,28 @@
             return eventModel;
         }
 
-        public async Task<bool> ExistsAsync(int id)
+        public async Task<bool> Participate(int id, string userId)
         {
-            bool exists = await this.db.Events.AnyAsync(e => e.Id == id);
+            var eventFromDb = await this.db.Events.Include(e => e.Participants).FirstOrDefaultAsync(e => e.Id == id);
 
-            return exists;
+            bool isUserParticipant = eventFromDb.Participants.Any(eu => eu.ParticipantId == userId);
+
+            if (isUserParticipant)
+            {
+                return false;
+            }
+
+            var eventUser = new EventUser
+            {
+                EventId = id,
+                ParticipantId = userId
+            };
+
+            await this.db.AddAsync(eventUser);
+
+            await this.db.SaveChangesAsync();
+
+            return true;
         }
 
         public async Task<int> TotalCountAsync()
