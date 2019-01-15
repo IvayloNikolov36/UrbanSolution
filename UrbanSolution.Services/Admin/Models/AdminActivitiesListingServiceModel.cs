@@ -1,11 +1,10 @@
-﻿using UrbanSolution.Services.Utilities;
-
-namespace UrbanSolution.Services.Admin.Models
+﻿namespace UrbanSolution.Services.Admin.Models
 {
     using AutoMapper;
     using Mapping;
     using System;
     using UrbanSolution.Models;
+    using Utilities;
 
     public class AdminActivitiesListingServiceModel : IMapFrom<AdminLog>, IHaveCustomMappings
     {

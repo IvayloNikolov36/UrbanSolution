@@ -7,9 +7,7 @@
 
     var isAuthenticated = this.User.Identity.IsAuthenticated;             //TODO: make a component view
 
-    var showActionButtons = User.IsInRole(WebConstants.AdminRole) || (User.IsInRole(WebConstants.BlogAuthorRole) && userName == Model.Author);
-
-    var displayAttribute = showActionButtons ? "inline" : "none";
+    var isAdmin = User.IsInRole(WebConstants.AdminRole);
 }
 
 <h3 class="text-center text-info">@ViewData["Title"]</h3>
@@ -23,6 +21,7 @@
     <h4>
         published by <em class="text-info">@Model.Author</em>
         on <em class="text-info">@Model.PublishDate.ToShortDateString()</em>
+
         @if (userName == Model.Author)
         {
             <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-warning">Edit</a>
@@ -76,88 +75,91 @@
 }
 
 @section Scripts {
-
+    
     <script>
-
-        @*$('button.deleteComent').click(function (e) {
-            e.preventDefault();
-            var articleAuthor = @Model.Author;
-            var articleId = @Model.Id;
-            var commentId = $("#submitDelete").attr("data-id");
-            console.log(e);
-            var aft = "@AF.GetTokens(this.Context).RequestToken";
+        
+        //delete comment
+        function deleteComment(id) {
+            var url = "/ArticleComments/Delete/";
             $.ajax({
                 type: "GET",
-                url: `/articlecomments/delete/${commentId}`,
-                data: {
-                    articleAuthor: articleAuthor,
-                    articleId: articleId,
-                    id: commentId,
-                    aft
+                url: url + id,
+                success: function () {
+                    $('#commentDiv' + id).remove();
                 }
-                
             });
-        });*@
+        }
 
+        //load all comments
         $.get("@Url.Action("All", "ArticleComments", new {Area = "", id = Model.Id})",
             function(data) {
                 for (var i = 0; i < data.length; i++) {
-                    var divCommentToAppend =
-                        '<div>' +
-                            '<div class="panel panel-default">' +
-                            '<div class="panel-heading"><em>Posted by: <em class="text-info">' +
-                            data[i].publisher +
-                            '</em> at: ' +
-                            data[i].postedOn +
-                            ' </em> <button id="submitDelete" class="btn btn-sm btn-danger deleteComent" data-id="' +
-                            data[i].id +
-                            '">Delete</button></div>' +
-                            '<div class="panel-body">' +
-                            '<div class="form-group">' +
-                            '<h4>' +
-                            data[i].content +
-                            '</h4>' +
-                            '</div>' +
-                            '</div>' +
-                            '</div>' +
-                            '</div>';
 
-                    $("#commentsContainer").append(divCommentToAppend);
+                    var firstPart = '<div id="commentDiv' + data[i].id + '">' +
+                                        '<div class="panel panel-default">' +
+                                            '<div class="panel-heading">' +
+                                                '<em><em class="text-info">' +
+                                                        data[i].publisher +
+                                                ' </em>' +'on ' +
+                                                '<em class="text-info">' + new Date(data[i].postedOn).toJSON().slice(2, 19).replace('T', ' '); +  
+                                                '</em>';
+
+                    var secondPart = '';
+                    @if (isAdmin)
+                    { 
+                        @:secondPart = '<button id="delBtn" class="btn btn-sm btn-danger" onclick="deleteComment(' +
+                        @:data[i].id + ')"><i class="glyphicon glyphicon-remove"></i></button>';
+                    }
+                           
+                    var thirdPart =  '</div>' +
+                                        '<div class="panel-body">' +
+                                            '<div class="form-group">' +
+                                                '<h4>' + data[i].content + '</h4>' +
+                                            '</div>' +
+                                        '</div>' +
+                                    '</div>' +
+                                '</div>';
+
+                    $("#commentsContainer").append(firstPart + secondPart + thirdPart);
                 }
             });
 
-       
         //post comment
         $("#submitComment").click(function() {
             var content = $("#CommentContent").val();
             var aft = "@AF.GetTokens(this.Context).RequestToken";
             $.ajax({
                 type: "POST",
-                url: "/articlecomments/submit/@Model.Id",
+                url: "/ArticleComments/submit/@Model.Id",
                 data: {
                     content: content,
                     aft
                 },
-                success: function(commentResult) {
-                    $("#commentsContainer").prepend(
-                        '<div>' +
-                        '<div class="panel panel-default">' +
-                        '<div class="panel-heading"><em>Posted by: <em class="text-info">' +
-                        commentResult.publisher +
-                        '</em> at: ' +
-                        commentResult.postedOn +
-                        ' </em> <button  id="submitDelete" class="btn btn-sm btn-danger deleteComent" data-id="' +
-                        commentResult.id +
-                        '">Delete</button></div>' +
-                        '<div class="panel-body">' +
-                        '<div class="form-group">' +
-                        '<h4>' +
-                        commentResult.content +
-                        '</h4>' +
-                        '</div>' +
-                        '</div>' +
-                        '</div>' +
-                        '</div>');
+                success: function (commentResult) {
+
+                    var firstPart = '<div id="commentDiv' + commentResult.id + '">' +
+                                        '<div class="panel panel-default">' +
+                                            '<div class="panel-heading"><em>' +
+                                                '<em class="text-info">' + commentResult.publisher + '</em> on: ' +
+                                                '<em class="text-info">'+
+                                                    new Date(commentResult.postedOn).toJSON().slice(2, 19).replace('T', ' '); +
+                                                '</em>';
+                    var secondPart = '';
+                    @if (isAdmin)
+                    { 
+                        @:secondPart = '<button id="delBtn" class="btn btn-sm btn-danger" onclick="deleteComment(' +
+                        @:commentResult.id + ')"><i class="glyphicon glyphicon-remove"></i></button>';
+                    }
+                    var thirdPart = '</div>' +
+                                    '<div class="panel-body">' +
+                                        '<div class="form-group">' +
+                                            '<h4>' + commentResult.content + '</h4>' +
+                                        '</div>' +
+                                    '</div>' +
+                                '</div>' +
+                            '</div>';
+
+                    $("#commentsContainer").prepend(firstPart + secondPart + thirdPart);
                     $("#CommentContent").val("");
                 }
             });

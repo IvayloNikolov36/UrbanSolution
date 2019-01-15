@@ -2,7 +2,7 @@
 {
     using System;
     using AutoMapper;
-    using Services.Mapping;
+    using Mapping;
     using UrbanSolution.Models;
 
     public class EventsListingServiceModel : IMapFrom<Event>, IHaveCustomMappings

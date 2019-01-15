@@ -8,24 +8,24 @@
     public class PictureService : IPictureService
     {
         private readonly UrbanSolutionDbContext db;
-        private readonly ICloudinaryService cloudinary;
+        private readonly ICloudImageService cloudService;
         private readonly IPictureInfoWriterService pictureInfoWriter;
 
         public PictureService(
-            UrbanSolutionDbContext db, ICloudinaryService cloudinary, IPictureInfoWriterService pictureInfoWriter)
+            UrbanSolutionDbContext db, ICloudImageService cloudinary, IPictureInfoWriterService pictureInfoWriter)
         {
             this.db = db;
-            this.cloudinary = cloudinary;
+            this.cloudService = cloudinary;
             this.pictureInfoWriter = pictureInfoWriter;
         }
 
         public async Task<int> UploadImageAsync(string userId, IFormFile pictureFile)
         {
-            var uploadResult = await this.cloudinary.UploadFormFileAsync(pictureFile);
+            var uploadResult = await this.cloudService.UploadFormFileAsync(pictureFile);
 
-            var cloudinaryPictureUrl = this.cloudinary.GetImageUrl(uploadResult.PublicId);
+            var cloudinaryPictureUrl = this.cloudService.GetImageUrl(uploadResult.PublicId);
 
-            var cloudinaryThumbnailPictureUrl = this.cloudinary.GetImageThumbnailUrl(uploadResult.PublicId);
+            var cloudinaryThumbnailPictureUrl = this.cloudService.GetImageThumbnailUrl(uploadResult.PublicId);
 
             var pictureId = await this.pictureInfoWriter.WriteToDbAsync(userId, cloudinaryPictureUrl, cloudinaryThumbnailPictureUrl, uploadResult.PublicId, uploadResult.CreatedAt, uploadResult.Length);
 
@@ -42,7 +42,7 @@
 
             await this.db.SaveChangesAsync();
 
-            await this.cloudinary.DeleteImages(picturePublicId);
+            await this.cloudService.DeleteImages(picturePublicId);
         }
 
     }

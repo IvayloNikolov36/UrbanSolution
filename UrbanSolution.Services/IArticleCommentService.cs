@@ -12,6 +12,6 @@
 
         Task<IEnumerable<CommentListingServiceModel>> AllAsync(int articleId);
 
-        Task<bool> DeleteAsync(int commentId, int articleId);
+        Task<bool> DeleteAsync(int commentId);
     }
 }

@@ -1,5 +1,4 @@
-﻿
-namespace UrbanSolution.Services.Manager.Implementations
+﻿namespace UrbanSolution.Services.Manager.Implementations
 {
     using Data;
     using Mapping;
@@ -21,20 +20,6 @@ namespace UrbanSolution.Services.Manager.Implementations
             this.db = db;
         }
 
-        public async Task WriteManagerLogInfoAsync(string managerId, ManagerActivityType activity)
-        {
-            var logInfo = new ManagerLog
-            {
-                ManagerId = managerId,
-                Activity = activity,
-                DateTime = DateTime.UtcNow
-            };
-
-            await this.db.ManagerLogs.AddAsync(logInfo);
-
-            await this.db.SaveChangesAsync();
-        }
-
         public async Task<IEnumerable<ManagerActivitiesListingServiceModel>> GetAsync(string managerId)
         {
             var activity = await this.db.ManagerLogs
@@ -54,6 +39,22 @@ namespace UrbanSolution.Services.Manager.Implementations
                 .ToListAsync();
 
             return activity;
+        }
+
+        public async Task<int> WriteLogAsync(string managerId, ManagerActivityType activity)
+        {
+            var logInfo = new ManagerLog
+            {
+                ManagerId = managerId,
+                Activity = activity,
+                DateTime = DateTime.UtcNow
+            };
+
+            await this.db.ManagerLogs.AddAsync(logInfo);
+
+            await this.db.SaveChangesAsync();
+
+            return logInfo.Id;
         }
     }
 }

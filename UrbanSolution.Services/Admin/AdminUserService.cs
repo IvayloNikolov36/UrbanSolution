@@ -46,7 +46,6 @@
             return usersModels;
         }
 
-
         public async Task<bool> AddToRoleAsync(string adminId, string userId, string role)
         {
             var user = await this.userManager.FindByIdAsync(userId);

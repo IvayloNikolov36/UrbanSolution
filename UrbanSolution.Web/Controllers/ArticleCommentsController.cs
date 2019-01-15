@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using UrbanSolution.Models;
 using UrbanSolution.Services;
-using UrbanSolution.Services.Models;
 using UrbanSolution.Web.Infrastructure;
 
 namespace UrbanSolution.Web.Controllers
@@ -52,13 +51,10 @@ namespace UrbanSolution.Web.Controllers
         }
 
         [HttpGet]
-        //[Authorize(Roles = WebConstants.AdminRole + "," + WebConstants.BlogAuthorRole)]
-        public async Task<IActionResult> Delete(int id, int articleId, string articleAuthor)
+        [Authorize(Roles = WebConstants.AdminRole)]
+        public async Task<IActionResult> Delete(int id)
         {
-            //TODO: 
-            //var user = await this.userManager.GetUserAsync(this.User);
-
-            var isDeleted = await this.comments.DeleteAsync(id, articleId);
+            var isDeleted = await this.comments.DeleteAsync(id);
 
             if (!isDeleted)
             {

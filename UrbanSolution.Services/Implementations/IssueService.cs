@@ -12,7 +12,7 @@
 
     public class IssueService : IIssueService
     {
-        private UrbanSolutionDbContext db;
+        private readonly UrbanSolutionDbContext db;
 
         public IssueService(UrbanSolutionDbContext db)
         {

@@ -1,6 +1,4 @@
-﻿using UrbanSolution.Services.Models;
-
-namespace UrbanSolution.Services.Blog.Implementations
+﻿namespace UrbanSolution.Services.Blog.Implementations
 {
     using Microsoft.AspNetCore.Http;
     using Data;

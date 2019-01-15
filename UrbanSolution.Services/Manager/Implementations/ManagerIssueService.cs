@@ -60,7 +60,7 @@
             
             await this.db.SaveChangesAsync();
 
-            await this.activity.WriteManagerLogInfoAsync(manager.Id, ManagerActivityType.EditedIssue);
+            await this.activity.WriteLogAsync(manager.Id, ManagerActivityType.EditedIssue);
 
             return true;
         }
@@ -83,7 +83,7 @@
 
             await this.db.SaveChangesAsync();
 
-            await this.activity.WriteManagerLogInfoAsync(manager.Id, ManagerActivityType.DeletedIssue);
+            await this.activity.WriteLogAsync(manager.Id, ManagerActivityType.DeletedIssue);
 
             await this.pictureService.DeleteImageAsync(pictureId);
 
@@ -105,7 +105,7 @@
 
             await this.db.SaveChangesAsync();
 
-            await this.activity.WriteManagerLogInfoAsync(manager.Id, ManagerActivityType.ApprovedIssue);
+            await this.activity.WriteLogAsync(manager.Id, ManagerActivityType.ApprovedIssue);
 
             return true;
         }

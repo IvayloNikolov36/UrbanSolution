@@ -13,7 +13,7 @@
 
         Task<TModel> GetAsync<TModel>(int id);
 
-        Task<int> CreateAsync(string title, string content, IFormFile picturefile, string authorId);
+        Task<int> CreateAsync(string title, string content, IFormFile pictureFile, string authorId);
 
         Task<bool> UpdateAsync(int id, string authorId, string title, string content);
 

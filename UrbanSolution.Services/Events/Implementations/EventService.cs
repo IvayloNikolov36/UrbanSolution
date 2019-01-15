@@ -10,7 +10,7 @@
     using System.Linq;
     using System.Threading.Tasks;
     using UrbanSolution.Models;
-    using Utilities;
+    using static Utilities.ServiceConstants;
 
     public class EventService : IEventService
     {
@@ -28,8 +28,8 @@
             var eventsModel = await this.db
                 .Events
                 .OrderByDescending(e => e.Id)
-                .Skip((page - 1) * ServiceConstants.EventsPageSize)
-                .Take(ServiceConstants.EventsPageSize)
+                .Skip((page - 1) * EventsPageSize)
+                .Take(EventsPageSize)
                 .To<TModel>()
                 .ToListAsync();
 

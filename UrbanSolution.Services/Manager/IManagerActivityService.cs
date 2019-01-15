@@ -7,10 +7,10 @@
     
     public interface IManagerActivityService
     {
-        Task WriteManagerLogInfoAsync(string managerId, ManagerActivityType activity);
-
         Task<IEnumerable<ManagerActivitiesListingServiceModel>> GetAsync(string managerId);
 
         Task<IEnumerable<ManagerActivitiesListingServiceModel>> AllAsync();
+
+        Task<int> WriteLogAsync(string managerId, ManagerActivityType activity);
     }
 }

@@ -4,7 +4,7 @@
     using CloudinaryDotNet.Actions;
     using Microsoft.AspNetCore.Http;
 
-    public interface ICloudinaryService
+    public interface ICloudImageService
     {
         Task<ImageUploadResult> UploadFormFileAsync(IFormFile file);
 

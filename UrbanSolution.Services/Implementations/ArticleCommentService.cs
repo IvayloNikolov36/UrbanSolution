@@ -69,7 +69,7 @@
             return comments;
         }
 
-        public async Task<bool> DeleteAsync(int commentId, int articleId)
+        public async Task<bool> DeleteAsync(int commentId)
         {
             var commentToDelete = await this.db.FindAsync<Comment>(commentId);
 

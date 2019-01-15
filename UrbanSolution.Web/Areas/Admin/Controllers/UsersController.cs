@@ -47,7 +47,7 @@
 
             var user = await this.UserManager.FindByIdAsync(model.UserId);
 
-            var isAdded = await this.users.AddToRole(admin.Id, user.Id, model.Role);
+            var isAdded = await this.users.AddToRoleAsync(admin.Id, user.Id, model.Role);
 
             if (!isAdded)
             {
@@ -68,7 +68,7 @@
 
             var user = await this.UserManager.FindByIdAsync(model.UserId);
 
-            var isDeleted = await this.users.RemoveFromRole(admin.Id, user.Id, model.Role);
+            var isDeleted = await this.users.RemoveFromRoleAsync(admin.Id, user.Id, model.Role);
 
             if (!isDeleted)
             {

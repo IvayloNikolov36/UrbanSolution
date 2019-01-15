@@ -15,10 +15,15 @@ namespace UrbanSolution.Services.Models
 
         public DateTime PostedOn { get; set; }
 
+        public int ArticleId { get; set; }
+
+        public string ArticleAuthor { get; set; }
+
         public void CreateMappings(IMapperConfigurationExpression configuration)
         {
             configuration.CreateMap<Comment, CommentListingServiceModel>()
-                .ForMember(x => x.Publisher, m => m.MapFrom(u => u.Publisher.UserName));
+                .ForMember(x => x.Publisher, m => m.MapFrom(u => u.Publisher.UserName))
+                .ForMember(x => x.ArticleAuthor, m => m.MapFrom(c => c.Article.Author.UserName));
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿
-namespace UrbanSolution.Services.Implementations
+﻿namespace UrbanSolution.Services.Implementations
 {
     using CloudinaryDotNet;
     using CloudinaryDotNet.Actions;
@@ -11,12 +10,12 @@ namespace UrbanSolution.Services.Implementations
     using System.Threading.Tasks;
     using Utilities;
 
-    public class CloudinaryService : ICloudinaryService
+    public class CloudImageService : ICloudImageService
     {
         private readonly IConfiguration configuration;
         private Cloudinary cloudinary;
 
-        public CloudinaryService(IConfiguration configuration)
+        public CloudImageService(IConfiguration configuration)
         {
             this.configuration = configuration;
 

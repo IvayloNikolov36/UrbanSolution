@@ -48,7 +48,7 @@
 
             await this.db.SaveChangesAsync();
 
-            await this.activity.WriteManagerLogInfoAsync(managerId, ManagerActivityType.UploadedResolved);
+            await this.activity.WriteLogAsync(managerId, ManagerActivityType.UploadedResolved);
 
             return resolvedIssue.Id;
         }
@@ -80,7 +80,7 @@
 
             await this.pictureService.DeleteImageAsync(pictureId); //removes the picture from cloudinary and pictureInfo from DB 
 
-            await this.activity.WriteManagerLogInfoAsync(managerId, ManagerActivityType.RemovedResolved);
+            await this.activity.WriteLogAsync(managerId, ManagerActivityType.RemovedResolved);
 
             return true;
         }
@@ -122,7 +122,7 @@
 
             await this.db.SaveChangesAsync();
 
-            await this.activity.WriteManagerLogInfoAsync(managerId, ManagerActivityType.UpdatedResolved);
+            await this.activity.WriteLogAsync(managerId, ManagerActivityType.UpdatedResolved);
 
             return true;
         }
