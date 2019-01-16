@@ -62,6 +62,18 @@
 
             services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
 
+            services.AddAuthentication()
+                .AddFacebook(options =>
+                {
+                    options.AppId = this.Configuration.GetSection("FacebookLogin:AppId").Value;
+                    options.AppSecret = this.Configuration.GetSection("FacebookLogin:AppSecret").Value;
+                })
+                .AddGitHub(options =>
+                {
+                    options.ClientId = this.Configuration.GetSection("GitHub:ClientID").Value;
+                    options.ClientSecret = this.Configuration.GetSection("GitHub:ClientSecret").Value;
+                });
+
             services.AddMvc(options =>
                 {
                     options.Filters.Add<AutoValidateAntiforgeryTokenAttribute>();
