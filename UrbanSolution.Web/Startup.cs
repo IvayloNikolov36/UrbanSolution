@@ -56,6 +56,8 @@
                     RequireUppercase = true,
                     RequireNonAlphanumeric = false
                 };
+
+                options.SignIn.RequireConfirmedEmail = false;
             });
 
             services.AddDomainServices();

@@ -12,6 +12,7 @@
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.5" PrivateAssets="All" />
+    <PackageReference Include="Sendgrid" Version="9.10.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,7 +26,6 @@
   <ItemGroup>
     <Folder Include="Areas\Blog\Data\" />
     <Folder Include="Areas\Events\Data\" />
-    <Folder Include="Areas\Identity\Services\" />
     <Folder Include="Areas\Manager\Data\" />
   </ItemGroup>
 
