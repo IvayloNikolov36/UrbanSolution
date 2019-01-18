@@ -1,6 +1,7 @@
 ﻿namespace UrbanSolution.Services.Tests.Seed
 {
     using System;
+    using UrbanSolution.Models.MappingTables;
 
     public class EventCreator
     {
@@ -23,6 +24,15 @@
             };
 
             return eventObj;
+        }
+
+        public static EventUser CreateEventUser(int eventId, string userId)
+        {
+            return new EventUser
+            {
+                EventId = eventId,
+                ParticipantId = userId
+            };
         }
     }
 }

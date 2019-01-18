@@ -52,7 +52,7 @@
 
             picService.Verify(p => p.DeleteImageAsync(It.IsAny<int>()), Times.Never);
 
-            activityService.Verify(a => a.WriteManagerLogInfoAsync(It.IsAny<string>(), It.IsAny<ManagerActivityType>()), Times.Never);
+            activityService.Verify(a => a.WriteLogAsync(It.IsAny<string>(), It.IsAny<ManagerActivityType>()), Times.Never);
 
         }
 
@@ -86,7 +86,7 @@
 
             pictureService.Verify(p => p.DeleteImageAsync(It.IsAny<int>()), Times.Never);
 
-            activityService.Verify(a => a.WriteManagerLogInfoAsync(It.IsAny<string>(), It.IsAny<ManagerActivityType>()), Times.Once);
+            activityService.Verify(a => a.WriteLogAsync(It.IsAny<string>(), It.IsAny<ManagerActivityType>()), Times.Once);
 
         }
 
@@ -122,7 +122,7 @@
 
             pictureService.Verify(p => p.DeleteImageAsync(It.IsAny<int>()), Times.Once);
 
-            activityService.Verify(a => a.WriteManagerLogInfoAsync(It.IsAny<string>(), It.IsAny<ManagerActivityType>()), Times.Once);
+            activityService.Verify(a => a.WriteLogAsync(It.IsAny<string>(), It.IsAny<ManagerActivityType>()), Times.Once);
         }
 
         [Fact]
@@ -155,7 +155,7 @@
 
             pictureService.Verify(p => p.DeleteImageAsync(It.IsAny<int>()), Times.Never);
 
-            activityService.Verify(a => a.WriteManagerLogInfoAsync(It.IsAny<string>(), It.IsAny<ManagerActivityType>()), Times.Once);
+            activityService.Verify(a => a.WriteLogAsync(It.IsAny<string>(), It.IsAny<ManagerActivityType>()), Times.Once);
         }
 
         [Fact]
@@ -190,7 +190,7 @@
             pictureService.Verify(p => p.DeleteImageAsync(It.IsAny<int>()), Times.Once);
 
             activityService.Verify(a => a
-                .WriteManagerLogInfoAsync(It.IsAny<string>(), It.IsAny<ManagerActivityType>()), Times.Once);
+                .WriteLogAsync(It.IsAny<string>(), It.IsAny<ManagerActivityType>()), Times.Once);
         }
 
         [Fact]
@@ -220,7 +220,7 @@
             pictureService.Verify(p => p.DeleteImageAsync(It.IsAny<int>()), Times.Never);
 
             activityService.Verify(a => 
-                a.WriteManagerLogInfoAsync(It.IsAny<string>(), It.IsAny<ManagerActivityType>()), Times.Never);
+                a.WriteLogAsync(It.IsAny<string>(), It.IsAny<ManagerActivityType>()), Times.Never);
         }
 
         [Fact]
@@ -261,7 +261,7 @@
             pictureService.Verify(p => p.DeleteImageAsync(It.IsAny<int>()), Times.Exactly(2));
 
             activityService.Verify(a => 
-                a.WriteManagerLogInfoAsync(It.IsAny<string>(), It.IsAny<ManagerActivityType>()), Times.Exactly(2));
+                a.WriteLogAsync(It.IsAny<string>(), It.IsAny<ManagerActivityType>()), Times.Exactly(2));
         }
 
         [Fact]
@@ -286,7 +286,7 @@
             //Assert
             result.Should().BeFalse();
 
-            activityService.Verify(a => a.WriteManagerLogInfoAsync(It.IsAny<string>(), It.IsAny<ManagerActivityType>()), Times.Never);
+            activityService.Verify(a => a.WriteLogAsync(It.IsAny<string>(), It.IsAny<ManagerActivityType>()), Times.Never);
         }
 
         [Fact]
@@ -316,7 +316,7 @@
             dbEntryIsApproved.Should().BeTrue();
 
             activityService.Verify(a => 
-                a.WriteManagerLogInfoAsync(It.IsAny<string>(), It.IsAny<ManagerActivityType>()), Times.Once);
+                a.WriteLogAsync(It.IsAny<string>(), It.IsAny<ManagerActivityType>()), Times.Once);
         }
 
         [Theory]

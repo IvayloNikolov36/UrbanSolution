@@ -1,6 +1,5 @@
 ﻿namespace UrbanSolution.Services.Tests.Event
 {
-    using Data;
     using FluentAssertions;
     using Mapping;
     using Microsoft.AspNetCore.Http;
@@ -209,42 +208,9 @@
         }
 
         [Fact]
-        public async Task ExistsAsyncShould_ReturnsTrueIf_EventExistsInDbAnd_FalseInOtherCase()
-        {
-            const int RandomEventId = 32147893;
-
-            //Arrange
-            var service = new EventService(Db, null);
-
-            var user = UserCreator.Create();
-            await this.Db.AddAsync(user);
-
-            var image = ImageInfoCreator.Create();
-            await this.Db.AddAsync(image);
-
-            var firstEvent = EventCreator.Create(user.Id, null);
-            var secondEvent = EventCreator.Create(user.Id, null);
-            await this.Db.AddRangeAsync(firstEvent, secondEvent);
-
-            await this.Db.SaveChangesAsync();
-
-            //Act
-            var result = await service.ExistsAsync(secondEvent.Id);
-
-            var secondResult = service.ExistsAsync(RandomEventId);
-
-            //Assert
-            result.Should().BeTrue();
-
-            secondResult.Should().NotBe(true);
-        }
-
-        [Fact]
         public async Task TotalCountAsyncShould_ReturnsCorrectCountOfAllEventsInDb()
         {
             //Arrange
-            var service = new EventService(Db, null);
-
             var user = UserCreator.Create();
             await this.Db.AddAsync(user);
 
@@ -256,6 +222,8 @@
             await this.Db.AddRangeAsync(firstEvent, secondEvent);
 
             await this.Db.SaveChangesAsync();
+
+            var service = new EventService(Db, null);
 
             //Act
             var result = await service.TotalCountAsync();
@@ -266,5 +234,59 @@
             result.Should().Be(expectedCount);
         }
 
+        [Fact]
+        public async Task ParticipateShould_ReturnFalseIf_UserIsAlreadyParticipatingEvent()
+        {
+            //Arrange
+            var user = UserCreator.Create();
+            await this.Db.AddAsync(user);
+
+            var image = ImageInfoCreator.Create();
+            await this.Db.AddAsync(image);
+
+            var firstEvent = EventCreator.Create(user.Id, null);
+            await this.Db.AddAsync(firstEvent);
+
+            var eventUser = EventCreator.CreateEventUser(firstEvent.Id, user.Id);
+            await this.Db.AddAsync(eventUser);
+
+            await this.Db.SaveChangesAsync();
+
+            var service = new EventService(Db, null);
+
+            //Act
+            var result = await service.Participate(firstEvent.Id, user.Id);
+
+            //Assert
+
+            result.Should().Be(false);
+        }
+
+        [Fact]
+        public async Task ParticipateShould_ReturnsTrueIf_UserIsNotParticipatingEvent()
+        {
+            //Arrange
+            var user = UserCreator.Create();
+            await this.Db.AddAsync(user);
+
+            var image = ImageInfoCreator.Create();
+            await this.Db.AddAsync(image);
+
+            var firstEvent = EventCreator.Create(user.Id, null);
+            await this.Db.AddAsync(firstEvent);
+
+            await this.Db.SaveChangesAsync();
+
+            var service = new EventService(Db, null);
+
+            //Act
+            var result = await service.Participate(firstEvent.Id, user.Id);
+
+            //Assert
+
+            result.Should().BeTrue();
+
+            this.Db.EventUsers.Should().Contain(eu => eu.EventId == firstEvent.Id && eu.ParticipantId == user.Id);
+        }
     }
 }

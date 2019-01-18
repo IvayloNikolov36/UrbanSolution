@@ -1,4 +1,8 @@
-﻿namespace UrbanSolution.Services.Tests.Manager
+﻿using System;
+using UrbanSolution.Models;
+using UrbanSolution.Models.Enums;
+
+namespace UrbanSolution.Services.Tests.Manager
 {
     using Data;
     using FluentAssertions;
@@ -88,6 +92,40 @@
             result.Should().BeEquivalentTo(expected);          
         }
 
-        //TODO: WriteManagerLogInfoAsync method tests
+        [Theory]
+        [InlineData(ManagerActivityType.ApprovedIssue)]
+        [InlineData(ManagerActivityType.EditedIssue)]
+        [InlineData(ManagerActivityType.DeletedIssue)]
+        [InlineData(ManagerActivityType.UploadedResolved)]
+        [InlineData(ManagerActivityType.UpdatedResolved)]
+        [InlineData(ManagerActivityType.RemovedResolved)]
+        public async Task WriteLogInfoAsyncShould_SaveInDbCorrectInfo(ManagerActivityType actType)
+        {
+            //Arrange
+            var manager = UserCreator.Create();
+            await this.Db.AddAsync(manager);
+
+            await this.Db.SaveChangesAsync();
+
+            var service = new ManagerActivityService(this.Db);
+
+            //Act
+
+            var result = await service.WriteLogAsync(manager.Id, actType);
+
+            var logFromDb = await this.Db.FindAsync<ManagerLog>(result);
+
+            //Assert
+
+            result.Should().BeOfType(typeof(int));
+
+            logFromDb.Id.Should().Be(result);
+
+            logFromDb.Activity.Should().Be(actType);
+
+            logFromDb.ManagerId.Should().Match(manager.Id);
+
+            logFromDb.DateTime.Should().BeLessThan(TimeSpan.FromSeconds(10));
+        }
     }
 }

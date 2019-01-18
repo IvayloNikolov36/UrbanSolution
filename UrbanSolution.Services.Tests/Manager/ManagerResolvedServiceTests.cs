@@ -57,7 +57,7 @@
             pictureService.Verify(p => p.DeleteImageAsync(It.IsAny<int>()), Times.Never);
 
             activityService.Verify(a => 
-                a.WriteManagerLogInfoAsync(It.IsAny<string>(), It.IsAny<ManagerActivityType>()), Times.Never);
+                a.WriteLogAsync(It.IsAny<string>(), It.IsAny<ManagerActivityType>()), Times.Never);
         }
 
         [Fact]
@@ -94,7 +94,7 @@
             pictureService.Verify(p => p.DeleteImageAsync(It.IsAny<int>()), Times.Once);
 
             activityService.Verify(a =>
-                a.WriteManagerLogInfoAsync(It.IsAny<string>(), It.IsAny<ManagerActivityType>()), Times.Once);
+                a.WriteLogAsync(It.IsAny<string>(), It.IsAny<ManagerActivityType>()), Times.Once);
         }
 
         [Fact]
@@ -140,7 +140,7 @@
             pictureService.Verify(p => p.DeleteImageAsync(It.IsAny<int>()), Times.Never);
 
             activityService.Verify(a =>
-                a.WriteManagerLogInfoAsync(It.IsAny<string>(), It.IsAny<ManagerActivityType>()), Times.Once);
+                a.WriteLogAsync(It.IsAny<string>(), It.IsAny<ManagerActivityType>()), Times.Once);
         }
 
         [Fact]
@@ -174,10 +174,46 @@
             pictureService.Verify(p => p.DeleteImageAsync(It.IsAny<int>()), Times.Once);
 
             activityService.Verify(a =>
-                a.WriteManagerLogInfoAsync(It.IsAny<string>(), It.IsAny<ManagerActivityType>()), Times.Once);
+                a.WriteLogAsync(It.IsAny<string>(), It.IsAny<ManagerActivityType>()), Times.Once);
         }
 
-        //TODO: UpdateAsync should return false
+        [Fact]
+        public async Task UpdateAsyncShould_ReturnsFalseIf_UpdaterIsNotTheSameAsUploader()
+        {
+            //Arrange
+            var publisher = UserCreator.Create();
+            var updater = UserCreator.Create();
+            await this.Db.AddRangeAsync(publisher, updater);
+
+            var issue = UrbanIssueCreator.CreateIssue(RegionType.All);
+            await this.Db.AddAsync(issue);
+
+            var resolved = ResolvedCreator.Create(publisher.Id, issue.Id, DefaultPicId);
+            await this.Db.AddAsync(resolved);
+
+            await this.Db.SaveChangesAsync();
+
+            var issueService = new Mock<IManagerIssueService>();
+            var pictureService = IPictureServiceMock.New(DefaultPicId);
+            var activityService = new Mock<IManagerActivityService>();
+
+            var service = new ResolvedService(Db, issueService.Object, pictureService.Object, activityService.Object);
+
+            //Act
+            var result = await service.UpdateAsync(updater.Id, resolved.Id, ChangedDescription, null);
+
+            var resolvedAfterAct = await this.Db.FindAsync<ResolvedIssue>(resolved.Id);
+
+            //Assert
+            result.Should().Be(false);
+
+            resolved.Should().BeEquivalentTo(resolvedAfterAct);
+
+            pictureService.Verify(p => p.DeleteImageAsync(It.IsAny<int>()), Times.Never);
+
+            activityService.Verify(a =>
+                a.WriteLogAsync(It.IsAny<string>(), It.IsAny<ManagerActivityType>()), Times.Never);
+        }
        
     }
 }

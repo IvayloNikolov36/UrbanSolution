@@ -1,6 +1,4 @@
-﻿using UrbanSolution.Models.MappingTables;
-
-namespace UrbanSolution.Services.Events.Implementations
+﻿namespace UrbanSolution.Services.Events.Implementations
 {
     using Data;
     using Mapping;
@@ -12,6 +10,7 @@ namespace UrbanSolution.Services.Events.Implementations
     using System.Linq;
     using System.Threading.Tasks;
     using UrbanSolution.Models;
+    using UrbanSolution.Models.MappingTables;
     using static Utilities.ServiceConstants;
 
     public class EventService : IEventService
