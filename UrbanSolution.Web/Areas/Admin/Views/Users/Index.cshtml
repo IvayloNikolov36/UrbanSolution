@@ -4,8 +4,25 @@
 }
 
 <div row class="text-info text-center">
-    <h2>@this.ViewData["Title"]</h2>
-    <hr />
+    <h3><strong>
+        @this.ViewData["Title"]
+    </strong></h3>
+    
+    <form asp-controller="Users" asp-action="Index" method="get">  
+        <div class="row">
+            <div class="col-xs-2">
+                <select name="searchType" asp-items="Model.SearchFilters" class="form-control"></select>
+            </div>
+            <div class="col-xs-3">
+                <input type="text" name="searchText" class="form-control" placeholder="Search..."/>
+            </div>
+            <div class="col-xs-1">
+                <input type="submit" value="Search" class="btn btn-default"/>
+            </div>
+        </div>
+    </form>
+
+    <br />
 </div>
 
 <table class="table table-bordered table-striped table table-hover">
@@ -13,6 +30,8 @@
         <tr>
             <th class="text-center"><strong>Username</strong></th>
             <th class="text-center"><strong>Email</strong></th>
+            <th class="text-center"><strong>LockoutEnd</strong></th>
+            <th clas="text-center"><strong>Lock/Unlock</strong></th>
             <th class="text-center"><strong>Set Role</strong></th>
             <th class="text-center"><strong>Remove Role</strong></th>
         </tr>   

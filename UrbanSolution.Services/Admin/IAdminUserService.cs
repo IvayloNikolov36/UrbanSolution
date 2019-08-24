@@ -1,4 +1,8 @@
-﻿namespace UrbanSolution.Services.Admin
+﻿using System;
+using System.Linq.Expressions;
+using UrbanSolution.Models;
+
+namespace UrbanSolution.Services.Admin
 {
     using Models;
     using System.Collections.Generic;
@@ -7,6 +11,12 @@
     public interface IAdminUserService
     {
         Task<IEnumerable<AdminUserListingServiceModel>> AllAsync();
+
+        Task<IEnumerable<AdminUserListingServiceModel>> AllAsyncWhere(Expression<Func<User, bool>> expression);
+
+        Task<bool> UnlockAsync(string userId);
+
+        Task<bool> LockAsync(string userId, int lockDays);
 
         Task<bool> AddToRoleAsync(string adminId, string userId, string role);
 

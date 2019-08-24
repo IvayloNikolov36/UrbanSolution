@@ -10,5 +10,8 @@
 
         public IEnumerable<SelectListItem> AllRoles { get; set; }
         
+        public IEnumerable<SelectListItem> SearchFilters { get; set; }
+
+        public IEnumerable<SelectListItem> LockDays { get; set; }
     }
 }

@@ -40,10 +40,15 @@
         public const string TempDataErrorMessageKey = "ErrorMessage";
         public const string TempDataInfoMessageKey = "InfoMessage";
 
-        public const string UserAddedToRoleSuccess = "User {0} successfully added to role {1}.";
-        public const string UserRemovedFromRoleSuccess = "User {0} successfully removed from role {1}.";
-        public const string UserIsNotSetToRole = "User {0} is not set to role {1}.";
-        public const string UserAlreadyInRole = "User {0} has been already {1}.";
+        public const string UserAddedToRoleSuccess = "User '{0}' successfully added to role {1}.";
+        public const string UserRemovedFromRoleSuccess = "User '{0}' successfully removed from role {1}.";
+        public const string UserIsNotSetToRole = "User '{0}' is not set to role {1}.";
+        public const string UserAlreadyInRole = "User '{0}' has been already {1}.";
+        public const string UserUnlocked = "User '{0}' is unlocked!";
+        public const string UserLocked = "User '{0}' is locked for {1}!";
+        public const string UserIsNotUnlocked = "User {0} is not unlocked! Invalid user id!";
+        public const string UserIsNotLocked = "User {0} is not locked! Invalid user id!";
+        public const string LockDaysNotValid = "Given lock days value is not valid!";
 
         public const string ResolvedUploaded = "Successfully uploaded resolved issue.";
         public const string ResolvedDeleted = "Resolved issuesuccessfully deleted.";
@@ -147,5 +152,9 @@
 
         public const string EditEventSuccess = "Successfully edited event.";
         public static string EventNotFound = "No event found!";
+
+        //Identity
+        public const int MaxFailedAccessAttempts = 6;
+        public const int LockedProfileDays = 5;
     }
 }

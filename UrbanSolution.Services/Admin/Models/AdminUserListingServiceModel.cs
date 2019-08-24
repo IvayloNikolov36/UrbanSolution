@@ -1,4 +1,6 @@
-﻿namespace UrbanSolution.Services.Admin.Models
+﻿using System;
+
+namespace UrbanSolution.Services.Admin.Models
 {
     using Mapping;
     using System.Collections.Generic;
@@ -11,6 +13,8 @@
         public string UserName { get; set; }
 
         public string Email { get; set; }
+
+        public DateTimeOffset? LockoutEnd { get; set; }      
 
         public List<string> UserRoles { get; set; }
 

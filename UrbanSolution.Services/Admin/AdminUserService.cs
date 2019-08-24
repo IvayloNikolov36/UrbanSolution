@@ -4,10 +4,12 @@
     using Mapping;
     using Models;
     using Microsoft.EntityFrameworkCore;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using System.Linq;
     using Microsoft.AspNetCore.Identity;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Linq.Expressions;
+    using System.Threading.Tasks;
     using UrbanSolution.Models;
     using UrbanSolution.Models.Enums;
 
@@ -17,7 +19,10 @@
         private readonly UserManager<User> userManager;
         private readonly IAdminActivityService activity;
 
-        public AdminUserService(UrbanSolutionDbContext db, UserManager<User> userManager, IAdminActivityService activity)
+        public AdminUserService(
+            UrbanSolutionDbContext db, 
+            UserManager<User> userManager, 
+            IAdminActivityService activity)
         {
             this.db = db;
             this.userManager = userManager;
@@ -46,9 +51,63 @@
             return usersModels;
         }
 
+        public async Task<IEnumerable<AdminUserListingServiceModel>> AllAsyncWhere(
+            Expression<Func<User, bool>> expression)
+        {
+            var usersRoles = new List<List<string>>();
+
+            IQueryable<User> filteredUsers = this.db.Users.Where(expression);
+            foreach (var user in filteredUsers.ToList())
+            {
+                var userAllRoles = await this.userManager.GetRolesAsync(user);
+                usersRoles.Add(userAllRoles.ToList());
+            }
+
+            var usersModels = await filteredUsers
+                .To<AdminUserListingServiceModel>()
+                .ToListAsync();
+
+            for (var i = 0; i < usersModels.Count; i++)
+                usersModels[i].UserRoles = usersRoles[i];
+
+            return usersModels;
+        }
+
+        public async Task<bool> UnlockAsync(string userId)
+        {
+            User userFromDb = await this.userManager.FindByIdAsync(userId);
+
+            if (userFromDb == null)
+            {
+                return false;
+            }
+
+            userFromDb.LockoutEnd = null;
+
+            await this.db.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task<bool> LockAsync(string userId, int lockDays)
+        {
+            User userFromDb = await this.userManager.FindByIdAsync(userId);
+
+            if (userFromDb == null)
+            {
+                return false;
+            }
+
+            userFromDb.LockoutEnd = new DateTimeOffset(DateTime.UtcNow.AddDays(lockDays));
+
+            await this.db.SaveChangesAsync();
+
+            return true;
+        }
+
         public async Task<bool> AddToRoleAsync(string adminId, string userId, string role)
         {
-            var user = await this.userManager.FindByIdAsync(userId);
+            User user = await this.userManager.FindByIdAsync(userId);
 
             bool userAlreadyInRole = await this.userManager.IsInRoleAsync(user, role);
 
@@ -66,7 +125,7 @@
 
         public async Task<bool> RemoveFromRoleAsync(string adminId, string userId, string role)
         {
-            var user = await this.userManager.FindByIdAsync(userId);
+            User user = await this.userManager.FindByIdAsync(userId);
 
             bool userInRole = await this.userManager.IsInRoleAsync(user, role);
 

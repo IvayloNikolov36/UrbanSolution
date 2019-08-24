@@ -1,4 +1,7 @@
-﻿namespace UrbanSolution.Web
+﻿using System;
+using UrbanSolution.Web.Infrastructure;
+
+namespace UrbanSolution.Web
 {
     using Data;
     using Infrastructure.Extensions;
@@ -58,6 +61,11 @@
                 };
 
                 options.SignIn.RequireConfirmedEmail = false;
+                options.SignIn.RequireConfirmedPhoneNumber = false;
+
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromDays(WebConstants.LockedProfileDays);
+                options.Lockout.MaxFailedAccessAttempts = WebConstants.MaxFailedAccessAttempts;
+                options.Lockout.AllowedForNewUsers = true;
             });
 
             services.AddDomainServices();

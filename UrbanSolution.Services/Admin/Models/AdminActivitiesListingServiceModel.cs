@@ -16,11 +16,12 @@
 
         public string ForRole { get; set; }
 
-        public void CreateMappings(IMapperConfigurationExpression configuration)
+        public void CreateMappings(IProfileExpression configuration)
         {
             configuration.CreateMap<AdminLog, AdminActivitiesListingServiceModel>()
                 .ForMember(x => x.EditedUserUserName, m => m.MapFrom(e => e.EditedUser.UserName))
                 .ForMember(x => x.Activity, m => m.MapFrom(e => e.Activity.ToFriendlyName()));  
         }
+
     }
 }
