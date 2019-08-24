@@ -1,10 +1,11 @@
-﻿using System;
-using System.Linq;
-using System.Linq.Expressions;
-using AutoMapper.QueryableExtensions;
-
-namespace UrbanSolution.Services.Mapping
+﻿namespace UrbanSolution.Services.Mapping
 {
+    using System;
+    using System.Linq;
+    using System.Linq.Expressions;
+
+    using AutoMapper.QueryableExtensions;
+
     public static class QueryableMappingExtensions
     {
         public static IQueryable<TDestination> To<TDestination>(
@@ -16,7 +17,7 @@ namespace UrbanSolution.Services.Mapping
                 throw new ArgumentNullException(nameof(source));
             }
 
-            return source.ProjectTo(membersToExpand);
+            return source.ProjectTo(AutoMapperConfig.MapperInstance.ConfigurationProvider, null, membersToExpand);
         }
 
         public static IQueryable<TDestination> To<TDestination>(
@@ -28,7 +29,7 @@ namespace UrbanSolution.Services.Mapping
                 throw new ArgumentNullException(nameof(source));
             }
 
-            return source.ProjectTo<TDestination>(parameters);
+            return source.ProjectTo<TDestination>(AutoMapperConfig.MapperInstance.ConfigurationProvider, parameters);
         }
     }
 }

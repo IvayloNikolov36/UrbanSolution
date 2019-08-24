@@ -1,9 +1,9 @@
-﻿using AutoMapper;
-
-namespace UrbanSolution.Services.Mapping
+﻿namespace UrbanSolution.Services.Mapping
 {
+    using AutoMapper;
+
     public interface IHaveCustomMappings
     {
-        void CreateMappings(IMapperConfigurationExpression configuration);
+        void CreateMappings(IProfileExpression configuration);
     }
 }
