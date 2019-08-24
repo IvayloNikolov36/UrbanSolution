@@ -3,7 +3,6 @@
     using Models;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Configuration;
-    using System.Threading.Tasks;
     using UrbanSolution.Services.Models;
     using static Infrastructure.WebConstants;
 
@@ -17,7 +16,7 @@
             this.configuration = configuration;
         }
 
-        public async Task<IViewComponentResult> InvokeAsync(UrbanIssueDetailsServiceModel model)
+        public IViewComponentResult Invoke(UrbanIssueDetailsServiceModel model)
         {
             var viewModel = new MapIssueMarkerComponentViewModel
             {

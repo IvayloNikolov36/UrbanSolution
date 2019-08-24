@@ -81,7 +81,7 @@
                     options.Filters.Add<AutoValidateAntiforgeryTokenAttribute>();
                 })
                 .AddJsonOptions(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore)
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);            
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);            
         }
 
         public void Configure(
