@@ -30,12 +30,16 @@
             this.users = users;
         }
 
-        public async Task<IActionResult> Index(string searchType, string searchText)
+        public async Task<IActionResult> Index(string searchType, string searchText, string filter)
         {
             IEnumerable<AdminUserListingServiceModel> modelUsers;
 
             string search = searchText;
-            if (string.IsNullOrEmpty(searchText))
+
+            bool hasSearching = !string.IsNullOrEmpty(searchText);
+            bool hasFiltering = filter != null && (!string.IsNullOrEmpty(filter) && !filter.Equals(UsersFilter));
+
+            if (!hasSearching && !hasFiltering)
             {
                 modelUsers = await this.users.AllAsync();
             }
@@ -43,36 +47,33 @@
             {
                 Expression<Func<User, bool>> expression = null;
 
-                if (searchType == UsersFilters.UserName.ToString())
-                    expression = u => u.UserName.Contains(search, StringComparison.InvariantCultureIgnoreCase);
-                else if(searchType == UsersFilters.Email.ToString())
-                    expression = u => u.Email.Contains(search, StringComparison.InvariantCultureIgnoreCase);
+                if (hasSearching)
+                {
+                    if (searchType == UsersFilters.UserName.ToString())
+                        expression = u => u.UserName.Contains(search, StringComparison.InvariantCultureIgnoreCase);
+                    else if (searchType == UsersFilters.Email.ToString())
+                        expression = u => u.Email.Contains(search, StringComparison.InvariantCultureIgnoreCase);
+                }
+
+                if (hasFiltering)
+                {
+                    if (filter == FilterUsersBy.Locked.ToString())
+                        expression = u => u.LockoutEnd != null;
+
+                    if (filter == FilterUsersBy.NotLocked.ToString())
+                        expression = u => u.LockoutEnd == null;
+                }
 
                 modelUsers = await this.users.AllAsyncWhere(expression);
-            }
-
-            var allRoles = this.RoleManager.Roles
-                .Select(r => new SelectListItem(r.Name, r.Name))
-                .ToList();
-
-            var searchFilters = new List<SelectListItem>
-            {
-                new SelectListItem(UsersFilters.UserName.ToString(), UsersFilters.UserName.ToString()),
-                new SelectListItem(UsersFilters.Email.ToString(), UsersFilters.Email.ToString())
-            };
-
-            var lockDays = new List<SelectListItem>();
-            foreach (var ld in (int[])Enum.GetValues(typeof(LockDays)))
-            {
-                lockDays.Add(new SelectListItem(ld.ToString(), ld.ToString()));
             }
 
             var viewModel = new AdminUsersListingViewModel
             {
                 Users = modelUsers,
-                AllRoles = allRoles,
-                SearchFilters = searchFilters,
-                LockDays = lockDays
+                AllRoles = this.RoleManager.Roles.Select(r => new SelectListItem(r.Name, r.Name)).ToList(),
+                SearchFilters = GetDropDownSearchFiltersOptions(),
+                LockDays = GetDropDownLockedDaysOptions(),
+                FilterBy = GetDropDownFilterUsersOptions()
             };
 
             return this.View(viewModel);
@@ -161,5 +162,33 @@
                 .WithSuccess("", string.Format(UserRemovedFromRoleSuccess, user.UserName, model.Role));
         }
 
+        private IEnumerable<SelectListItem> GetDropDownSearchFiltersOptions()
+        {
+            return new List<SelectListItem>
+            {
+                new SelectListItem(UsersFilters.UserName.ToString().SeparateStringByCapitals(), UsersFilters.UserName.ToString()),
+                new SelectListItem(UsersFilters.Email.ToString().SeparateStringByCapitals(), UsersFilters.Email.ToString())
+            };
+        }
+        private IEnumerable<SelectListItem> GetDropDownLockedDaysOptions()
+        {
+            var lockDays = new List<SelectListItem>();
+
+            foreach (var ld in (int[])Enum.GetValues(typeof(LockDays)))
+                lockDays.Add(new SelectListItem(ld.ToString(), ld.ToString()));
+
+            return lockDays;
+        }
+
+        private IEnumerable<SelectListItem> GetDropDownFilterUsersOptions()
+        {
+            var filterBy = new List<SelectListItem>();
+            filterBy.Add(new SelectListItem(UsersFilter, null));
+
+            foreach (string filter in Enum.GetNames(typeof(FilterUsersBy)))
+                filterBy.Add(new SelectListItem(filter.SeparateStringByCapitals(), filter));
+
+            return filterBy;
+        }
     }
 }

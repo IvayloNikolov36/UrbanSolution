@@ -1,8 +1,11 @@
-﻿@model UrbanSolution.Web.Areas.Admin.Models.AdminUsersListingViewModel
+﻿@model UrbanSolution.Web.Areas.Admin.Models.AdminUsersListingViewModel 
 
 
 @foreach (var user in Model.Users)
 {
+    var userAddToRoles = Model.AllRoles.Where(r => !user.UserRoles.Contains(r.Text));
+    var userRemoveFromRoles = Model.AllRoles.Where(r => user.UserRoles.Contains(r.Text));
+
     <tr>
         <td class="text-center">@user.UserName</td>
         <td class="text-center">@user.Email</td>
@@ -35,27 +38,34 @@
         </td>
         @*AddToRole*@
         <td>
-            <form asp-controller="Users" asp-action="AddToRole" method="post">
-                <div class="col-md-8">
-                    <input type="hidden" name="UserId" value="@user.Id" />
-                    <select name="Role" asp-items="Model.AllRoles.Where(r => !user.UserRoles.Contains(r.Text))" class="form-control"></select>
-                </div>
-                <div class="col-md-2">
-                    <input class="btn btn-sm btn-success" type="submit" value="Add" />
-                </div>
-            </form>
+            @if (userAddToRoles.Any())
+            {
+                <form asp-controller="Users" asp-action="AddToRole" method="post">
+                    <div class="col-md-8">
+                        <input type="hidden" name="UserId" value="@user.Id"/>
+                        <select name="Role" asp-items="userAddToRoles" class="form-control"></select>
+                    </div>
+                    <div class="col-md-2">
+                        <input class="btn btn-sm btn-success" type="submit" value="Add"/>
+                    </div>
+                </form>
+            }
         </td>
         @*RemoveFromRole*@
-        <td>
+    <td>
+        @if (userRemoveFromRoles.Any())
+        {
             <form asp-controller="Users" asp-action="RemoveFromRole" method="post">
                 <div class="col-md-8">
                     <input type="hidden" name="UserId" value="@user.Id" />
-                    <select name="Role" asp-items="Model.AllRoles.Where(r => user.UserRoles.Contains(r.Text))" class="form-control"></select>
+                    <select name="Role" asp-items="userRemoveFromRoles" class="form-control"></select>
                 </div>
                 <div class="col-md-2">
                     <input class="btn btn-sm btn-danger" type="submit" value="Remove" />
                 </div>
             </form>
-        </td>
+        }
+        
+    </td>
     </tr>
 }

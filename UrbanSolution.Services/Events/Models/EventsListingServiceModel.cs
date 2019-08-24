@@ -19,7 +19,7 @@
 
         public DateTime Ends { get; set; }
 
-        public void CreateMappings(IMapperConfigurationExpression configuration)
+        public void CreateMappings(IProfileExpression configuration)
         {
             configuration.CreateMap<Event, EventsListingServiceModel>()
                 .ForMember(x => x.Starts, m => m.MapFrom(e => e.StartDate))

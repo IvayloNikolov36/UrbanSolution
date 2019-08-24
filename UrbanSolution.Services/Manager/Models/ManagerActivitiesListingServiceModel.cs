@@ -16,7 +16,7 @@ namespace UrbanSolution.Services.Manager.Models
         public ManagerActivityType Activity { get; set; }
 
 
-        public void CreateMappings(IMapperConfigurationExpression configuration)
+        public void CreateMappings(IProfileExpression configuration)
         {
             configuration.CreateMap<ManagerLog, ManagerActivitiesListingServiceModel>()
                 .ForMember(x => x.UserName, m => m.MapFrom(ml => ml.Manager.UserName));

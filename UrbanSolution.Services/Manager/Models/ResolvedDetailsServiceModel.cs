@@ -28,7 +28,7 @@
 
         public ICollection<Rating> Ratings { get; set; }
 
-        public void CreateMappings(IMapperConfigurationExpression configuration)
+        public void CreateMappings(IProfileExpression configuration)
         {
             configuration.CreateMap<ResolvedIssue, ResolvedDetailsServiceModel>()
                 .ForMember(x => x.IssuePictureUrl, m => m.MapFrom(r => r.UrbanIssue.CloudinaryImage.PictureUrl))

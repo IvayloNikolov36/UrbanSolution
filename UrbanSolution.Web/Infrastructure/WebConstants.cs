@@ -1,4 +1,6 @@
-﻿namespace UrbanSolution.Web.Infrastructure
+﻿using System.Reflection.Metadata;
+
+namespace UrbanSolution.Web.Infrastructure
 {
     public class WebConstants
     {
@@ -156,5 +158,8 @@
         //Identity
         public const int MaxFailedAccessAttempts = 6;
         public const int LockedProfileDays = 5;
+
+        //DropDowns
+        public const string UsersFilter = "Filter by";
     }
 }

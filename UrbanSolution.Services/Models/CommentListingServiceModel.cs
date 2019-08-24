@@ -19,7 +19,7 @@ namespace UrbanSolution.Services.Models
 
         public string ArticleAuthor { get; set; }
 
-        public void CreateMappings(IMapperConfigurationExpression configuration)
+        public void CreateMappings(IProfileExpression configuration)
         {
             configuration.CreateMap<Comment, CommentListingServiceModel>()
                 .ForMember(x => x.Publisher, m => m.MapFrom(u => u.Publisher.UserName))

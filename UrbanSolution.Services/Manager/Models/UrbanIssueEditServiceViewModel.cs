@@ -45,7 +45,7 @@
 
         public bool IsApproved { get; set; }
 
-        public void CreateMappings(IMapperConfigurationExpression configuration)
+        public void CreateMappings(IProfileExpression configuration)
         {
             configuration.CreateMap<UrbanIssue, UrbanIssueEditServiceViewModel>()
                 .ForMember(x => x.Publisher, m => m.MapFrom(u => u.Publisher.UserName));

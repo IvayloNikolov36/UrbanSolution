@@ -14,10 +14,16 @@
                 <select name="searchType" asp-items="Model.SearchFilters" class="form-control"></select>
             </div>
             <div class="col-xs-3">
-                <input type="text" name="searchText" class="form-control" placeholder="Search..."/>
+                <input type="text" name="searchText" class="form-control" placeholder="Search..." />
             </div>
             <div class="col-xs-1">
-                <input type="submit" value="Search" class="btn btn-default"/>
+                <input type="submit" value="Search" class="btn btn-default" />
+            </div>
+            <div class="col-xs-2">
+                <select name="filter" asp-items="Model.FilterBy" class="form-control"></select>
+            </div>
+            <div class="col-xs-1">
+                <input type="submit" value="Filter" class="btn btn-default" />
             </div>
         </div>
     </form>

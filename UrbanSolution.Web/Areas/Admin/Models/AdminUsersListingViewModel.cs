@@ -13,5 +13,7 @@
         public IEnumerable<SelectListItem> SearchFilters { get; set; }
 
         public IEnumerable<SelectListItem> LockDays { get; set; }
+
+        public IEnumerable<SelectListItem> FilterBy { get; set; }
     }
 }

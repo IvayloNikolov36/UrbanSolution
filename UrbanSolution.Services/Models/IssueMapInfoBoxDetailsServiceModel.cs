@@ -21,7 +21,7 @@ namespace UrbanSolution.Services.Models
 
         public string Longitude { get; set; }
 
-        public void CreateMappings(IMapperConfigurationExpression configuration)
+        public void CreateMappings(IProfileExpression configuration)
         {
             configuration.CreateMap<UrbanIssue, IssueMapInfoBoxDetailsServiceModel>()
                 .ForMember(x => x.Latitude,m => m.MapFrom(u => u.Latitude.ToString().Replace(",", ".")))

@@ -31,7 +31,7 @@
 
         public List<string> Participants { get; set; }
 
-        public void CreateMappings(IMapperConfigurationExpression configuration)
+        public void CreateMappings(IProfileExpression configuration)
         {
             configuration.CreateMap<Event, EventDetailsServiceModel>()
                 .ForMember(x => x.Participants,
