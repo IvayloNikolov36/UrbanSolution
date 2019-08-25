@@ -1,4 +1,4 @@
-﻿@model UrbanSolution.Web.Areas.Admin.Models.AdminUsersListingViewModel 
+﻿@model UrbanSolution.Web.Areas.Admin.Models.AdminUsersListingViewModel
 
 
 @foreach (var user in Model.Users)
@@ -6,12 +6,18 @@
     var userAddToRoles = Model.AllRoles.Where(r => !user.UserRoles.Contains(r.Text));
     var userRemoveFromRoles = Model.AllRoles.Where(r => user.UserRoles.Contains(r.Text));
 
+    DateTime? lockOutEndDate = null;
+    if (user.LockoutEnd != null)
+    {
+        lockOutEndDate = user.LockoutEnd.Value.DateTime;
+    }
+
     <tr>
         <td class="text-center">@user.UserName</td>
         <td class="text-center">@user.Email</td>
-        <td class="text-center">@user.LockoutEnd</td>
+        <td class="text-center">@lockOutEndDate</td>
         <td>
-            @if (user.LockoutEnd != null)     
+            @if (user.LockoutEnd != null)
             {
                 <form asp-controller="Users" asp-action="Unlock" method="post">
                     <input type="hidden" name="UserId" value="@user.Id" />
@@ -20,7 +26,7 @@
                     </div>
                 </form>
             }
-            else                              
+            else
             {
                 <form asp-controller="Users" asp-action="Lock" method="post">
                     <input type="hidden" name="UserId" value="@user.Id" />
@@ -29,7 +35,7 @@
                             <select name="LockDays" asp-items="Model.LockDays" class="form-control"></select>
                         </div>
                         <div class="col-xs-1">
-                            <input class="btn btn-sm btn-danger" type="submit" value="Lock"/>
+                            <input class="btn btn-sm btn-danger" type="submit" value="Lock" />
                         </div>
                     </div>
                 </form>
@@ -42,30 +48,30 @@
             {
                 <form asp-controller="Users" asp-action="AddToRole" method="post">
                     <div class="col-md-8">
-                        <input type="hidden" name="UserId" value="@user.Id"/>
+                        <input type="hidden" name="UserId" value="@user.Id" />
                         <select name="Role" asp-items="userAddToRoles" class="form-control"></select>
                     </div>
                     <div class="col-md-2">
-                        <input class="btn btn-sm btn-success" type="submit" value="Add"/>
+                        <input class="btn btn-sm btn-success" type="submit" value="Add" />
                     </div>
                 </form>
             }
         </td>
         @*RemoveFromRole*@
-    <td>
-        @if (userRemoveFromRoles.Any())
-        {
-            <form asp-controller="Users" asp-action="RemoveFromRole" method="post">
-                <div class="col-md-8">
-                    <input type="hidden" name="UserId" value="@user.Id" />
-                    <select name="Role" asp-items="userRemoveFromRoles" class="form-control"></select>
-                </div>
-                <div class="col-md-2">
-                    <input class="btn btn-sm btn-danger" type="submit" value="Remove" />
-                </div>
-            </form>
-        }
-        
-    </td>
+        <td>
+            @if (userRemoveFromRoles.Any())
+            {
+                <form asp-controller="Users" asp-action="RemoveFromRole" method="post">
+                    <div class="col-md-8">
+                        <input type="hidden" name="UserId" value="@user.Id" />
+                        <select name="Role" asp-items="userRemoveFromRoles" class="form-control"></select>
+                    </div>
+                    <div class="col-md-2">
+                        <input class="btn btn-sm btn-danger" type="submit" value="Remove" />
+                    </div>
+                </form>
+            }
+
+        </td>
     </tr>
 }

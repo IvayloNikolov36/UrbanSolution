@@ -30,18 +30,36 @@
 
         }
 
-        public async Task<IEnumerable<AdminUserListingServiceModel>> AllAsync()
+        public async Task<IEnumerable<AdminUserListingServiceModel>> AllAsync(bool hasSorting = false, string orderBy = null, string orderType = null)
         {
+            IOrderedQueryable<User> query = this.db.Users.OrderBy(u => u.UserName);
+
+            if (hasSorting)
+            {
+                if (orderBy == "UserName")
+                {
+                    query = orderType == "ASC" 
+                        ? this.db.Users.OrderBy(u => u.UserName) 
+                        : this.db.Users.OrderByDescending(u => u.UserName);
+                }
+
+                if (orderBy == "Email")
+                {
+                    query = orderType == "ASC"
+                        ? this.db.Users.OrderBy(u => u.Email)
+                        : this.db.Users.OrderByDescending(u => u.Email);
+                }
+            }
+
             var usersRoles = new List<List<string>>();
 
-            foreach (var user in this.db.Users.ToList())
+            foreach (var user in query) //TODO: query.ToList()?
             {
                 var userAllRoles = await this.userManager.GetRolesAsync(user);
                 usersRoles.Add(userAllRoles.ToList());
             }
 
-            var usersModels = await this.db
-                .Users
+            var usersModels = await query
                 .To<AdminUserListingServiceModel>()
                 .ToListAsync();
 

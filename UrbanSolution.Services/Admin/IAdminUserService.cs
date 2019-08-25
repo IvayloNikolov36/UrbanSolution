@@ -10,7 +10,7 @@ namespace UrbanSolution.Services.Admin
 
     public interface IAdminUserService
     {
-        Task<IEnumerable<AdminUserListingServiceModel>> AllAsync();
+        Task<IEnumerable<AdminUserListingServiceModel>> AllAsync(bool hasSorting = false, string orderBy = null, string orderType = null);
 
         Task<IEnumerable<AdminUserListingServiceModel>> AllAsyncWhere(Expression<Func<User, bool>> expression);
 

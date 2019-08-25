@@ -21,25 +21,27 @@
     {
         private readonly IAdminUserService users;
 
-        public UsersController(
-            UserManager<User> userManager,
-            RoleManager<IdentityRole> roleManager,
-            IAdminUserService users)
+        public UsersController(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IAdminUserService users)
             : base(userManager, roleManager)
         {
             this.users = users;
         }
 
-        public async Task<IActionResult> Index(string searchType, string searchText, string filter)
+        public async Task<IActionResult> Index(SearchSortAndFilterModel model)
         {
             IEnumerable<AdminUserListingServiceModel> modelUsers;
 
-            string search = searchText;
+            string search = model.SearchText;
 
-            bool hasSearching = !string.IsNullOrEmpty(searchText);
-            bool hasFiltering = filter != null && (!string.IsNullOrEmpty(filter) && !filter.Equals(UsersFilter));
+            bool hasSearching = !string.IsNullOrEmpty(search);
+            bool hasFiltering = model.Filter != null && !string.IsNullOrEmpty(model.Filter) && !model.Filter.Equals(UsersFilter);
+            bool hasSorting = model.SortBy != null && model.SortBy != "Sort by";
 
-            if (!hasSearching && !hasFiltering)
+            if (hasSorting)
+            {
+                modelUsers = await this.users.AllAsync(true, model.SortBy, model.SortType);
+            }
+            else if (!hasSearching && !hasFiltering)
             {
                 modelUsers = await this.users.AllAsync();
             }
@@ -49,18 +51,18 @@
 
                 if (hasSearching)
                 {
-                    if (searchType == UsersFilters.UserName.ToString())
+                    if (model.SearchType == UsersFilters.UserName.ToString())
                         expression = u => u.UserName.Contains(search, StringComparison.InvariantCultureIgnoreCase);
-                    else if (searchType == UsersFilters.Email.ToString())
+                    else if (model.SearchType == UsersFilters.Email.ToString())
                         expression = u => u.Email.Contains(search, StringComparison.InvariantCultureIgnoreCase);
                 }
 
                 if (hasFiltering)
                 {
-                    if (filter == FilterUsersBy.Locked.ToString())
+                    if (model.Filter == FilterUsersBy.Locked.ToString())
                         expression = u => u.LockoutEnd != null;
 
-                    if (filter == FilterUsersBy.NotLocked.ToString())
+                    if (model.Filter == FilterUsersBy.NotLocked.ToString())
                         expression = u => u.LockoutEnd == null;
                 }
 
@@ -164,12 +166,14 @@
 
         private IEnumerable<SelectListItem> GetDropDownSearchFiltersOptions()
         {
-            return new List<SelectListItem>
-            {
-                new SelectListItem(UsersFilters.UserName.ToString().SeparateStringByCapitals(), UsersFilters.UserName.ToString()),
-                new SelectListItem(UsersFilters.Email.ToString().SeparateStringByCapitals(), UsersFilters.Email.ToString())
-            };
+            var filterOptions = new List<SelectListItem>();
+
+            foreach (var name in Enum.GetNames(typeof(UsersFilters)))
+                filterOptions.Add(new SelectListItem(name.SeparateStringByCapitals(), name));
+
+            return filterOptions;
         }
+
         private IEnumerable<SelectListItem> GetDropDownLockedDaysOptions()
         {
             var lockDays = new List<SelectListItem>();
@@ -182,8 +186,10 @@
 
         private IEnumerable<SelectListItem> GetDropDownFilterUsersOptions()
         {
-            var filterBy = new List<SelectListItem>();
-            filterBy.Add(new SelectListItem(UsersFilter, null));
+            var filterBy = new List<SelectListItem>
+            {
+                new SelectListItem(UsersFilter, null)
+            };
 
             foreach (string filter in Enum.GetNames(typeof(FilterUsersBy)))
                 filterBy.Add(new SelectListItem(filter.SeparateStringByCapitals(), filter));

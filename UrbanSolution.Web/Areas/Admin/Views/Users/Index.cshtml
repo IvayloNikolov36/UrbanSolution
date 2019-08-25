@@ -11,16 +11,25 @@
     <form asp-controller="Users" asp-action="Index" method="get">  
         <div class="row">
             <div class="col-xs-2">
-                <select name="searchType" asp-items="Model.SearchFilters" class="form-control"></select>
+                <select name="SortBy" asp-items="Model.SortBy" class="form-control"></select>
             </div>
-            <div class="col-xs-3">
-                <input type="text" name="searchText" class="form-control" placeholder="Search..." />
+            <div class="col-xs-1">
+                <select name="SortType" asp-items="Model.SortingType" class="form-control"></select>
+            </div>
+            <div class="col-xs-1">
+                <input type="submit" value="Sort" class="btn btn-default" />
+            </div>
+            <div class="col-xs-2">
+                <select name="SearchType" asp-items="Model.SearchFilters" class="form-control"></select>
+            </div>
+            <div class="col-xs-2">
+                <input type="text" name="SearchText" class="form-control" placeholder="Search..." />
             </div>
             <div class="col-xs-1">
                 <input type="submit" value="Search" class="btn btn-default" />
             </div>
             <div class="col-xs-2">
-                <select name="filter" asp-items="Model.FilterBy" class="form-control"></select>
+                <select name="Filter" asp-items="Model.FilterBy" class="form-control"></select>
             </div>
             <div class="col-xs-1">
                 <input type="submit" value="Filter" class="btn btn-default" />
@@ -36,8 +45,8 @@
         <tr>
             <th class="text-center"><strong>Username</strong></th>
             <th class="text-center"><strong>Email</strong></th>
-            <th class="text-center"><strong>LockoutEnd</strong></th>
-            <th clas="text-center"><strong>Lock/Unlock</strong></th>
+            <th class="text-center"><strong>Lockout End</strong></th>
+            <th clas="text-center"><strong>Lock(days)/Unlock</strong></th>
             <th class="text-center"><strong>Set Role</strong></th>
             <th class="text-center"><strong>Remove Role</strong></th>
         </tr>   
