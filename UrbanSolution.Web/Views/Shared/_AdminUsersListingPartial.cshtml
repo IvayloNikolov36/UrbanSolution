@@ -6,16 +6,10 @@
     var userAddToRoles = Model.AllRoles.Where(r => !user.UserRoles.Contains(r.Text));
     var userRemoveFromRoles = Model.AllRoles.Where(r => user.UserRoles.Contains(r.Text));
 
-    DateTime? lockOutEndDate = null;
-    if (user.LockoutEnd != null)
-    {
-        lockOutEndDate = user.LockoutEnd.Value.DateTime;
-    }
-
     <tr>
         <td class="text-center">@user.UserName</td>
         <td class="text-center">@user.Email</td>
-        <td class="text-center">@lockOutEndDate</td>
+        <td class="text-center">@user.LockoutEnd</td>
         <td>
             @if (user.LockoutEnd != null)
             {
@@ -71,7 +65,6 @@
                     </div>
                 </form>
             }
-
         </td>
     </tr>
 }

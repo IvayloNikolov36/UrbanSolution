@@ -1,9 +1,7 @@
-﻿using UrbanSolution.Web.Infrastructure.Filters;
-
-namespace UrbanSolution.Web.Controllers
+﻿namespace UrbanSolution.Web.Controllers
 {
-    using Infrastructure;
     using Infrastructure.Extensions;
+    using Infrastructure.Filters;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Models;
@@ -12,6 +10,7 @@ namespace UrbanSolution.Web.Controllers
     using System.Threading.Tasks;
     using UrbanSolution.Models;
     using UrbanSolution.Services.Models;
+    using static Infrastructure.WebConstants;
 
     public class IssueController : Controller
     {
@@ -24,9 +23,9 @@ namespace UrbanSolution.Web.Controllers
             this.userManager = userManager;
         }
 
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index(string regionFilter, string typeFilter, int rowsCount = IssuesRows, int page = InitalPage)
         {
-            var modelIssues = await this.issues.AllAsync(isApproved: true, page: page);
+            var modelIssues = await this.issues.AllAsync(isApproved: true, rowsCount: rowsCount, page: page, regionFilter: regionFilter, typeFilter: typeFilter);
 
             var model = await this.GetModelForListingIssuesAsync(modelIssues, page);
 
@@ -36,18 +35,18 @@ namespace UrbanSolution.Web.Controllers
         [ServiceFilter(typeof(ValidateIssueIdExistsAttribute))]
         public async Task<IActionResult> Details(int id)
         {            
-            if(this.User.IsInRole(WebConstants.ManagerRole))
+            if(this.User.IsInRole(ManagerRole))
             {
                 var user = await this.userManager.GetUserAsync(this.User);
 
-                this.ViewData[WebConstants.ViewDataManagerRegionKey] = user.ManagedRegion?.ToString();
+                this.ViewData[ViewDataManagerRegionKey] = user.ManagedRegion?.ToString();
             }
 
             var issueModel = await this.issues.GetAsync<UrbanIssueDetailsServiceModel>(id);
 
             if (issueModel == null)
             {
-                return this.RedirectToAction("Index").WithDanger("", WebConstants.NoIssueInDb);
+                return this.RedirectToAction("Index").WithDanger("", NoIssueInDb);
             }
 
             return this.View(issueModel);

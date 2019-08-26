@@ -35,7 +35,7 @@
 
             bool hasSearching = !string.IsNullOrEmpty(search);
             bool hasFiltering = model.Filter != null && !string.IsNullOrEmpty(model.Filter) && !model.Filter.Equals(UsersFilter);
-            bool hasSorting = model.SortBy != null && model.SortBy != "Sort by";
+            bool hasSorting = model.SortBy != null && model.SortBy != "Sort by"; //TODO: use const
 
             if (hasSorting)
             {
@@ -110,9 +110,9 @@
 
             var user = await this.UserManager.FindByIdAsync(userId);
 
-            bool islocked = await this.users.LockAsync(userId, daysToLock);
+            bool isLocked = await this.users.LockAsync(userId, daysToLock);
 
-            if (!islocked)
+            if (!isLocked)
             {
                 return this.RedirectToAction(nameof(Index))
                     .WithDanger("", string.Format(UserIsNotLocked, user.UserName));

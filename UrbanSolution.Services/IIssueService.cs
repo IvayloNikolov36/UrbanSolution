@@ -7,7 +7,7 @@
 
     public interface IIssueService
     {
-        Task<IEnumerable<UrbanIssuesListingServiceModel>> AllAsync(bool isApproved, int page = 1);
+        Task<IEnumerable<UrbanIssuesListingServiceModel>> AllAsync(bool isApproved, int rowsCount, int page, string regionFilter, string typeFilter);
 
         Task<int> TotalAsync(bool isApproved);
 

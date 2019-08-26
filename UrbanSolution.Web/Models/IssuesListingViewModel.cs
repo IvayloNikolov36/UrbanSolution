@@ -1,11 +1,12 @@
-﻿using UrbanSolution.Models;
-
-namespace UrbanSolution.Web.Models
+﻿namespace UrbanSolution.Web.Models
 {
+    using Microsoft.AspNetCore.Mvc.Rendering;
     using Services.Utilities;
     using System;
     using System.Collections.Generic;
+    using UrbanSolution.Models;
     using UrbanSolution.Services.Models;
+    using static Infrastructure.WebConstants;
 
     public class IssuesListingViewModel
     {
@@ -14,7 +15,7 @@ namespace UrbanSolution.Web.Models
         public int TotalIssues { get; set; }
 
         public int TotalPages =>
-            (int) Math.Ceiling((double) this.TotalIssues / ServiceConstants.IssuesPageSize);
+            (int)Math.Ceiling((double)this.TotalIssues / ServiceConstants.IssuesPageSize);
 
         public int CurrentPage { get; set; }
 
@@ -25,5 +26,38 @@ namespace UrbanSolution.Web.Models
         public bool UseCarousel { get; set; } = false;
 
         public RegionType? Region { get; set; }
+
+        //Drop Downs for Filtering
+
+        public IEnumerable<SelectListItem> RegionFilter
+        {
+            get
+            {
+                var regions = new List<SelectListItem> { new SelectListItem(OptionAll, null) };
+
+                foreach (string region in Enum.GetNames(typeof(RegionType)))
+                {
+                    if (region == OptionAll)
+                        continue;
+
+                    regions.Add(new SelectListItem(region, region));
+                }
+
+                return regions;
+            }
+        }
+
+        public IEnumerable<SelectListItem> TypeFilter
+        {
+            get
+            {
+                var regions = new List<SelectListItem> { new SelectListItem(OptionTextAllTypes, null) }; //OptionAll
+
+                foreach (string type in Enum.GetNames(typeof(IssueType)))
+                    regions.Add(new SelectListItem(type, type));
+
+                return regions;
+            }
+        }
     }
 }

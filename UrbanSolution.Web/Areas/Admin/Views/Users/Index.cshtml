@@ -4,11 +4,10 @@
 }
 
 <div row class="text-info text-center">
-    <h3><strong>
-        @this.ViewData["Title"]
-    </strong></h3>
-    
-    <form asp-controller="Users" asp-action="Index" method="get">  
+
+    <h3><strong> @this.ViewData["Title"] </strong></h3>
+
+    <form asp-controller="Users" asp-action="Index" method="get">
         <div class="row">
             <div class="col-xs-2">
                 <select name="SortBy" asp-items="Model.SortBy" class="form-control"></select>
@@ -17,27 +16,27 @@
                 <select name="SortType" asp-items="Model.SortingType" class="form-control"></select>
             </div>
             <div class="col-xs-1">
-                <input type="submit" value="Sort" class="btn btn-default" />
+                <input type="submit" value="Sort" class="btn btn-default"/>
             </div>
             <div class="col-xs-2">
                 <select name="SearchType" asp-items="Model.SearchFilters" class="form-control"></select>
             </div>
             <div class="col-xs-2">
-                <input type="text" name="SearchText" class="form-control" placeholder="Search..." />
+                <input type="text" name="SearchText" class="form-control" placeholder="Search..."/>
             </div>
             <div class="col-xs-1">
-                <input type="submit" value="Search" class="btn btn-default" />
+                <input type="submit" value="Search" class="btn btn-default"/>
             </div>
             <div class="col-xs-2">
                 <select name="Filter" asp-items="Model.FilterBy" class="form-control"></select>
             </div>
             <div class="col-xs-1">
-                <input type="submit" value="Filter" class="btn btn-default" />
+                <input type="submit" value="Filter" class="btn btn-default"/>
             </div>
         </div>
     </form>
 
-    <br />
+    <br/>
 </div>
 
 <table class="table table-bordered table-striped table table-hover">

@@ -1,12 +1,12 @@
-﻿using System;
-
-namespace UrbanSolution.Services.Admin.Models
+﻿namespace UrbanSolution.Services.Admin.Models
 {
+    using AutoMapper;
     using Mapping;
+    using System;
     using System.Collections.Generic;
     using UrbanSolution.Models;
 
-    public class AdminUserListingServiceModel : IMapFrom<User>
+    public class AdminUserListingServiceModel : IMapFrom<User>, IHaveCustomMappings
     {
         public string Id { get; set; }
 
@@ -14,9 +14,14 @@ namespace UrbanSolution.Services.Admin.Models
 
         public string Email { get; set; }
 
-        public DateTimeOffset? LockoutEnd { get; set; }      
+        public DateTime? LockoutEnd { get; set; }      
 
         public List<string> UserRoles { get; set; }
 
+        public void CreateMappings(IProfileExpression configuration)
+        {
+            configuration.CreateMap<User, AdminUserListingServiceModel>()
+                .ForMember(x => x.LockoutEnd, m => m.MapFrom(e => e.LockoutEnd.Value.DateTime));
+        }
     }
 }

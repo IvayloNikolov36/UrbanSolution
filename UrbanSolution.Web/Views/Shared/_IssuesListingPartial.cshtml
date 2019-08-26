@@ -10,26 +10,73 @@
 }
 
 @* When issues are listed in carousel (New Issues page) *@
+
 @if (Model.UseCarousel)
 {
     @Html.DisplayFor(m => m.Issues)
 }
+
 @* When issues are listed normally (Approved Issues page) *@
+
 else
 {
     <div class="row">
-        <div class="col-lg-12">     @*TODO: remove div*@
+        <div class="col-lg-12">
+            @*TODO: remove div*@
             <ul class="list-group">
                 @Html.DisplayFor(m => m.Issues)
             </ul>
         </div>
     </div>
 
+    <div class="row">
+        <form asp-controller="Issue" asp-action="Index" method="get">
+            <div class="row">
+                @*jump to page*@
+                <div class="col-xs-1">
+                    <input type="number" name="Page" class="form-control" min="1" max="@pagesModel.TotalPages" />
+                </div>
+                <div class="col-xs-1">
+                    <input type="submit" value="Go" class="btn btn-default" />
+                </div>
+
+                @*change rows*@
+                <div class="col-md-2">
+                    <select name="RowsCount" class="form-control">
+                        <option value="1">rows:</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="5">5</option>
+                        <option value="8">8</option>
+                        <option value="10">10</option>
+                    </select>
+                </div>
+                <div class="col-xs-1">
+                    <input type="submit" value="Change" class="btn btn-default" />
+                </div>
+                
+                @*Filtering by Region and Issue Type*@
+                <div class="col-xs-2">
+                    <select name="RegionFilter" asp-items="Model.RegionFilter" class="form-control"></select>
+                </div>
+                <div class="col-xs-2">
+                    <select name="TypeFilter" asp-items="Model.TypeFilter" class="form-control"></select>
+                </div>
+                <div class="col-xs-1">
+                    <input type="submit" value="Filter" class="btn btn-default" />
+                </div>
+
+            </div>
+        </form>
+    </div>
+    
+
     //show paging
-    if (Model.TotalIssues > Model.Issues.Count())
+    @*if (Model.TotalIssues > Model.Issues.Count())
     {
         @await Html.PartialAsync("_PagingPartial", pagesModel)
-    }
+    }*@
 }
 
 

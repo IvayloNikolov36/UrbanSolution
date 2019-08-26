@@ -1,4 +1,7 @@
-﻿namespace UrbanSolution.Services.Implementations
+﻿using System;
+using System.Linq.Expressions;
+
+namespace UrbanSolution.Services.Implementations
 {
     using Data;
     using Mapping;
@@ -19,13 +22,35 @@
             this.db = db;
         }
 
-        public async Task<IEnumerable<UrbanIssuesListingServiceModel>> AllAsync(bool isApproved, int page = 1)
+        public async Task<IEnumerable<UrbanIssuesListingServiceModel>> AllAsync(bool isApproved, int rowsCount, int page, string regionFilter, string typeFilter)
         {
-            var issues = await this.db
-                .UrbanIssues.Where(i => i.IsApproved == isApproved)
+            bool isRegionParsed = Enum.TryParse(regionFilter, true, out RegionType regionType);
+            bool filterByRegion = isRegionParsed && regionType != RegionType.All;
+
+            bool filterByType = Enum.TryParse(typeFilter, true, out IssueType issueType);
+
+            Expression<Func<UrbanIssue, bool>> predicate = i => i.IsApproved == isApproved;
+
+            if (filterByRegion && filterByType)
+            {
+                predicate = i => i.IsApproved == isApproved && i.Region == regionType && i.Type == issueType;
+            }
+
+            if (filterByRegion && !filterByType)
+            {
+                predicate = i => i.IsApproved == isApproved && i.Region == regionType;
+            }
+
+            if (filterByType && !filterByRegion)
+            {
+                predicate = i => i.IsApproved == isApproved && i.Type == issueType;
+            }
+
+            var issues = await this.db.UrbanIssues
+                .Where(predicate)
                 .OrderByDescending(i => i.PublishedOn)
-                .Skip((page - 1) * IssuesPageSize)
-                .Take(IssuesPageSize)
+                .Skip((page - 1) * IssuesPageSize * rowsCount)
+                .Take(IssuesPageSize * rowsCount)
                 .To<UrbanIssuesListingServiceModel>()
                 .ToListAsync();
 

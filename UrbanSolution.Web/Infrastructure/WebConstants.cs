@@ -65,7 +65,9 @@ namespace UrbanSolution.Web.Infrastructure
         public const string IssueUpdateSuccess = "Successfully updated issue.";
         public const string IssueDeleteSuccess = "Successfully deleted issue.";
         public const string IssueNotFound = "Issue with this id can't be found!";
-        
+        public const int IssuesRows = 1;
+
+        public const int InitalPage = 1;
         //ViewDataKeys
         public const string ViewDataIssueId = "issueId";
         public const string ViewDataManagerId = "managerId";
@@ -161,5 +163,8 @@ namespace UrbanSolution.Web.Infrastructure
 
         //DropDowns
         public const string UsersFilter = "Filter by";
+        public const string OptionAll = "All";
+        public const string OptionTextAllRegions = "All regions";
+        public const string OptionTextAllTypes = "All types";
     }
 }
