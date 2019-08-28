@@ -22,7 +22,8 @@ namespace UrbanSolution.Services.Implementations
             this.db = db;
         }
 
-        public async Task<IEnumerable<UrbanIssuesListingServiceModel>> AllAsync(bool isApproved, int rowsCount, int page, string regionFilter, string typeFilter)
+        public async Task<IEnumerable<UrbanIssuesListingServiceModel>> AllAsync(
+            bool isApproved, int rowsCount, int page, string regionFilter, string typeFilter, string sortType)
         {
             bool isRegionParsed = Enum.TryParse(regionFilter, true, out RegionType regionType);
             bool filterByRegion = isRegionParsed && regionType != RegionType.All;
@@ -46,10 +47,18 @@ namespace UrbanSolution.Services.Implementations
                 predicate = i => i.IsApproved == isApproved && i.Type == issueType;
             }
 
-            var issues = await this.db.UrbanIssues
-                .Where(predicate)
-                .OrderByDescending(i => i.PublishedOn)
-                .Skip((page - 1) * IssuesPageSize * rowsCount)
+            var query = this.db.UrbanIssues.Where(predicate);
+
+            if (sortType == null)
+            {
+                sortType = SortDesc;
+            }
+
+            query = sortType == SortAsc
+                ? query.OrderBy(i => i.PublishedOn)
+                : query.OrderByDescending(i => i.PublishedOn);
+
+            var issues = await query.Skip((page - 1) * IssuesPageSize * rowsCount)
                 .Take(IssuesPageSize * rowsCount)
                 .To<UrbanIssuesListingServiceModel>()
                 .ToListAsync();

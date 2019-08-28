@@ -23,13 +23,13 @@
             this.userManager = userManager;
         }
 
-        public async Task<IActionResult> Index(string regionFilter, string typeFilter, int rowsCount = IssuesRows, int page = InitalPage)
+        public async Task<IActionResult> Index(IssuesSortAndFilterModel model)
         {
-            var modelIssues = await this.issues.AllAsync(isApproved: true, rowsCount: rowsCount, page: page, regionFilter: regionFilter, typeFilter: typeFilter);
+            var modelIssues = await this.issues.AllAsync(isApproved: true, model.RowsCount, model.Page, model.RegionFilter, model.TypeFilter, model.SortType);
 
-            var model = await this.GetModelForListingIssuesAsync(modelIssues, page);
+            var issueModel = await this.GetModelForListingIssuesAsync(modelIssues, model.Page);
 
-            return this.View(model);
+            return this.View(issueModel);
         }
 
         [ServiceFilter(typeof(ValidateIssueIdExistsAttribute))]

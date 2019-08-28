@@ -166,5 +166,12 @@ namespace UrbanSolution.Web.Infrastructure
         public const string OptionAll = "All";
         public const string OptionTextAllRegions = "All regions";
         public const string OptionTextAllTypes = "All types";
+
+        public const string SortingDateDesc = "Newest";
+        public const string SortingDateAsc = "Oldest";
+
+        public const string SortDesc = "DESC";
+        public const string SortAsc = "ASC";
+        
     }
 }

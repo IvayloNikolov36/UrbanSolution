@@ -24,5 +24,8 @@
             "End date of the event should be at least one hour after start time!";
 
         public const string NoCoordinatesValidationError = "Please find the adress in the map.";
+
+        public const string SortAsc = "ASC";
+        public const string SortDesc = "DESC";
     }
 }

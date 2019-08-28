@@ -48,7 +48,7 @@
             await this.Db.SaveChangesAsync();
 
             //Act
-            var result = await service.AllAsync(isApproved: isApproved, rowsCount: 1, page: pageToGet, RegionType.All.ToString(), IssueType.Other.ToString()); //TODO: remake this 
+            var result = await service.AllAsync(isApproved: isApproved, rowsCount: 1, page: pageToGet, RegionType.All.ToString(), IssueType.Other.ToString(), "ASC"); //TODO: remake this 
 
             var expected = await this.Db.UrbanIssues.Where(i => i.IsApproved == isApproved)
                 .OrderByDescending(i => i.PublishedOn)

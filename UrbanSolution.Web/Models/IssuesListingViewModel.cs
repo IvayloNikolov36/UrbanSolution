@@ -27,6 +27,13 @@
 
         public RegionType? Region { get; set; }
 
+        public IEnumerable<SelectListItem> SortingType =>
+            new List<SelectListItem>
+            {
+                new SelectListItem(SortingDateDesc, SortDesc),
+                new SelectListItem(SortingDateAsc, SortAsc)
+            };
+
         //Drop Downs for Filtering
 
         public IEnumerable<SelectListItem> RegionFilter
