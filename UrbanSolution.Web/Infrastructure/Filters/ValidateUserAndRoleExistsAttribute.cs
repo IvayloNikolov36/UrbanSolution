@@ -4,12 +4,10 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Filters;
-    using Services.Admin;
     using System.Linq;
     using UrbanSolution.Models;
     using UrbanSolution.Web.Areas.Admin.Models;
-
-    using static WebConstants;
+    using static UrbanSolutionUtilities.WebConstants;
 
     public class ValidateUserAndRoleExistsAttribute : ActionFilterAttribute
     {

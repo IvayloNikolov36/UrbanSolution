@@ -24,12 +24,12 @@
                 <input type="submit" value="Upload" class="btn btn-default" />
                 <a asp-area="Manager" asp-controller="Issue" asp-action="Index" class="btn btn-default">Back</a>
             </div>
-            <input type="hidden" name="UrbanIssueId" value="@(ViewData[WebConstants.ViewDataIssueId])" />
+            <input type="hidden" name="UrbanIssueId" value="@(ViewData[ViewDataIssueId])" />
         </form>
     </div>
 </div>
 
 @section Scripts {
 
-    <partial name="_ValidationScriptsPartial"/>
+    <partial name="_ValidationScriptsPartial" />
 }

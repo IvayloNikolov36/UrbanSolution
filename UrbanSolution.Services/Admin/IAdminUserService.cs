@@ -1,8 +1,4 @@
-﻿using System;
-using System.Linq.Expressions;
-using UrbanSolution.Models;
-
-namespace UrbanSolution.Services.Admin
+﻿namespace UrbanSolution.Services.Admin
 {
     using Models;
     using System.Collections.Generic;
@@ -10,9 +6,8 @@ namespace UrbanSolution.Services.Admin
 
     public interface IAdminUserService
     {
-        Task<IEnumerable<AdminUserListingServiceModel>> AllAsync(bool hasSorting = false, string orderBy = null, string orderType = null);
-
-        Task<IEnumerable<AdminUserListingServiceModel>> AllAsyncWhere(Expression<Func<User, bool>> expression);
+        Task<IEnumerable<AdminUserListingServiceModel>> AllAsync(string sortBy, string sortType, string searchType,
+            string searchText, string filter);
 
         Task<bool> UnlockAsync(string userId);
 

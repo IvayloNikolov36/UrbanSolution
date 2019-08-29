@@ -8,7 +8,7 @@
     using System.Threading.Tasks;
     using UrbanSolution.Models;
 
-    using static Infrastructure.WebConstants;
+    using static UrbanSolutionUtilities.WebConstants;
     
     [ViewComponent(Name = ViewComponentUrbanIssuesMapWithMarkersName)]
     public class UrbanIssuesMapWithMarkersViewComponent : ViewComponent

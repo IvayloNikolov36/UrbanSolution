@@ -1,22 +1,23 @@
-﻿using Microsoft.AspNetCore.Mvc.ViewFeatures;
-
-namespace UrbanSolution.Web.Infrastructure.Extensions
+﻿namespace UrbanSolution.Web.Infrastructure.Extensions
 {
+    using Microsoft.AspNetCore.Mvc.ViewFeatures;
+    using static UrbanSolutionUtilities.WebConstants;
+
     public static class TempDataDictionaryExtensions
     {
         public static void AddSuccessMessage(this ITempDataDictionary tempData, string successMessage)
         {
-            tempData[WebConstants.TempDataSuccessMessageKey] = successMessage;
+            tempData[TempDataSuccessMessageKey] = successMessage;
         }
 
         public static void AddErrorMessage(this ITempDataDictionary tempData, string errorMessage)
         {
-            tempData[WebConstants.TempDataErrorMessageKey] = errorMessage;
+            tempData[TempDataErrorMessageKey] = errorMessage;
         }
 
         public static void AddInfoMessage(this ITempDataDictionary tempData, string infoMessage)
         {
-            tempData[WebConstants.TempDataInfoMessageKey] = infoMessage;
+            tempData[TempDataInfoMessageKey] = infoMessage;
         }
     }
 }

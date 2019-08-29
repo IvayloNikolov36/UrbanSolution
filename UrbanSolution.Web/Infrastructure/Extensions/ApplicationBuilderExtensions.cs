@@ -6,7 +6,7 @@
     using System;
     using System.Threading.Tasks;
     using UrbanSolution.Models;
-    using static WebConstants;
+    using static UrbanSolutionUtilities.WebConstants;
 
     public static class ApplicationBuilderExtensions
     {

@@ -12,6 +12,9 @@
     using System.Threading.Tasks;
     using UrbanSolution.Models;
     using UrbanSolution.Models.Enums;
+    using UrbanSolutionUtilities.Enums;
+    using UrbanSolutionUtilities.Extensions;
+    using static UrbanSolution.Services.Utilities.ServiceConstants;
 
     public class AdminUserService : IAdminUserService
     {
@@ -29,66 +32,45 @@
             this.activity = activity;
 
         }
-
-        public async Task<IEnumerable<AdminUserListingServiceModel>> AllAsync(bool hasSorting = false, string orderBy = null, string orderType = null)
+        public async Task<IEnumerable<AdminUserListingServiceModel>> AllAsync(string sortBy, string sortType, string searchType, string searchText, string filter)
         {
-            IOrderedQueryable<User> query = this.db.Users.OrderBy(u => u.UserName);
+            string search = searchText;
+
+            bool hasSearching = !string.IsNullOrEmpty(search);
+            bool hasFiltering = filter != null && !string.IsNullOrEmpty(filter) && !filter.Equals(NoFilter);
+            bool hasSorting = sortBy != null && sortBy != SortBy;
 
             if (hasSorting)
             {
-                if (orderBy == "UserName")
-                {
-                    query = orderType == "ASC" 
-                        ? this.db.Users.OrderBy(u => u.UserName) 
-                        : this.db.Users.OrderByDescending(u => u.UserName);
-                }
-
-                if (orderBy == "Email")
-                {
-                    query = orderType == "ASC"
-                        ? this.db.Users.OrderBy(u => u.Email)
-                        : this.db.Users.OrderByDescending(u => u.Email);
-                }
+                return await this.AllAsync(true, sortBy, sortType);
             }
 
-            var usersRoles = new List<List<string>>();
-
-            foreach (var user in query) //TODO: query.ToList()?
+            if (!hasSearching && !hasFiltering)
             {
-                var userAllRoles = await this.userManager.GetRolesAsync(user);
-                usersRoles.Add(userAllRoles.ToList());
+                return await this.AllAsync();
             }
 
-            var usersModels = await query
-                .To<AdminUserListingServiceModel>()
-                .ToListAsync();
+            Expression<Func<User, bool>> expression = null;
 
-            for (var i = 0; i < usersModels.Count; i++)
-                usersModels[i].UserRoles = usersRoles[i];
-
-            return usersModels;
-        }
-
-        public async Task<IEnumerable<AdminUserListingServiceModel>> AllAsyncWhere(
-            Expression<Func<User, bool>> expression)
-        {
-            var usersRoles = new List<List<string>>();
-
-            IQueryable<User> filteredUsers = this.db.Users.Where(expression);
-            foreach (var user in filteredUsers.ToList())
+            if (hasSearching)
             {
-                var userAllRoles = await this.userManager.GetRolesAsync(user);
-                usersRoles.Add(userAllRoles.ToList());
+                if (searchType == UsersFilters.UserName.ToString())
+                    expression = u => u.UserName.Contains(search, StringComparison.InvariantCultureIgnoreCase);
+                else if (searchType == UsersFilters.Email.ToString())
+                    expression = u => u.Email.Contains(search, StringComparison.InvariantCultureIgnoreCase);
             }
 
-            var usersModels = await filteredUsers
-                .To<AdminUserListingServiceModel>()
-                .ToListAsync();
+            if (hasFiltering)
+            {
+                if (filter == FilterUsersBy.Locked.ToString())
+                    expression = u => u.LockoutEnd != null;
 
-            for (var i = 0; i < usersModels.Count; i++)
-                usersModels[i].UserRoles = usersRoles[i];
+                if (filter == FilterUsersBy.NotLocked.ToString().SeparateStringByCapitals())
+                    expression = u => u.LockoutEnd == null;
+  
+            }
 
-            return usersModels;
+            return await this.AllAsyncWhere(expression);
         }
 
         public async Task<bool> UnlockAsync(string userId)
@@ -157,6 +139,67 @@
             await this.activity.WriteInfoAsync(adminId, userId, role, AdminActivityType.RemovedFromRole);
 
             return true;
+        }
+
+        private async Task<IEnumerable<AdminUserListingServiceModel>> AllAsync(bool hasSorting = false, string orderBy = null, string orderType = null)
+        {
+            IOrderedQueryable<User> query = this.db.Users.OrderBy(u => u.UserName);
+
+            if (hasSorting)
+            {
+                if (orderBy == "UserName")
+                {
+                    query = orderType == "ASC"
+                        ? this.db.Users.OrderBy(u => u.UserName)
+                        : this.db.Users.OrderByDescending(u => u.UserName);
+                }
+
+                if (orderBy == "Email")
+                {
+                    query = orderType == "ASC"
+                        ? this.db.Users.OrderBy(u => u.Email)
+                        : this.db.Users.OrderByDescending(u => u.Email);
+                }
+            }
+
+            var usersRoles = new List<List<string>>();
+
+            foreach (var user in query.ToList())
+            {
+                var userAllRoles = await this.userManager.GetRolesAsync(user);
+                usersRoles.Add(userAllRoles.ToList());
+            }
+
+            var usersModels = await query
+                .To<AdminUserListingServiceModel>()
+                .ToListAsync();
+
+            for (var i = 0; i < usersModels.Count; i++)
+                usersModels[i].UserRoles = usersRoles[i];
+
+            return usersModels;
+        }
+
+        private async Task<IEnumerable<AdminUserListingServiceModel>> AllAsyncWhere(
+            Expression<Func<User, bool>> expression)
+        {
+            var usersRoles = new List<List<string>>();
+
+            IQueryable<User> filteredUsers = this.db.Users.Where(expression);
+            foreach (var user in filteredUsers.ToList())
+            {
+                var userAllRoles = await this.userManager.GetRolesAsync(user);
+                usersRoles.Add(userAllRoles.ToList());
+            }
+
+            var usersModels = await filteredUsers
+                .To<AdminUserListingServiceModel>()
+                .ToListAsync();
+
+            for (var i = 0; i < usersModels.Count; i++)
+                usersModels[i].UserRoles = usersRoles[i];
+
+            return usersModels;
         }
     }
 }

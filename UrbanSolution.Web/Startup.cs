@@ -1,7 +1,4 @@
-﻿using System;
-using UrbanSolution.Web.Infrastructure;
-
-namespace UrbanSolution.Web
+﻿namespace UrbanSolution.Web
 {
     using Data;
     using Infrastructure.Extensions;
@@ -14,11 +11,12 @@ namespace UrbanSolution.Web
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
+    using System;
     using Services.Mapping;
     using UrbanSolution.Models;
     using UrbanSolution.Services.Models;
     using UrbanSolution.Web.Areas.Admin.Models;
-
+    using static UrbanSolutionUtilities.WebConstants;
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -63,8 +61,8 @@ namespace UrbanSolution.Web
                 options.SignIn.RequireConfirmedEmail = false;
                 options.SignIn.RequireConfirmedPhoneNumber = false;
 
-                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromDays(WebConstants.LockedProfileDays);
-                options.Lockout.MaxFailedAccessAttempts = WebConstants.MaxFailedAccessAttempts;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromDays(LockedProfileDays);
+                options.Lockout.MaxFailedAccessAttempts = MaxFailedAccessAttempts;
                 options.Lockout.AllowedForNewUsers = true;
             });
 

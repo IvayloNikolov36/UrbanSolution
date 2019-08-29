@@ -10,7 +10,7 @@
     using UrbanSolution.Models;
     using UrbanSolution.Services.Blog;
     using UrbanSolution.Services.Blog.Models;
-    using static Infrastructure.WebConstants;
+    using static UrbanSolutionUtilities.WebConstants;
 
     [Area(BlogArea)]
     [Authorize(Roles = BlogAuthorRole)]

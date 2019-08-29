@@ -6,7 +6,7 @@
     using Microsoft.AspNetCore.Mvc.Filters;
     using System.Linq;
     using UrbanSolution.Models;
-    using static WebConstants;
+    using static UrbanSolutionUtilities.WebConstants;
 
     public class ValidateIssueIdExistsAttribute : ActionFilterAttribute
     {

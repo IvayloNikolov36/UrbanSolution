@@ -11,7 +11,7 @@
     using UrbanSolution.Models;
     using UrbanSolution.Services.Events;
     using UrbanSolution.Services.Events.Models;
-    using static Infrastructure.WebConstants;
+    using static UrbanSolutionUtilities.WebConstants;
 
     [Area(EventsArea)]
     [Authorize(Roles = EventCreatorRole)]

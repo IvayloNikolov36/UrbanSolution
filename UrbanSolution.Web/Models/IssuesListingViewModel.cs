@@ -6,7 +6,7 @@
     using System.Collections.Generic;
     using UrbanSolution.Models;
     using UrbanSolution.Services.Models;
-    using static Infrastructure.WebConstants;
+    using static UrbanSolutionUtilities.WebConstants;
 
     public class IssuesListingViewModel
     {

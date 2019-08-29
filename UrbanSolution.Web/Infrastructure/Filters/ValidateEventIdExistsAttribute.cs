@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using UrbanSolution.Data;
 using UrbanSolution.Models;
 using UrbanSolution.Web.Infrastructure.Extensions;
-using static UrbanSolution.Web.Infrastructure.WebConstants;
+using static UrbanSolutionUtilities.WebConstants;
 
 namespace UrbanSolution.Web.Infrastructure.Filters
 {

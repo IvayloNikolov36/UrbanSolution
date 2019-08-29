@@ -2,7 +2,7 @@
 {
     using System;
     using UrbanSolution.Models;
-    using static WebConstants;   
+    using static UrbanSolutionUtilities.WebConstants;   
 
     public static class EnumExtensions
     {

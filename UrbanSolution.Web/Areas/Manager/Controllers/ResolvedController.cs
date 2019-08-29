@@ -11,7 +11,7 @@
     using Microsoft.AspNetCore.Authorization;
     using System.Threading.Tasks;
     using UrbanSolution.Services.Models;
-    using static Infrastructure.WebConstants;
+    using static UrbanSolutionUtilities.WebConstants;
     
     public class ResolvedController : BaseController
     {

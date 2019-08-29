@@ -7,7 +7,7 @@
     using Services;
     using System.Threading.Tasks;
     using UrbanSolution.Models;
-    using Infrastructure;
+    using static UrbanSolutionUtilities.WebConstants;
 
     public class ArticleCommentsController : Controller
     {
@@ -52,7 +52,7 @@
             return new JsonResult(comment);
         }
 
-        [Authorize(Roles = WebConstants.AdminRole)]
+        [Authorize(Roles = AdminRole)]
         public async Task<IActionResult> Delete(int id)
         {
             var isDeleted = await this.comments.DeleteAsync(id);

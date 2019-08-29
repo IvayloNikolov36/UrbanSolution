@@ -4,7 +4,7 @@
     using Microsoft.AspNetCore.Mvc;
     using System.Threading.Tasks;
     using UrbanSolution.Models;
-    using static Infrastructure.WebConstants;
+    using static UrbanSolutionUtilities.WebConstants;
 
     [ViewComponent(Name = ViewComponentIssueDetailsButtonsName)]
     public class IssueDetailsButtonsViewComponent : ViewComponent

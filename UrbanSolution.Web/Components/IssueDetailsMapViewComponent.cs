@@ -4,7 +4,7 @@
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Configuration;
     using UrbanSolution.Services.Models;
-    using static Infrastructure.WebConstants;
+    using static UrbanSolutionUtilities.WebConstants;
 
     [ViewComponent(Name = ViewComponentIssueDetailsMapName)]
     public class IssueDetailsMapViewComponent : ViewComponent

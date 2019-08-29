@@ -5,7 +5,7 @@
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Filters;
     using UrbanSolution.Models;
-    using static WebConstants;
+    using static UrbanSolutionUtilities.WebConstants;
 
     public class ValidateManagerIsMainManagerAttribute : ActionFilterAttribute
     {

@@ -47,7 +47,7 @@
             var service = new AdminUserService(Db, userManagerMock.Object, null);
 
             //Act
-            var result = (await service.AllAsync()).ToList();
+            var result = (await service.AllAsync("", "", "", "", "")).ToList(); //TODO: make changes
             var expectedCount = this.Db.Users.Count();
 
             var allRolesForUsers = new List<IList<string>>();

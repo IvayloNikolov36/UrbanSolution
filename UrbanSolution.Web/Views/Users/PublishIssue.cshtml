@@ -1,4 +1,5 @@
-﻿@inject IConfiguration Configuration
+﻿@using static UrbanSolutionUtilities.WebConstants;
+@inject IConfiguration Configuration
 
 @model PublishIssueViewModel                  
 @{
@@ -103,9 +104,9 @@
             var map = new google.maps.Map(document.getElementById('map'),
                 {
                     center: {
-                        lat: @(WebConstants.MapCenterLatitude),
-                        lng: @(WebConstants.MapCenterLongitude) },
-                    zoom: @(WebConstants.MapCenterZoom)
+                        lat: @(MapCenterLatitude),
+                        lng: @(MapCenterLongitude) },
+                    zoom: @(MapCenterZoom)
                 });
 
             var input = document.getElementById('pac-input');

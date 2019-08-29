@@ -1,6 +1,6 @@
 ﻿namespace UrbanSolution.Web.Models
 {
-    using Infrastructure;
+    using static UrbanSolutionUtilities.WebConstants;
 
     public class IssuesSortAndFilterModel
     {
@@ -10,8 +10,8 @@
 
         public string TypeFilter { get; set; }
 
-        public int RowsCount { get; set; } = WebConstants.IssuesRows;
+        public int RowsCount { get; set; } = IssuesRows;
 
-        public int Page { get; set; } = WebConstants.InitalPage;
+        public int Page { get; set; } = InitalPage;
     }
 }

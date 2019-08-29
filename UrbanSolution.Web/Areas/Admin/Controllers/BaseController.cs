@@ -1,13 +1,13 @@
 ﻿namespace UrbanSolution.Web.Areas.Admin.Controllers
 {
-    using Infrastructure;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using UrbanSolution.Models;
-    
-    [Area(WebConstants.AdminArea)]
-    [Authorize(Roles = WebConstants.AdminRole)]
+    using static UrbanSolutionUtilities.WebConstants;
+
+    [Area(AdminArea)]
+    [Authorize(Roles = AdminRole)]
     public abstract class BaseController : Controller
     {
         protected BaseController(UserManager<User> userManager, RoleManager<IdentityRole> roleManager)

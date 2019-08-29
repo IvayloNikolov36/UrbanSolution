@@ -1,13 +1,15 @@
-﻿@inject IAntiforgery AF
+﻿@using static UrbanSolutionUtilities.WebConstants;
+@inject IAntiforgery AF
+
 @model UrbanSolution.Services.Blog.Models.BlogArticleDetailsServiceModel
 @{
     ViewData["Title"] = Model.Title;
 
-    var userName = (string)ViewData[WebConstants.ViewDataUsernameKey];
+    var userName = (string)ViewData[ViewDataUsernameKey];
 
     var isAuthenticated = this.User.Identity.IsAuthenticated;             //TODO: make a component view
 
-    var isAdmin = User.IsInRole(WebConstants.AdminRole);
+    var isAdmin = User.IsInRole(AdminRole);
 }
 
 <h3 class="text-center text-info">@ViewData["Title"]</h3>
@@ -75,9 +77,9 @@
 }
 
 @section Scripts {
-    
+
     <script>
-        
+
         //delete comment
         function deleteComment(id) {
             var url = "/ArticleComments/Delete/";
@@ -101,16 +103,16 @@
                                                 '<em><em class="text-info">' +
                                                         data[i].publisher +
                                                 ' </em>' +'on ' +
-                                                '<em class="text-info">' + new Date(data[i].postedOn).toJSON().slice(2, 19).replace('T', ' '); +  
+                                                '<em class="text-info">' + new Date(data[i].postedOn).toJSON().slice(2, 19).replace('T', ' '); +
                                                 '</em>';
 
                     var secondPart = '';
                     @if (isAdmin)
-                    { 
+                    {
                         @:secondPart = '<button id="delBtn" class="btn btn-sm btn-danger" onclick="deleteComment(' +
                         @:data[i].id + ')"><i class="glyphicon glyphicon-remove"></i></button>';
                     }
-                           
+
                     var thirdPart =  '</div>' +
                                         '<div class="panel-body">' +
                                             '<div class="form-group">' +
@@ -146,7 +148,7 @@
                                                 '</em>';
                     var secondPart = '';
                     @if (isAdmin)
-                    { 
+                    {
                         @:secondPart = '<button id="delBtn" class="btn btn-sm btn-danger" onclick="deleteComment(' +
                         @:commentResult.id + ')"><i class="glyphicon glyphicon-remove"></i></button>';
                     }

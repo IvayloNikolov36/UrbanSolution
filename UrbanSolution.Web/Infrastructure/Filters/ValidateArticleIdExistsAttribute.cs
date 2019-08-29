@@ -6,7 +6,7 @@
     using Data;
     using System.Linq;
     using UrbanSolution.Models;
-    using static WebConstants;
+    using static UrbanSolutionUtilities.WebConstants;
 
     public class ValidateArticleIdExistsAttribute : ActionFilterAttribute
     {

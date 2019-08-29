@@ -15,7 +15,9 @@
     using UrbanSolution.Models;
     using UrbanSolution.Services.Admin;
     using UrbanSolution.Services.Admin.Models;
-    using static Infrastructure.WebConstants;
+    using UrbanSolutionUtilities.Enums;
+    using UrbanSolutionUtilities.Extensions;
+    using static UrbanSolutionUtilities.WebConstants;
 
     public class UsersController : BaseController
     {
@@ -29,47 +31,10 @@
 
         public async Task<IActionResult> Index(SearchSortAndFilterModel model)
         {
-            IEnumerable<AdminUserListingServiceModel> modelUsers;
+            var modelUsers = await this.users.AllAsync(
+                model.SortBy, model.SortType, model.SearchType, model.SearchText, model.Filter);
 
-            string search = model.SearchText;
-
-            bool hasSearching = !string.IsNullOrEmpty(search);
-            bool hasFiltering = model.Filter != null && !string.IsNullOrEmpty(model.Filter) && !model.Filter.Equals(NoFilter);
-            bool hasSorting = model.SortBy != null && model.SortBy != SortBy;
-
-            if (hasSorting)
-            {
-                modelUsers = await this.users.AllAsync(true, model.SortBy, model.SortType);
-            }
-            else if (!hasSearching && !hasFiltering)
-            {
-                modelUsers = await this.users.AllAsync();
-            }
-            else
-            {
-                Expression<Func<User, bool>> expression = null;
-
-                if (hasSearching)
-                {
-                    if (model.SearchType == UsersFilters.UserName.ToString())
-                        expression = u => u.UserName.Contains(search, StringComparison.InvariantCultureIgnoreCase);
-                    else if (model.SearchType == UsersFilters.Email.ToString())
-                        expression = u => u.Email.Contains(search, StringComparison.InvariantCultureIgnoreCase);
-                }
-
-                if (hasFiltering)
-                {
-                    if (model.Filter == FilterUsersBy.Locked.ToString())
-                        expression = u => u.LockoutEnd != null;
-
-                    if (model.Filter == FilterUsersBy.NotLocked.ToString().SeparateStringByCapitals())
-                        expression = u => u.LockoutEnd == null;
-
-                    this.ViewData[FilterKey] = model.Filter;
-                }
-
-                modelUsers = await this.users.AllAsyncWhere(expression);
-            }
+            this.ViewData[FilterKey] = model.Filter;
 
             var viewModel = new AdminUsersListingViewModel
             {

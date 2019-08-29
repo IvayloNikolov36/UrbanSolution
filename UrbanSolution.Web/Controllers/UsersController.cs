@@ -12,6 +12,7 @@
     using System;
     using System.Linq;
     using System.Threading.Tasks;
+    using static UrbanSolutionUtilities.WebConstants;
 
     [Authorize]
     public class UsersController : Controller
@@ -48,7 +49,7 @@
             var issueId = await this.issues.UploadAsync(userId, model.Title, model.Description, model.PictureFile, model.IssueType,model.Region, model.Address, model.Latitude, model.Longitude);
 
             return this.RedirectToAction("Details", "Issue", new { area = "", id = issueId })  //TODO: remove area
-                .WithSuccess(string.Empty, WebConstants.IssueUploaded);
+                .WithSuccess(string.Empty, IssueUploaded);
         }       
 
         private void SetModelSelectListItems(PublishIssueViewModel model)

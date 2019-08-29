@@ -1,5 +1,5 @@
 ﻿@using System.ComponentModel
-@using UrbanSolution.Web.Infrastructure
+@using static UrbanSolutionUtilities.WebConstants
 @model AdminUsersListingViewModel
 @{
     ViewData["Title"] = "Users Administration";
@@ -36,16 +36,16 @@
                     <select id="Filter" name="Filter" class="form-control">
                         @if (this.ViewData["Filter"] == null)
                         {
-                            <option selected>@WebConstants.NoFilter</option>
+                            <option selected>@NoFilter</option>
                         }
                         else
                         {
-                            <option>@WebConstants.NoFilter</option>
+                            <option>@NoFilter</option>
                         }
 
                         @foreach (var kvp in Model.FilterBy)
                         {
-                            if (kvp.Value == (string)this.ViewData[WebConstants.FilterKey])
+                            if (kvp.Value == (string)this.ViewData[FilterKey])
                             {
                                 <option value="@kvp.Value" selected>@kvp.Value</option>
                             }

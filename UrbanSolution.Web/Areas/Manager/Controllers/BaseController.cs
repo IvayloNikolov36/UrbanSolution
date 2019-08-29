@@ -5,9 +5,10 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using UrbanSolution.Models;
+    using static UrbanSolutionUtilities.WebConstants;
 
-    [Area(WebConstants.ManagerArea)]
-    [Authorize(Roles = WebConstants.ManagerRole)]
+    [Area(ManagerArea)]
+    [Authorize(Roles = ManagerRole)]
     public class BaseController : Controller
     {
         protected BaseController(UserManager<User> userManager)

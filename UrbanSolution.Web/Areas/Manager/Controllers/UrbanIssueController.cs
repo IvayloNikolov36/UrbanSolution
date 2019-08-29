@@ -13,7 +13,7 @@
     using UrbanSolution.Services.Manager;
     using UrbanSolution.Services.Manager.Models;
     using UrbanSolution.Web.Models;
-    using static Infrastructure.WebConstants;
+    using static UrbanSolutionUtilities.WebConstants;
 
     public class UrbanIssueController : BaseController
     {

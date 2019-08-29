@@ -27,5 +27,7 @@
 
         public const string SortAsc = "ASC";
         public const string SortDesc = "DESC";
+        public const string NoFilter = "No Filter";
+        public const string SortBy = "Sort by";
     }
 }

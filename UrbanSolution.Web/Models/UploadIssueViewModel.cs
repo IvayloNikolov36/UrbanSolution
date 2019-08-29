@@ -8,7 +8,7 @@ namespace UrbanSolution.Web.Models
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using static UrbanSolution.Models.Utilities.DataConstants;
-
+    using static UrbanSolutionUtilities.WebConstants;
     public class PublishIssueViewModel : IValidatableObject
     {
         [Required, StringLength(IssueTitleMaxLength, MinimumLength = IssueTitleMinLength)]
@@ -33,11 +33,11 @@ namespace UrbanSolution.Web.Models
 
         public IEnumerable<SelectListItem> Regions { get; set; }
 
-        [Required(ErrorMessage = WebConstants.NoAddressSet)]
+        [Required(ErrorMessage = NoAddressSet)]
         [StringLength(AddressMaxLength, MinimumLength = AddressMinLength)]
         public string Address { get; set; }
 
-        [Required(ErrorMessage = WebConstants.MarkerNotPlaced)]
+        [Required(ErrorMessage = MarkerNotPlaced)]
         public string Latitude { get; set; }
 
         public string Longitude { get; set; }
@@ -46,9 +46,9 @@ namespace UrbanSolution.Web.Models
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if (!this.Town.Equals(WebConstants.CurrentTownEn) && !this.Town.Equals(WebConstants.CurrentTownBg))
+            if (!this.Town.Equals(CurrentTownEn) && !this.Town.Equals(CurrentTownBg))
             {
-                yield return new ValidationResult($"The place should be in {WebConstants.CurrentTownEn}");
+                yield return new ValidationResult($"The place should be in {CurrentTownEn}");
             }
 
             if (!this.PictureFile.FileName.EndsWith(ServiceConstants.PictureExtension)
