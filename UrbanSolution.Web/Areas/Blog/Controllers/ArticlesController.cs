@@ -86,11 +86,11 @@
             if (!isUpdated)
             {
                 return this.RedirectToAction("Details", new {Area = "Blog", id})
-                    .WithDanger("", CantEditAnotherBloggerArticle);
+                    .WithDanger(string.Empty, CantEditAnotherBloggerArticle);
             }
 
             return this.RedirectToAction("Details", new {Area = "Blog", id})
-                .WithSuccess("", SuccessfullyEditedArticle);
+                .WithSuccess(string.Empty, SuccessfullyEditedArticle);
         }
 
         [ServiceFilter(typeof(ValidateArticleIdExistsAttribute))]
@@ -103,11 +103,11 @@
             if (!isDeleted)
             {
                 return this.RedirectToAction("Index", new { Area = "Blog" })
-                    .WithDanger("", CantDeleteArticle);
+                    .WithDanger(string.Empty, CantDeleteArticle);
             }
 
             return this.RedirectToAction("Index", new { Area = "Blog" })
-                .WithSuccess("", SuccessfullyDeletedArticle);
+                .WithSuccess(string.Empty, SuccessfullyDeletedArticle);
         }
 
     }

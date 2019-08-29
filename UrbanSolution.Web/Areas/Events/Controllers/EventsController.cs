@@ -36,11 +36,11 @@
             if (!canParticipate)
             {
                 return this.RedirectToAction("Details", "Events", new { Area = "Events", id })
-                    .WithDanger("", AlreadyEventParticipant);
+                    .WithDanger(string.Empty, AlreadyEventParticipant);
             }
 
             return this.RedirectToAction("Details", "Events", new { Area = "Events", id })
-                .WithSuccess("", SuccessParticipation);
+                .WithSuccess(string.Empty, SuccessParticipation);
         }
 
         [AllowAnonymous]

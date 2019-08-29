@@ -91,11 +91,11 @@
             if (!isUnlocked)
             {
                 return this.RedirectToAction(nameof(Index))
-                    .WithDanger("", string.Format(UserIsNotUnlocked, user.UserName));
+                    .WithDanger(string.Empty, string.Format(UserIsNotUnlocked, user.UserName));
             }
 
             return this.RedirectToAction(nameof(Index))
-                .WithSuccess("", string.Format(UserUnlocked, user.UserName));
+                .WithSuccess(string.Empty, string.Format(UserUnlocked, user.UserName));
         }
 
         [HttpPost]
@@ -105,7 +105,7 @@
             if (!isParsed)
             {
                 this.RedirectToAction(nameof(Index))
-                    .WithDanger("", LockDaysNotValid);
+                    .WithDanger(string.Empty, LockDaysNotValid);
             }
 
             var user = await this.UserManager.FindByIdAsync(userId);
@@ -115,11 +115,11 @@
             if (!isLocked)
             {
                 return this.RedirectToAction(nameof(Index))
-                    .WithDanger("", string.Format(UserIsNotLocked, user.UserName));
+                    .WithDanger(string.Empty, string.Format(UserIsNotLocked, user.UserName));
             }
 
             return this.RedirectToAction(nameof(Index))
-                .WithSuccess("", string.Format(UserLocked, user.UserName, $"{LockDays} days."));
+                .WithSuccess(string.Empty, string.Format(UserLocked, user.UserName, $"{LockDays} days."));
         }
 
         [HttpPost]
@@ -136,11 +136,11 @@
             if (!isAdded)
             {
                 return this.RedirectToAction(nameof(Index))
-                    .WithWarning("", string.Format(UserAlreadyInRole, user.UserName, model.Role));
+                    .WithWarning(string.Empty, string.Format(UserAlreadyInRole, user.UserName, model.Role));
             }
 
             return this.RedirectToAction(nameof(Index))
-                .WithSuccess("", string.Format(UserAddedToRoleSuccess, user.UserName, model.Role));
+                .WithSuccess(string.Empty, string.Format(UserAddedToRoleSuccess, user.UserName, model.Role));
         }
 
         [HttpPost]
@@ -157,11 +157,11 @@
             if (!isDeleted)
             {
                 return this.RedirectToAction(nameof(Index))
-                    .WithWarning("", string.Format(UserIsNotSetToRole, user.UserName, model.Role));
+                    .WithWarning(string.Empty, string.Format(UserIsNotSetToRole, user.UserName, model.Role));
             }
 
             return this.RedirectToAction(nameof(Index))
-                .WithSuccess("", string.Format(UserRemovedFromRoleSuccess, user.UserName, model.Role));
+                .WithSuccess(string.Empty, string.Format(UserRemovedFromRoleSuccess, user.UserName, model.Role));
         }
 
         private IEnumerable<SelectListItem> GetDropDownSearchFiltersOptions()

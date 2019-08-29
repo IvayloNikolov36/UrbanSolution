@@ -30,7 +30,7 @@
             if (id == null)
             {
                 context.Result = controller.RedirectToAction("Index")
-                    .WithDanger("", IssueNotFound);
+                    .WithDanger(string.Empty, IssueNotFound);
             }
             else
             {
@@ -38,7 +38,7 @@
                 if (!exists)
                 {
                     context.Result = controller.RedirectToAction("Index")
-                        .WithDanger("", IssueNotFound);
+                        .WithDanger(string.Empty, IssueNotFound);
                 }
             }   
 

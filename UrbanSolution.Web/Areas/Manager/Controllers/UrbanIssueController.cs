@@ -78,11 +78,11 @@
             if (!isUpdated)
             {
                 return this.RedirectToAction("Details", "Issue", new { id, Area = "" })
-                    .WithDanger("", CantEditIssueForAnotherRegion);
+                    .WithDanger(string.Empty, CantEditIssueForAnotherRegion);
             }
 
             return this.RedirectToAction("Details", "Issue", new {id, Area = ""})
-                .WithSuccess("", IssueUpdateSuccess);
+                .WithSuccess(string.Empty, IssueUpdateSuccess);
         }
 
         [HttpGet]
@@ -96,11 +96,11 @@
             if (!isDeleted)
             {
                 return this.RedirectToAction("Index", "UrbanIssue", new { Area = "Manager" })
-                    .WithDanger("", CantDeleteIssueForAnotherRegion);
+                    .WithDanger(string.Empty, CantDeleteIssueForAnotherRegion);
             }
 
             return this.RedirectToAction("Index", "UrbanIssue", new {Area = "Manager"})
-                .WithSuccess("", IssueDeleteSuccess);
+                .WithSuccess(string.Empty, IssueDeleteSuccess);
         }
 
         [ServiceFilter(typeof(ValidateIssueIdExistsAttribute))]
@@ -111,10 +111,10 @@
             var isApproved = await this.managerIssues.ApproveAsync(manager, id);
             if (!isApproved)
             {
-                return this.RedirectToAction(nameof(Index)).WithDanger("", CantApproveIssueForAnotherRegion);
+                return this.RedirectToAction(nameof(Index)).WithDanger(string.Empty, CantApproveIssueForAnotherRegion);
             }
 
-            return this.RedirectToAction(nameof(Index)).WithSuccess("", IssueApprovedSuccess);
+            return this.RedirectToAction(nameof(Index)).WithSuccess(string.Empty, IssueApprovedSuccess);
         }
 
         private void SetModelSelectListItems(UrbanIssueEditServiceViewModel model)

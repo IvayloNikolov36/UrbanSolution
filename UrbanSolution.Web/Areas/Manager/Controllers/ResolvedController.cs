@@ -40,7 +40,7 @@
                 .UploadAsync(managerId, model.UrbanIssueId, model.PictureFile, model.Description);
 
             return this.RedirectToAction("Details", "Resolved", new { id = resolvedId, area = "Manager" })
-                .WithSuccess("", ResolvedUploaded);
+                .WithSuccess(string.Empty, ResolvedUploaded);
         }
 
         public async Task<IActionResult> Edit(int id)
@@ -69,7 +69,7 @@
             }
 
             return this.RedirectToAction("Details", "Resolved", new { id, area= "Manager" })
-                .WithSuccess("", ResolvedUpdated);
+                .WithSuccess(string.Empty, ResolvedUpdated);
         }
 
         public async Task<IActionResult> Delete(int id)
@@ -85,7 +85,7 @@
             }
                 
             return this.RedirectToAction("Index", "UrbanIssue", new { area = "Manager" })
-                    .WithSuccess("", ResolvedDeleted);
+                    .WithSuccess(string.Empty, ResolvedDeleted);
         }
 
         [AllowAnonymous]
@@ -96,7 +96,7 @@
 
             if (detailsModel == null)
             {
-                return this.RedirectToAction("Index", "UrbanIssue").WithDanger("", NoResolvedFound);
+                return this.RedirectToAction("Index", "UrbanIssue").WithDanger(string.Empty, NoResolvedFound);
             }
 
             this.ViewData[ViewDataManagerId] = this.UserManager.GetUserId(this.User);

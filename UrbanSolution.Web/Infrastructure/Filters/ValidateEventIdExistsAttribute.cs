@@ -29,8 +29,8 @@ namespace UrbanSolution.Web.Infrastructure.Filters
                 .FirstOrDefault(a => a.Key.ToLower().Contains("id")).Value;
             if (id == null)
             {
-                context.Result = controller.RedirectToAction("Index")
-                    .WithDanger("", EventNotFound);
+                context.Result = controller.RedirectToAction("Index") //TODO: magic string
+                    .WithDanger(string.Empty, EventNotFound);
             }
             else
             {
@@ -39,7 +39,7 @@ namespace UrbanSolution.Web.Infrastructure.Filters
                 if (!exists)
                 {
                     context.Result = controller.RedirectToAction("Index")
-                        .WithDanger("", EventNotFound);
+                        .WithDanger(string.Empty, EventNotFound);
                 }
             }
 

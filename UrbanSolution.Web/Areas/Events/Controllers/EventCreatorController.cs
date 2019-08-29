@@ -43,7 +43,7 @@
                 model.EndDate, model.PictureFile, model.Address, model.Latitude, model.Longitude, creator.Id);
 
             return this.RedirectToAction("Details", "Events", new { Area = "Events", id = eventId })
-                .WithSuccess("", EventCreationSuccess);
+                .WithSuccess(string.Empty, EventCreationSuccess);
         }
 
         public IActionResult Edit(int id)
@@ -67,11 +67,11 @@
             if (!isEdited)
             {
                 return this.RedirectToAction("Details", "Events", new {Area = "Events", id})
-                    .WithDanger("", CantEditEvent);
+                    .WithDanger(string.Empty, CantEditEvent);
             }
 
             return this.RedirectToAction("Details", "Events", new { Area = "Events", id })
-                .WithSuccess("", EditEventSuccess); 
+                .WithSuccess(string.Empty, EditEventSuccess); 
         }
 
         private EventCreateFormModel GetEventDateTimeProperties()

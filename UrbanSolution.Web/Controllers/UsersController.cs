@@ -47,8 +47,8 @@
 
             var issueId = await this.issues.UploadAsync(userId, model.Title, model.Description, model.PictureFile, model.IssueType,model.Region, model.Address, model.Latitude, model.Longitude);
 
-            return this.RedirectToAction("Details", "Issue", new { area = "", id = issueId })
-                .WithSuccess("", WebConstants.IssueUploaded);
+            return this.RedirectToAction("Details", "Issue", new { area = "", id = issueId })  //TODO: remove area
+                .WithSuccess(string.Empty, WebConstants.IssueUploaded);
         }       
 
         private void SetModelSelectListItems(PublishIssueViewModel model)

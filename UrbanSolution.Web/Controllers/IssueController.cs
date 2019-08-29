@@ -46,7 +46,7 @@
 
             if (issueModel == null)
             {
-                return this.RedirectToAction("Index").WithDanger("", NoIssueInDb);
+                return this.RedirectToAction("Index").WithDanger(string.Empty, NoIssueInDb);
             }
 
             return this.View(issueModel);

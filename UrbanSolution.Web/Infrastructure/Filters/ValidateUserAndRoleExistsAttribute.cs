@@ -54,7 +54,7 @@
             {
                 context.Result =  controller
                     .RedirectToAction("Index", "Users", new { area = "Admin" })
-                    .WithDanger("", InvalidIdentityDetails);
+                    .WithDanger(string.Empty, InvalidIdentityDetails);
             }
 
         }

@@ -11,8 +11,8 @@
     [ApiController]
     public class IssuesApiController : ControllerBase
     {
-        private IIssueService issues;
-        private UserManager<User> userManager;
+        private readonly IIssueService issues;
+        private readonly UserManager<User> userManager;
 
         public IssuesApiController(IIssueService issueService, UserManager<User> userManager)
         {
