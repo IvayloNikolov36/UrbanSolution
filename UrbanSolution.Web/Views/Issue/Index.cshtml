@@ -1,13 +1,74 @@
-﻿@model IssuesListingViewModel
+﻿@using UrbanSolution.Web.Infrastructure.Enums
+@model IssuesListingViewModel
 @{
     ViewData["Title"] = "Approved Issues";
+    var rowsCount = int.Parse(ViewData[RowsCountKey].ToString());
+    var maxPage = (int)Math.Ceiling((double) Model.TotalRows / rowsCount);
 }
 
 <div row class="text-info text-center">
-    <h3>@this.ViewData["Title"]</h3>
+    <h3><strong>@this.ViewData["Title"]</strong></h3>
     <hr />
 </div>
 
+@*TODO: move out in view component*@
+<div class="form-group row text-center">
+    <form asp-controller="Issue" asp-action="Index" method="get">
+        <div class="row">
+            @*jump to page*@
+            <div class="col-lg-2">
+                <div class="form-inline">
+                    <input type="number" name="Page" class="form-control" min="1" max="@maxPage" value="@ViewData[PageKey]"/>
+                    <button type="submit" value="Go" class="btn btn-default"><i class="glyphicon glyphicon-share-alt"></i></button>
+                </div>
+            </div>
+
+            @*change rows*@
+            <div class="col-lg-2">
+                <div class="form-inline">
+                    <select name="RowsCount" class="form-control" aria-selected="True">
+                        @if (this.ViewData[RowsCountKey] == null)
+                        {
+                            <option selected>1</option>
+                        }
+                        @foreach (int rows in (int[])Enum.GetValues(typeof(RowsOnPage)))
+                        {
+                            if (rows == int.Parse(this.ViewData[RowsCountKey].ToString()))
+                            {
+                                <option value="@rows" selected>@rows</option>
+                            }
+                            else
+                            {
+                                <option value="@rows">@rows</option>
+                            }
+                        }
+
+                    </select>
+                    <button type="submit" value="Change" class="btn btn-default"><i class="glyphicon glyphicon-align-justify"></i></button>
+                </div>
+            </div>
+
+            @* Sort by Publish Time *@
+            <div class="col-lg-3">
+                <div class="form-inline">
+                    <select name="SortType" asp-items="Model.SortingType" class="form-control"></select>
+                    <button type="submit" value="Sort" class="btn btn-default"><i class="glyphicon glyphicon-sort-by-alphabet"></i></button>
+                </div>
+            </div>
+
+            @*Filtering by Region and Issue Type*@
+            <div class="col-lg-4">
+                <div class="form-inline">
+                    <select name="RegionFilter" asp-items="Model.RegionFilter" class="form-control"></select>
+                    <select name="TypeFilter" asp-items="Model.TypeFilter" class="form-control"></select>
+                    <input type="submit" value="Filter" class="btn btn-default" />
+                </div>
+            </div>
+
+        </div>
+    </form>
+</div>
+
 <div class="row issues-listing">
-    @await Html.PartialAsync("_IssuesListingPartial", Model)
+    <partial name="_IssuesListingPartial" model="@Model" />
 </div>

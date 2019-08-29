@@ -3,7 +3,7 @@
 
 @foreach (var user in Model.Users)
 {
-    var userAddToRoles = Model.AllRoles.Where(r => !user.UserRoles.Contains(r.Text));
+    var userAddToRoles = Model.AllRoles.Where(r => !user.UserRoles.Contains(r.Text));  //TODO: move out
     var userRemoveFromRoles = Model.AllRoles.Where(r => user.UserRoles.Contains(r.Text));
 
     <tr>

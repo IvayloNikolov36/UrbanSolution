@@ -2,7 +2,7 @@
 {
     public class ServiceConstants
     {
-        public const int IssuesPageSize = 6;
+        public const int IssuesOnRow = 6;
         public const int BlogArticlesPageSize = 2;
         public const int EventsPageSize = 2;
 

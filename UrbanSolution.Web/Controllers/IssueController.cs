@@ -25,9 +25,14 @@
 
         public async Task<IActionResult> Index(IssuesSortAndFilterModel model)
         {
-            var modelIssues = await this.issues.AllAsync(isApproved: true, model.RowsCount, model.Page, model.RegionFilter, model.TypeFilter, model.SortType);
+            var rowsCount = model.RowsCount == 0 ? 1 : model.RowsCount;
+
+            var modelIssues = await this.issues.AllAsync(isApproved: true, rowsCount, model.Page, model.RegionFilter, model.TypeFilter, model.SortType);
 
             var issueModel = await this.GetModelForListingIssuesAsync(modelIssues, model.Page);
+
+            this.ViewData[RowsCountKey] = rowsCount;
+            this.ViewData[PageKey] = model.Page;
 
             return this.View(issueModel);
         }

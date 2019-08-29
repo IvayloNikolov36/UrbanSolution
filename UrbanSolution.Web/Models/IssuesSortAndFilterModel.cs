@@ -10,7 +10,7 @@
 
         public string TypeFilter { get; set; }
 
-        public int RowsCount { get; set; } = IssuesRows;
+        public int RowsCount { get; set; }
 
         public int Page { get; set; } = InitalPage;
     }

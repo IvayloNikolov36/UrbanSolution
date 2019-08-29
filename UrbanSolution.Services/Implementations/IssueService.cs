@@ -1,14 +1,13 @@
-﻿using System;
-using System.Linq.Expressions;
-
-namespace UrbanSolution.Services.Implementations
+﻿namespace UrbanSolution.Services.Implementations
 {
     using Data;
     using Mapping;
     using Microsoft.EntityFrameworkCore;
     using Models;
     using System.Collections.Generic;
+    using System;
     using System.Linq;
+    using System.Linq.Expressions;
     using System.Threading.Tasks;
     using UrbanSolution.Models;
     using static Utilities.ServiceConstants;
@@ -27,7 +26,6 @@ namespace UrbanSolution.Services.Implementations
         {
             bool isRegionParsed = Enum.TryParse(regionFilter, true, out RegionType regionType);
             bool filterByRegion = isRegionParsed && regionType != RegionType.All;
-
             bool filterByType = Enum.TryParse(typeFilter, true, out IssueType issueType);
 
             Expression<Func<UrbanIssue, bool>> predicate = i => i.IsApproved == isApproved;
@@ -58,8 +56,8 @@ namespace UrbanSolution.Services.Implementations
                 ? query.OrderBy(i => i.PublishedOn)
                 : query.OrderByDescending(i => i.PublishedOn);
 
-            var issues = await query.Skip((page - 1) * IssuesPageSize * rowsCount)
-                .Take(IssuesPageSize * rowsCount)
+            var issues = await query.Skip((page - 1) * IssuesOnRow * rowsCount)
+                .Take(IssuesOnRow * rowsCount)
                 .To<UrbanIssuesListingServiceModel>()
                 .ToListAsync();
 
