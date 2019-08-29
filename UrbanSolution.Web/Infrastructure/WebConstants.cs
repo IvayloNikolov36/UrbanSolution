@@ -163,6 +163,7 @@ namespace UrbanSolution.Web.Infrastructure
 
         //DropDowns
         public const string UsersFilter = "Filter by";
+        public const string NoFilter = "No Filter";
         public const string OptionAll = "All";
         public const string OptionTextAllRegions = "All regions";
         public const string OptionTextAllTypes = "All types";
@@ -172,6 +173,10 @@ namespace UrbanSolution.Web.Infrastructure
 
         public const string SortDesc = "DESC";
         public const string SortAsc = "ASC";
-        
+
+        public const string SortBy = "Sort by";
+
+        //ViewData keys
+        public const string FilterKey = "Filter";
     }
 }

@@ -34,8 +34,8 @@
             string search = model.SearchText;
 
             bool hasSearching = !string.IsNullOrEmpty(search);
-            bool hasFiltering = model.Filter != null && !string.IsNullOrEmpty(model.Filter) && !model.Filter.Equals(UsersFilter);
-            bool hasSorting = model.SortBy != null && model.SortBy != "Sort by"; //TODO: use const
+            bool hasFiltering = model.Filter != null && !string.IsNullOrEmpty(model.Filter) && !model.Filter.Equals(NoFilter);
+            bool hasSorting = model.SortBy != null && model.SortBy != SortBy;
 
             if (hasSorting)
             {
@@ -62,8 +62,10 @@
                     if (model.Filter == FilterUsersBy.Locked.ToString())
                         expression = u => u.LockoutEnd != null;
 
-                    if (model.Filter == FilterUsersBy.NotLocked.ToString())
+                    if (model.Filter == FilterUsersBy.NotLocked.ToString().SeparateStringByCapitals())
                         expression = u => u.LockoutEnd == null;
+
+                    this.ViewData[FilterKey] = model.Filter;
                 }
 
                 modelUsers = await this.users.AllAsyncWhere(expression);
@@ -184,15 +186,17 @@
             return lockDays;
         }
 
-        private IEnumerable<SelectListItem> GetDropDownFilterUsersOptions()
+        private IDictionary<string, string> GetDropDownFilterUsersOptions()
         {
-            var filterBy = new List<SelectListItem>
-            {
-                new SelectListItem(UsersFilter, null)
-            };
+            var filterBy = new Dictionary<string, string>();
 
             foreach (string filter in Enum.GetNames(typeof(FilterUsersBy)))
-                filterBy.Add(new SelectListItem(filter.SeparateStringByCapitals(), filter));
+            {
+                if (!filterBy.ContainsKey(filter))
+                {
+                    filterBy.Add(filter, filter.SeparateStringByCapitals());
+                }
+            }
 
             return filterBy;
         }

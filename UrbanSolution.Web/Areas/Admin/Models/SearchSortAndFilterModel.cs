@@ -1,5 +1,10 @@
 ﻿
 
+using System;
+using System.Collections.Generic;
+using UrbanSolution.Web.Infrastructure.Enums;
+using UrbanSolution.Web.Infrastructure.Extensions;
+
 namespace UrbanSolution.Web.Areas.Admin.Models
 {
     public class SearchSortAndFilterModel

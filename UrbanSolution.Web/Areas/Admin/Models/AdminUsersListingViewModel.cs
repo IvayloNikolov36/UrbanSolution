@@ -14,7 +14,7 @@
 
         public IEnumerable<SelectListItem> LockDays { get; set; }
 
-        public IEnumerable<SelectListItem> FilterBy { get; set; }
+        public IDictionary<string, string> FilterBy { get; set; }
 
         public IEnumerable<SelectListItem> SortBy  => new List<SelectListItem>
         {

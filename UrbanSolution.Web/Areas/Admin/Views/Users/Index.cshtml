@@ -1,60 +1,82 @@
-﻿@model AdminUsersListingViewModel
+﻿@using System.ComponentModel
+@using UrbanSolution.Web.Infrastructure
+@model AdminUsersListingViewModel
 @{
     ViewData["Title"] = "Users Administration";
 }
 
-<div row class="text-info text-center">
+<div class="row text-info text-center">
+    <h3><strong>@(this.ViewData["Title"])</strong></h3>
+</div>
 
-    <h3><strong> @this.ViewData["Title"] </strong></h3>
+<div class="form-group row text-center">
 
     <form asp-controller="Users" asp-action="Index" method="get">
         <div class="row">
-            <div class="col-xs-2">
-                <select name="SortBy" asp-items="Model.SortBy" class="form-control"></select>
+
+            <div class="col-lg-4">
+                <div class="form-inline">
+                    <select name="SortBy" asp-items="Model.SortBy" class="form-control"></select>
+                    <select name="SortType" asp-items="Model.SortingType" class="form-control"></select>
+                    <input type="submit" value="Sort" class="btn btn-default" />
+                </div>
             </div>
 
-            <div class="col-xs-2">
-                <select name="SortType" asp-items="Model.SortingType" class="form-control"></select>
-            </div>
-            <div class="col-xs-1">
-                <input type="submit" value="Sort" class="btn btn-default"/>
-            </div>
-
-            <div class="col-xs-2">
-                <select name="SearchType" asp-items="Model.SearchFilters" class="form-control"></select>
+            <div class="col-lg-4">
+                <div class="form-inline">
+                    <select name="SearchType" asp-items="Model.SearchFilters" class="form-control"></select>
+                    <input type="text" name="SearchText" class="form-control" placeholder="Search..." />
+                    <button type="submit" value="Search" class="btn btn-default"><i class="glyphicon glyphicon-search"></i></button>
+                </div>
             </div>
 
-            <div class="col-xs-2">
-                <input type="text" name="SearchText" class="form-control" placeholder="Search..."/>
-            </div>
-            <div class="col-xs-1">
-                <input type="submit" value="Search" class="btn btn-default"/>
+            <div class="col-lg-4">
+                <div class="form-inline">
+                    @*<select name="Filter" asp-items="Model.FilterBy" class="form-control">*@
+                    <select id="Filter" name="Filter" class="form-control">
+                        @if (this.ViewData["Filter"] == null)
+                        {
+                            <option selected>@WebConstants.NoFilter</option>
+                        }
+                        else
+                        {
+                            <option>@WebConstants.NoFilter</option>
+                        }
+
+                        @foreach (var kvp in Model.FilterBy)
+                        {
+                            if (kvp.Value == (string)this.ViewData[WebConstants.FilterKey])
+                            {
+                                <option value="@kvp.Value" selected>@kvp.Value</option>
+                            }
+                            else
+                            {
+                                <option value="@kvp.Value">@kvp.Value</option>
+                            }
+                        }
+                    </select>
+                    <input type="submit" value="Filter" class="btn btn-default" />
+                </div>
             </div>
 
-            <div class="col-xs-2">
-                <select name="Filter" asp-items="Model.FilterBy" class="form-control"></select>
-            </div>
-            <div class="col-xs-1">
-                <input type="submit" value="Filter" class="btn btn-default"/>
-            </div>
         </div>
     </form>
 
-    <br/>
 </div>
 
+@* table *@
 <table class="table table-bordered table-striped table table-hover">
     <thead>
         <tr>
-            <th class="text-center"><strong>Username</strong></th>
-            <th class="text-center"><strong>Email</strong></th>
-            <th class="text-center"><strong>Lockout End</strong></th>
-            <th clas="text-center"><strong>Lock(days)/Unlock</strong></th>
-            <th class="text-center"><strong>Set Role</strong></th>
-            <th class="text-center"><strong>Remove Role</strong></th>
-        </tr>   
+            <th class="text-center text-info"><strong>Username</strong></th>
+            <th class="text-center text-info"><strong>Email</strong></th>
+            <th class="text-center text-info"><strong>Lockout End</strong></th>
+            <th class="text-center text-info"><strong>Lock(days)/Unlock</strong></th>
+            <th class="text-center text-info"><strong>Set Role</strong></th>
+            <th class="text-center text-info"><strong>Remove Role</strong></th>
+        </tr>
     </thead>
     <tbody>
-        @await Html.PartialAsync("_AdminUsersListingPartial", Model)
+        <partial name="_AdminUsersListingPartial" model="Model" />
     </tbody>
 </table>

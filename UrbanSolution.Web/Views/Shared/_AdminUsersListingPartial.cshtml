@@ -15,7 +15,7 @@
             {
                 <form asp-controller="Users" asp-action="Unlock" method="post">
                     <input type="hidden" name="UserId" value="@user.Id" />
-                    <div class="col-md-2">
+                    <div class="form-inline text-center">
                         <input class="btn btn-sm btn-success" type="submit" value="Unlock" />
                     </div>
                 </form>
@@ -24,14 +24,11 @@
             {
                 <form asp-controller="Users" asp-action="Lock" method="post">
                     <input type="hidden" name="UserId" value="@user.Id" />
-                    <div class="row">
-                        <div class="col-xs-7">
-                            <select name="LockDays" asp-items="Model.LockDays" class="form-control"></select>
-                        </div>
-                        <div class="col-xs-1">
-                            <input class="btn btn-sm btn-danger" type="submit" value="Lock" />
-                        </div>
+                    <div class="form-inline text-center">
+                        <select name="LockDays" asp-items="Model.LockDays" class="form-control"></select>
+                        <button class="btn btn-sm btn-danger" type="submit" value="Lock"><i class="glyphicon glyphicon-lock"></i></button>
                     </div>
+
                 </form>
             }
 
@@ -41,12 +38,12 @@
             @if (userAddToRoles.Any())
             {
                 <form asp-controller="Users" asp-action="AddToRole" method="post">
-                    <div class="col-md-8">
+                    <div class="form-inline text-center">
                         <input type="hidden" name="UserId" value="@user.Id" />
                         <select name="Role" asp-items="userAddToRoles" class="form-control"></select>
-                    </div>
-                    <div class="col-md-2">
-                        <input class="btn btn-sm btn-success" type="submit" value="Add" />
+                        <button class="btn btn-sm btn-success" type="submit" value="Add">
+                            <i class="glyphicon glyphicon-ok"></i>
+                        </button>
                     </div>
                 </form>
             }
@@ -61,7 +58,9 @@
                         <select name="Role" asp-items="userRemoveFromRoles" class="form-control"></select>
                     </div>
                     <div class="col-md-2">
-                        <input class="btn btn-sm btn-danger" type="submit" value="Remove" />
+                        <button class="btn btn-sm btn-danger" type="submit" value="Remove">
+                            <i class="glyphicon glyphicon-remove"></i>
+                        </button>
                     </div>
                 </form>
             }
