@@ -4,6 +4,7 @@
 
     public class IssuesSortAndFilterModel
     {
+        //TODO: make validation
         public string SortType { get; set; }
 
         public string RegionFilter { get; set; }

@@ -1,9 +1,9 @@
 ﻿namespace UrbanSolution.Web.Areas.Blog.Models
 {
-    using Services.Utilities;
     using System;
     using System.Collections.Generic;
     using UrbanSolution.Services.Blog.Models;
+    using static UrbanSolutionUtilities.WebConstants;
 
     public class ArticleListingViewModel
     {
@@ -11,7 +11,7 @@
 
         public int TotalArticles { get; set; }
 
-        public int TotalPages => (int)Math.Ceiling((double)this.TotalArticles / ServiceConstants.BlogArticlesPageSize);
+        public int TotalPages => (int)Math.Ceiling((double)this.TotalArticles / BlogArticlesPageSize);
 
         public int CurrentPage { get; set; }
 

@@ -1,25 +1,29 @@
 ﻿@model AdminUsersListingViewModel
 @{
-    ViewData["Title"] = "Users Administration";
+    ViewData[TitleKey] = "Users Administration";
 }
 
 <div class="row text-info text-center">
-    <h3><strong>@this.ViewData["Title"]</strong></h3>
+    <h3><strong>@this.ViewData[TitleKey]</strong></h3>
 </div>
 
 <div class="form-group row text-center">
 
     <form asp-controller="Users" asp-action="Index" method="get">
         <div class="row">
-
+            
+            @*Sorting*@
             <div class="col-lg-4">
                 <div class="form-inline">
                     <select name="SortBy" asp-items="Model.SortBy" class="form-control"></select>
+
                     <select name="SortType" asp-items="Model.SortingType" class="form-control"></select>
+
                     <input type="submit" value="Sort" class="btn btn-default" />
                 </div>
             </div>
-
+            
+            @* Searching *@
             <div class="col-lg-4">
                 <div class="form-inline">
                     <select name="SearchType" asp-items="Model.SearchFilters" class="form-control"></select>
@@ -27,7 +31,8 @@
                     <button type="submit" value="Search" class="btn btn-default"><i class="glyphicon glyphicon-search"></i></button>
                 </div>
             </div>
-
+            
+            @*Filter*@
             <div class="col-lg-4">
                 <div class="form-inline">
                     <select id="Filter" name="Filter" class="form-control">

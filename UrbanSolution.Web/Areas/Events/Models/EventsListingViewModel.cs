@@ -1,9 +1,9 @@
 ﻿namespace UrbanSolution.Web.Areas.Events.Models
 {
-    using Services.Utilities;
     using System;
     using System.Collections.Generic;
     using UrbanSolution.Services.Events.Models;
+    using static UrbanSolutionUtilities.WebConstants;
 
     public class EventsListingViewModel
     {
@@ -12,7 +12,7 @@
 
         public int TotalEvents { get; set; }
 
-        public int TotalPages => (int) Math.Ceiling((double) this.TotalEvents / ServiceConstants.EventsPageSize);
+        public int TotalPages => (int) Math.Ceiling((double) this.TotalEvents / EventsPageSize);
 
         public int CurrentPage { get; set; }
 

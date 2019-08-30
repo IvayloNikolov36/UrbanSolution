@@ -1,25 +1,93 @@
-﻿@using UrbanSolution.Web.Infrastructure.Enums
-@model IssuesListingViewModel
+﻿@model IssuesListingViewModel
 @{
-    ViewData["Title"] = "Approved Issues";
+    ViewData[TitleKey] = "Approved Issues";
     var rowsCount = int.Parse(ViewData[RowsCountKey].ToString());
-    var maxPage = (int)Math.Ceiling((double) Model.TotalRows / rowsCount);
+    var maxPage = (int)Math.Ceiling((double)Model.TotalRows / rowsCount);
+
+    var totalPages = (int) Math.Ceiling((double) Model.TotalRows / rowsCount); //TODO: check this math
+    var pagesModel = new PagesModel
+    {
+        PreviousPage = Model.CurrentPage <= 1 ? 1 : Model.CurrentPage - 1,
+        CurrentPage = Model.CurrentPage,
+        NextPage = Model.CurrentPage == totalPages ? totalPages : Model.CurrentPage + 1,
+        TotalPages = totalPages
+    };
 }
 
 <div row class="text-info text-center">
-    <h3><strong>@this.ViewData["Title"]</strong></h3>
-    <hr />
+    <h4><strong>@this.ViewData[TitleKey]</strong></h4>
 </div>
 
 @*TODO: move out in view component*@
 <div class="form-group row text-center">
     <form asp-controller="Issue" asp-action="Index" method="get">
-        <div class="row">
-            @*jump to page*@
+        <div class="row btn-group-justified">
+            @*Filtering by Region and Issue Type*@
+            <div class="col-lg-4">
+                <div class="form-inline">
+                    <select name="RegionFilter" class="form-control">
+                        @if (this.ViewData[RegionFilterKey] == null)
+                        {
+                            <option selected value="@null">@(OptionAll)</option>
+                        }
+                        @foreach (KeyValuePair<string, string> kvp in Model.RegionFilter)
+                        {
+                            if (kvp.Value == this.ViewData[RegionFilterKey]?.ToString())
+                            {
+                                <option selected value="@kvp.Value">@kvp.Key</option>
+                            }
+                            else
+                            {
+                                <option value="@kvp.Value">@kvp.Key</option>
+                            }
+                        }
+                    </select>
+
+                    <select name="TypeFilter" class="form-control">
+                        @if (this.ViewData[TypeFilterKey] == null)
+                        {
+                            <option selected value="@null">@(OptionTextAllTypes)</option>
+                        }
+                        @foreach (KeyValuePair<string, string> kvp in Model.TypeFilter)
+                        {
+                            if (kvp.Value == this.ViewData[TypeFilterKey]?.ToString())
+                            {
+                                <option selected value="@kvp.Value">@kvp.Key</option>
+                            }
+                            else
+                            {
+                                <option value="@kvp.Value">@kvp.Key</option>
+                            }
+                        }
+                    </select>
+
+                    <input type="submit" value="Filter" class="btn btn-default" />
+                </div>
+
+            </div>
+
+            @* Sort by Publish Time (First newest or oldest approved issues) *@
             <div class="col-lg-2">
                 <div class="form-inline">
-                    <input type="number" name="Page" class="form-control" min="1" max="@maxPage" value="@ViewData[PageKey]"/>
-                    <button type="submit" value="Go" class="btn btn-default"><i class="glyphicon glyphicon-share-alt"></i></button>
+                    <select name="SortType" class="form-control" aria-selected="True">
+                        @if (this.ViewData[SortTypeKey] == null)
+                        {
+                            <option selected value="@(SortDesc)">@(SortingDateDesc)</option>
+                        }
+                        @foreach (KeyValuePair<string, string> kvp in Model.SortingType)
+                        {
+                            if (kvp.Value == this.ViewData[SortTypeKey]?.ToString())
+                            {
+                                <option selected value="@kvp.Value">@kvp.Key</option>
+                            }
+                            else
+                            {
+                                <option value="@kvp.Value">@kvp.Key</option>
+                            }
+                        }
+                    </select>
+
+                    <button type="submit" value="Sort" class="btn btn-default"><i class="glyphicon glyphicon-sort-by-alphabet"></i></button>
                 </div>
             </div>
 
@@ -31,11 +99,11 @@
                         {
                             <option selected>1</option>
                         }
-                        @foreach (int rows in (int[])Enum.GetValues(typeof(RowsOnPage)))
+                        @foreach (int rows in (int[])Enum.GetValues(typeof(RowsOnPage))) //TODO: Enumeration from Model?
                         {
-                            if (rows == int.Parse(this.ViewData[RowsCountKey].ToString()))
+                            if (rows == int.Parse(this.ViewData[RowsCountKey]?.ToString()))
                             {
-                                <option value="@rows" selected>@rows</option>
+                                <option selected value="@rows">@rows</option>
                             }
                             else
                             {
@@ -48,23 +116,17 @@
                 </div>
             </div>
 
-            @* Sort by Publish Time *@
-            <div class="col-lg-3">
+            @*jump to page*@
+            <div class="col-lg-2">
                 <div class="form-inline">
-                    <select name="SortType" asp-items="Model.SortingType" class="form-control"></select>
-                    <button type="submit" value="Sort" class="btn btn-default"><i class="glyphicon glyphicon-sort-by-alphabet"></i></button>
+                    <input type="number" name="Page" class="form-control" min="1" max="@maxPage" value="@ViewData[PageKey]" />
+                    <button type="submit" value="Go" class="btn btn-default"><i class="glyphicon glyphicon-share-alt"></i></button>
+
                 </div>
             </div>
 
-            @*Filtering by Region and Issue Type*@
-            <div class="col-lg-4">
-                <div class="form-inline">
-                    <select name="RegionFilter" asp-items="Model.RegionFilter" class="form-control"></select>
-                    <select name="TypeFilter" asp-items="Model.TypeFilter" class="form-control"></select>
-                    <input type="submit" value="Filter" class="btn btn-default" />
-                </div>
-            </div>
-
+            
+            <partial name="_PagingPartial" model="@pagesModel" />
         </div>
     </form>
 </div>
@@ -72,3 +134,7 @@
 <div class="row issues-listing">
     <partial name="_IssuesListingPartial" model="@Model" />
 </div>
+
+@* Pagination *@
+@*<partial name="_PagingPartial" model="@pagesModel" />*@
+

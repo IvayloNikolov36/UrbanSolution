@@ -4,8 +4,8 @@
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
-    using static Services.Utilities.ServiceConstants;
     using static UrbanSolution.Models.Utilities.DataConstants;
+    using static UrbanSolutionUtilities.WebConstants;
 
     public class EventCreateFormModel : IValidatableObject
     {        

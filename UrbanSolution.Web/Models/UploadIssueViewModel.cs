@@ -1,8 +1,5 @@
-﻿using UrbanSolution.Services.Utilities;
-
-namespace UrbanSolution.Web.Models
+﻿namespace UrbanSolution.Web.Models
 {
-    using Infrastructure;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc.Rendering;
     using System.Collections.Generic;
@@ -51,10 +48,10 @@ namespace UrbanSolution.Web.Models
                 yield return new ValidationResult($"The place should be in {CurrentTownEn}");
             }
 
-            if (!this.PictureFile.FileName.EndsWith(ServiceConstants.PictureExtension)
-                || PictureFile.Length > ServiceConstants.PictureUploadFileLength)
+            if (!this.PictureFile.FileName.EndsWith(PictureExtension)
+                || PictureFile.Length > PictureUploadFileLength)
             {
-                yield return new ValidationResult(ServiceConstants.MessageForImageUploadingRestrictions);
+                yield return new ValidationResult(MessageForImageUploadingRestrictions);
             }
         }
     }
