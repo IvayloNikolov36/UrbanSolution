@@ -4,14 +4,14 @@
 
     public static class StringExtensions
     {
-        public static string Shortify(this string input, int length)
+        public static string Shortify(this string input, int maxLength)
         {
             if (input == null)
             {
-                return input;
+                return null;
             }
 
-            return input.Length > length ? $"{input.Substring(length)}..." : input;
+            return input.Length > maxLength ? $"{input.Substring(0, maxLength)}..." : input;
         }
 
         public static string ToFriendlyUrl(this string text)

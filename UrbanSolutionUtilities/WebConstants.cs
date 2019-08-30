@@ -66,6 +66,7 @@
         public const int IssuesRows = 1;
 
         public const int InitalPage = 1;
+
         //ViewDataKeys
         public const string ViewDataIssueId = "issueId";
         public const string ViewDataManagerId = "managerId";
@@ -159,6 +160,30 @@
         public const int MaxFailedAccessAttempts = 6;
         public const int LockedProfileDays = 5;
 
+
+        public const int IssuesOnRow = 6;
+        public const int BlogArticlesPageSize = 2;
+        public const int EventsPageSize = 2;
+
+        public const string CloudinaryGetImageUrl = "{0}.jpg";
+
+        public const long PictureUploadFileLength = 5500000;
+
+        public const string MessageForImageUploadingRestrictions =
+            "Your file submission should be a '.jpg' file with no more than 5.5mb size";
+
+        public const string PictureExtension = ".jpg";
+
+        public const string EventStartDateRestriction =
+            "Start date of the event should be at least one day after creation!";
+
+        public const string EventEndDateRestriction =
+            "End date of the event should be at least one hour after start time!";
+
+        public const string NoCoordinatesValidationError = "Please find the adress in the map.";
+
+        public const int DefaultRowsCount = 1;
+
         //DropDowns
         public const string UsersFilter = "Filter by";
         public const string NoFilter = "No Filter";
@@ -175,6 +200,21 @@
         public const string SortBy = "Sort by";
 
         //ViewData keys
+        public const string TitleKey = "Title";
         public const string FilterKey = "Filter";
+        public const string SortTypeKey = "SortType";
+        public const string SortTypeValKey = "SortTypeVal";
+        public const string RowsCountKey = "Rows";
+        public const string PageKey = "Page";
+        public const string RegionFilterKey = "RegionFilter";
+        public const string TypeFilterKey = "TypeFilterKey";
+
+        public const int ShortifyStringTo = 12;
+
+
+        //Pagination
+        public const int ButtonsBeforeAndAfterCurrent = 5;
+        public const string Hide = "hide";
     }
+
 }

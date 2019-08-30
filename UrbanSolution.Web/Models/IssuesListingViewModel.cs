@@ -34,7 +34,7 @@
         {
             get
             {
-                var regions = new Dictionary<string, string>(); //{ {OptionAll, null} };
+                var regions = new Dictionary<string, string>();    //{ {OptionAll, null} };
 
                 foreach (string region in Enum.GetNames(typeof(RegionType)))
                 {
