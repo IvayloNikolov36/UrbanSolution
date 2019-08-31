@@ -1,20 +1,17 @@
 ﻿namespace UrbanSolution.Services.Tests.Blog
 {
-
     using FluentAssertions;
-    using Mapping;
     using Microsoft.AspNetCore.Http;
-    using Microsoft.EntityFrameworkCore;
     using Mocks;
     using Mocks.MockEntities;
     using Moq;
     using Seed;
-    using System.Collections.Generic;
     using System.Threading.Tasks;
     using UrbanSolution.Models;
     using UrbanSolution.Services.Blog.Implementations;
     using UrbanSolution.Services.Blog.Models;
     using Xunit;
+    using System;
     using System.Linq;
     using static UrbanSolutionUtilities.WebConstants;
 
@@ -29,46 +26,31 @@
         [InlineData(2)]
         [InlineData(3)]
         [InlineData(4)]
-        public async Task AllAsyncShould_ReturnsCorrectArticles_WithDefaultPageEqualToOne(int page)
+        public async Task AllAsyncShould_ReturnsCorrectArticlesWith_DifferentPageIndex(int page)
         {
             //Arrange
-            var service = new BlogArticleService(Db, null, null);
 
-            var user = UserCreator.Create();
-            var secondUser = UserCreator.Create();
-            var thirdUser = UserCreator.Create();
-            await this.Db.AddRangeAsync(user, secondUser, thirdUser);
-
-            var image = ImageInfoCreator.Create();
-            await this.Db.AddAsync(image);
-
-            var article = ArticleCreator.Create(user.Id, null);
-            var secondArticle = ArticleCreator.Create(secondUser.Id, null);
-            var thirdArticle = ArticleCreator.Create(thirdUser.Id, null);
-            var fourthArticle = ArticleCreator.Create(thirdUser.Id, null);
+            var article = ArticleCreator.Create(Guid.NewGuid().ToString());
+            var secondArticle = ArticleCreator.Create(Guid.NewGuid().ToString());
+            var thirdArticle = ArticleCreator.Create(Guid.NewGuid().ToString());
+            var fourthArticle = ArticleCreator.Create(Guid.NewGuid().ToString());
             await this.Db.AddRangeAsync(article, secondArticle, thirdArticle, fourthArticle);
-
             await this.Db.SaveChangesAsync();
 
-            //Act
-            var result = await service.AllAsync(page: page);
+            var service = new BlogArticleService(Db, null, null);
 
-            var expectedResult = await this.Db
-                .Articles
-                .OrderByDescending(a => a.PublishDate)
+            //Act
+            var result = (await service.AllAsync(page)).ToList();
+
+            var expectedCount = this.Db.Articles
                 .Skip((page - 1) * BlogArticlesPageSize)
                 .Take(BlogArticlesPageSize)
-                .To<BlogArticleListingServiceModel>()
-                .ToListAsync();
+                .Count();
 
             //Assert
-            result.Should().BeOfType<List<BlogArticleListingServiceModel>>();
-
-            result.Should().HaveCount(expectedResult.Count);
-
+            result.Should().AllBeOfType<BlogArticleListingServiceModel>();
+            result.Should().HaveCount(expectedCount);
             result.Should().BeInDescendingOrder(x => x.PublishDate);
-
-            result.Should().BeEquivalentTo(expectedResult);
         }
 
         [Fact]
@@ -93,24 +75,18 @@
             //Act
             var result = await service.GetAsync<BlogArticleDetailsServiceModel>(secondArticle.Id);
 
-            var expected = await this.Db
-                .Articles
-                .Include(a => a.Comments)
-                .Where(a => a.Id == secondArticle.Id)
-                .To<BlogArticleDetailsServiceModel>()
-                .FirstOrDefaultAsync();
-
             var secondResult = await service.GetAsync<EditArticleServiceViewModel>(article.Id);
 
-            var secondExpected = await this.Db.Articles.Include(a => a.Comments).Where(a => a.Id == article.Id)
-                .To<EditArticleServiceViewModel>().FirstOrDefaultAsync();
+            var thirdResult = await service.GetAsync<EditArticleServiceViewModel>(4589);
 
             //Assert
             result.Should().BeOfType<BlogArticleDetailsServiceModel>();
-            result.Should().BeEquivalentTo(expected);
+            Assert.Equal(secondArticle.Id, result.Id);
 
             secondResult.Should().BeOfType<EditArticleServiceViewModel>();
-            secondResult.Should().BeEquivalentTo(secondExpected);
+            Assert.Equal(article.Id, secondResult.Id);
+
+            Assert.Null(thirdResult);
         }
 
         [Fact]
@@ -174,8 +150,8 @@
 
             htmlService.Verify(h => h.Sanitize(It.IsAny<string>()), Times.Once);
 
-            updatedEntry.Title = TitleForUpdate;
-            updatedEntry.Content = ContentForUpdate;
+            Assert.Equal(updatedEntry.Title, TitleForUpdate);
+            Assert.Equal(updatedEntry.Content, ContentForUpdate);
         }
 
         [Fact]
