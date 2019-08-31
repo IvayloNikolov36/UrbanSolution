@@ -7,7 +7,7 @@
 
     public interface IEventService
     {
-        Task<IEnumerable<TModel>> AllAsync<TModel>(int page = 1);
+        Task<IEnumerable<TModel>> AllAsync<TModel>(int page);
 
         Task<int> CreateAsync(string title, string description, DateTime starts, DateTime ends, 
             IFormFile pictureFile, string address, string latitude, string longitude, string creatorId);

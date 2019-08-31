@@ -25,6 +25,23 @@
             this.events = events;
         }
 
+        [AllowAnonymous]
+        public async Task<IActionResult> Index(int pagination = 1)
+        {
+            var allEvents = await this.events.AllAsync<EventsListingServiceModel>(pagination);
+
+            var totalEvents = await this.events.TotalCountAsync();
+
+            var model = new EventsListingViewModel
+            {
+                Events = allEvents,
+                TotalEvents = totalEvents,
+                CurrentPage = pagination
+            };
+
+            return View(model);
+        }
+
         [HttpGet]
         [ServiceFilter(typeof(ValidateEventIdExistsAttribute))]
         public async Task<IActionResult> Participate(int id)
@@ -41,23 +58,6 @@
 
             return this.RedirectToAction("Details", "Events", new { Area = "Events", id })
                 .WithSuccess(string.Empty, SuccessParticipation);
-        }
-
-        [AllowAnonymous]
-        public async Task<IActionResult> Index(int page = 1)
-        {
-            var allEvents = await this.events.AllAsync<EventsListingServiceModel>(page);
-
-            var totalEvents = await this.events.TotalCountAsync();
-
-            var model = new EventsListingViewModel
-            {
-                Events = allEvents,
-                TotalEvents = totalEvents,
-                CurrentPage = page
-            };
-
-            return View(model);
         }
 
         [HttpGet]

@@ -1,5 +1,4 @@
-﻿@using UrbanSolutionUtilities.Extensions
-@model UrbanSolution.Web.Areas.Blog.Models.ArticleListingViewModel
+﻿@model UrbanSolution.Web.Areas.Blog.Models.ArticleListingViewModel
 @{
     ViewData["Title"] = "Blog Articles";
 
@@ -16,17 +15,17 @@
 <hr />
 
 <div class="row">
-    @foreach (var article in Model.Articles) //TODO: display template
+    @foreach (var article in Model.Articles)
     {
         <div class="col-md-5 col-md-offset-1 list-group-item">
-            <a asp-action="Details" asp-route-id="@article.Id"
-               asp-route-title="@article.Title.ToFriendlyUrl()">
+            <a asp-action="Details" asp-route-id="@(article.Id)"
+               asp-route-title="@(article.Title.ToFriendlyUrl())">
                 <h4 class="text-center text-info">@article.Title</h4>
             </a>
-            <img src="@article.PictureUrl"/>
+            <img src="@(article.PictureUrl)"/>
             <h5>
-                published by <em class="text-info">@article.Author</em>
-                on <em class="text-info">@article.PublishDate</em>
+                published by <em class="text-info">@(article.Author)</em>
+                on <em class="text-info">@(article.PublishDate)</em>
                 <a asp-action="Details" asp-route-id="@article.Id" class="btn-sm btn-primary pull-right">
                     Read More <span class="glyphicon glyphicon-chevron-right"></span>
                 </a>
@@ -37,7 +36,7 @@
 
 @if (Model.TotalArticles > Model.Articles.Count())
 {
-    @await Html.PartialAsync("~/Views/Shared/_PagingPartial.cshtml", pagesModel)
+    <partial name="_PagingPartial" model="pagesModel"/>
 }
 
 

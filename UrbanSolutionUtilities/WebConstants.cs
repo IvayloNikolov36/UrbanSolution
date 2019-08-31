@@ -67,6 +67,8 @@
 
         public const int InitalPage = 1;
 
+        public const int MapZoom = 17;
+
         //ViewDataKeys
         public const string ViewDataIssueId = "issueId";
         public const string ViewDataManagerId = "managerId";
@@ -211,10 +213,26 @@
 
         public const int ShortifyStringTo = 12;
 
+        public const string PublicPicIdPrefix = "urban";
+        public const string CropThumb = "thumb";
+        public const string CropLimit = "limit";
+        public const int ThumbnailHeight = 200;
+        public const int ThumbnailWidth = 200;
 
         //Pagination
         public const int ButtonsBeforeAndAfterCurrent = 5;
         public const string Hide = "hide";
+
+        //User Properties for filter data
+        public const string UserNameProp = "UserName";
+        public const string EmailProp = "Email";
+
+        //Events
+        public const int AddDays = 1;
+        public const int AddHours = 1;
+        public const int AddMinutes = 15;
+
+        public const string EnterLocation = "Enter location in the map";
     }
 
 }

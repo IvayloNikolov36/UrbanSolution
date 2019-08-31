@@ -24,7 +24,7 @@
             this.pictureService = pictureService;
         }
 
-        public async Task<IEnumerable<TModel>> AllAsync<TModel>(int page = 1)
+        public async Task<IEnumerable<TModel>> AllAsync<TModel>(int page)
         {
             var eventsModel = await this.db
                 .Events

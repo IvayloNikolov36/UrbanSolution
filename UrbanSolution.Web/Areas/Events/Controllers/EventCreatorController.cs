@@ -46,9 +46,9 @@
                 .WithSuccess(string.Empty, EventCreationSuccess);
         }
 
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            var model = this.events.GetAsync<EventEditServiceModel>(id);
+            var model = await this.events.GetAsync<EventEditServiceModel>(id);
 
             return this.ViewOrNotFound(model);
         }
@@ -66,7 +66,7 @@
 
             if (!isEdited)
             {
-                return this.RedirectToAction("Details", "Events", new {Area = "Events", id})
+                return this.RedirectToAction("Details", "Events", new {Area = "Events", id })
                     .WithDanger(string.Empty, CantEditEvent);
             }
 
@@ -78,8 +78,8 @@
         {
             var model = new EventCreateFormModel
             {
-                StartDate = DateTime.UtcNow.AddDays(1).AddMinutes(15),
-                EndDate = DateTime.UtcNow.AddDays(1).AddHours(1).AddMinutes(15)
+                StartDate = DateTime.UtcNow.AddDays(AddDays).AddMinutes(AddMinutes),
+                EndDate = DateTime.UtcNow.AddDays(AddDays).AddHours(AddHours).AddMinutes(AddMinutes)
             };
 
             return model;

@@ -4,7 +4,7 @@
 
     @* TO Show or Hide Button for Previous Page *@
     <li class="@(Model.CurrentPage == 1 ?  Hide : string.Empty)">
-        <a asp-area="" asp-controller="Issue" asp-action="Index" asp-route-pagination="@Model.PreviousPage"
+        <a asp-action="Index" asp-route-pagination="@Model.PreviousPage"
            aria-label="Previous">
             <span aria-hidden="true">&laquo;</span> @*&nbsp; prev*@
         </a>
@@ -16,7 +16,7 @@
         if (Model.CurrentPage - i > 0)
         {
             <li class="inactive">
-                <a asp-area="" asp-controller="Issue" asp-action="Index" asp-route-pagination="@(Model.CurrentPage - i)">
+                <a asp-action="Index" asp-route-pagination="@(Model.CurrentPage - i)">
                     @(Model.CurrentPage - i)<span class="sr-only"></span>
                 </a>
             </li>
@@ -25,7 +25,7 @@
 
     @* Show Current page button *@
     <li class="active">
-        <a asp-area="" asp-controller="Issue" asp-action="Index" asp-route-pagination="@Model.CurrentPage">
+        <a asp-action="Index" asp-route-pagination="@Model.CurrentPage">
             @Model.CurrentPage
             <span class="sr-only">(current)</span>
         </a>
@@ -37,7 +37,7 @@
         if (Model.CurrentPage + i <= Model.TotalPages)
         {
             <li class="inactive">
-                <a asp-area="" asp-controller="Issue" asp-action="Index" asp-route-pagination="@(Model.CurrentPage + i)">
+                <a asp-action="Index" asp-route-pagination="@(Model.CurrentPage + i)">
                     @(Model.CurrentPage + i)
                     <span class="sr-only"></span>
                 </a>
@@ -47,7 +47,7 @@
 
     @*TO Show or not button for next page*@
     <li class="@(Model.CurrentPage == Model.TotalPages ? Hide : string.Empty)">
-        <a asp-area="" asp-controller="Issue" asp-action="Index" asp-route-pagination="@(Model.NextPage)" aria-label="Next">
+        <a asp-action="Index" asp-route-pagination="@(Model.NextPage)" aria-label="Next">
             <span aria-hidden="true"> &raquo;</span> @*next&nbsp;*@
         </a>
     </li>

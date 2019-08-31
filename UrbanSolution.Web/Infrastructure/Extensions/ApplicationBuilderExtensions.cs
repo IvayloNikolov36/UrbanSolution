@@ -53,7 +53,7 @@
 
             if (user == null)
             {
-                user = new User()
+                user = new User
                 {
                     UserName = userName,
                     Email = email,
@@ -82,11 +82,11 @@
                 var user = await userManager.FindByNameAsync(managerUsername);
                 if (user == null)
                 {
-                    user = new User()
+                    user = new User
                     {
                         UserName = managerUsername,
                         Email = string.Format(ManagerEmail, managerUsername),
-                        FullName = $"Manager {regionsAsStrings[i]}",
+                        FullName = $"{ManagerRole}{regionsAsStrings[i]}",
                         ManagedRegion = Enum.Parse<RegionType>(regionsAsStrings[i]),
                         Age = UserDefaultAge
                     };

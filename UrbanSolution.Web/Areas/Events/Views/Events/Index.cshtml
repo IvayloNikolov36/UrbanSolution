@@ -1,5 +1,4 @@
-﻿@using UrbanSolutionUtilities.Extensions
-@model UrbanSolution.Web.Areas.Events.Models.EventsListingViewModel
+﻿@model UrbanSolution.Web.Areas.Events.Models.EventsListingViewModel
 @{
     ViewData["Title"] = "All Events";
 
@@ -15,31 +14,13 @@
 <h3 class="text-center text-info">@ViewData["Title"]</h3>
 <hr />
 
-@*<div class="row">
-    <div class="col-md-5">
-        <div class="list-group article-list">
-            @foreach (var e in Model.Events)       //TODO: display template and remove pagesModel (make component view)
-            {
-                <li class="list-group-item">
-                    <a asp-action="Details" asp-route-id="@e.Id"
-                       asp-route-title="@e.Title.ToFriendlyUrl()">
-                        @e.Title
-                    </a>
-                    <br />
-                    <small>starting: @e.Starts.ToLongDateString()</small>
-                </li>
-            }
-        </div>
-    </div>
-</div>*@
-
 
 <div class="row">
     @foreach (var e in Model.Events)
     {
         <div class="col-md-5 col-md-offset-1 list-group-item">
-            <a asp-action="Details" asp-route-id="@e.Id"
-               asp-route-title="@e.Title.ToFriendlyUrl()">
+            <a asp-action="Details" asp-route-id="@(e.Id)"
+               asp-route-title="@(e.Title.ToFriendlyUrl())">
                 @e.Title
             </a>
             <br />
@@ -48,9 +29,6 @@
     }
 </div>
 
-@*pagging*@
+@*paging*@
 
-@if (Model.TotalPages > Model.Events.Count())
-{
-    @await Html.PartialAsync("~/Views/Shared/_PagingPartial.cshtml", pagesModel)
-}
+<partial name="_PagingPartial" model="pagesModel" />

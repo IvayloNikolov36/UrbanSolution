@@ -4,7 +4,7 @@
 @model PublishIssueViewModel                  
 @{
     ViewData["Title"] = "Publish Issue";
-    var apiKey = Configuration.GetSection("Google:MapsApiKey").Value;    //TODO: make view component
+    var apiKey = Configuration.GetSection("Google:MapsApiKey").Value;
 }
 
 <h3 class="text-center">@this.ViewData["Title"]</h3>

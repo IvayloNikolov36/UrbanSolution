@@ -27,13 +27,13 @@
         }
 
         [AllowAnonymous]
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index(int pagination = 1)
         {
             var model = new ArticleListingViewModel
             {
-                Articles = await this.articles.AllAsync(page),
+                Articles = await this.articles.AllAsync(pagination),
                 TotalArticles = await this.articles.TotalAsync(),
-                CurrentPage = page
+                CurrentPage = pagination
             };
 
             return this.View(model);
