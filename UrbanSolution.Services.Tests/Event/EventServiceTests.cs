@@ -14,8 +14,8 @@
     using UrbanSolution.Models;
     using UrbanSolution.Services.Events.Implementations;
     using UrbanSolution.Services.Events.Models;
-    using Utilities;
     using Xunit;
+    using static UrbanSolutionUtilities.WebConstants;
 
     public class EventServiceTests : BaseServiceTest
     {
@@ -59,8 +59,8 @@
             var expected = await this.Db
                 .Events
                 .OrderByDescending(e => e.Id)
-                .Skip((page - 1) * ServiceConstants.EventsPageSize)
-                .Take(ServiceConstants.EventsPageSize)
+                .Skip((page - 1) * EventsPageSize)
+                .Take(EventsPageSize)
                 .To<EventsListingServiceModel>()
                 .ToListAsync();
 

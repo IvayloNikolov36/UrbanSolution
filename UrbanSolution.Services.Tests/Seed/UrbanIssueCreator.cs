@@ -42,5 +42,18 @@
                 CloudinaryImageId = picId
             };
         }
+
+        public static UrbanIssue CreateIssue(bool isApproved, RegionType region, IssueType type)
+        {
+            return new UrbanIssue
+            {
+                Id = ++issueId,
+                Title = string.Format(issueTitle, issueId),
+                PublishedOn = DateTime.UtcNow,
+                Region = region,
+                IsApproved = isApproved,
+                Type = type
+            };
+        }
     }
 }

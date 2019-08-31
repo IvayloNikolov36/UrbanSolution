@@ -10,7 +10,7 @@
     using System.Linq.Expressions;
     using System.Threading.Tasks;
     using UrbanSolution.Models;
-    using static Utilities.ServiceConstants;
+    using static UrbanSolutionUtilities.WebConstants;
 
     public class IssueService : IIssueService
     {

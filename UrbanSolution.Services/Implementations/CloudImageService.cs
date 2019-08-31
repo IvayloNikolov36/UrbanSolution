@@ -8,7 +8,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using Utilities;
+    using static UrbanSolutionUtilities.WebConstants;
 
     public class CloudImageService : ICloudImageService
     {
@@ -57,7 +57,7 @@
         public string GetImageUrl(string imagePublicId)
         {
             var pictureUrl = this.cloudinary.Api.UrlImgUp
-                .BuildUrl(string.Format(ServiceConstants.CloudinaryGetImageUrl, imagePublicId));
+                .BuildUrl(string.Format(CloudinaryGetImageUrl, imagePublicId));
             
             return pictureUrl;
         }
@@ -66,7 +66,7 @@
         {
             var pictureUrl = cloudinary.Api.UrlImgUp
                 .Transform(new Transformation().Height(200).Width(200).Crop("thumb"))
-                .BuildUrl(string.Format(ServiceConstants.CloudinaryGetImageUrl, imagePublicId));
+                .BuildUrl(string.Format(CloudinaryGetImageUrl, imagePublicId));
 
             return pictureUrl;
         }

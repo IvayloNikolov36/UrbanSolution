@@ -11,7 +11,7 @@
     using System.Linq;
     using System.Threading.Tasks;
     using UrbanSolution.Models;
-    using static Utilities.ServiceConstants;
+    using static UrbanSolutionUtilities.WebConstants;
 
     public class BlogArticleService : IBlogArticleService
     {

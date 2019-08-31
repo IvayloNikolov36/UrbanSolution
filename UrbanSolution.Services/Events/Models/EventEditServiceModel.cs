@@ -5,7 +5,7 @@
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using UrbanSolution.Models;
-    using static Utilities.ServiceConstants;
+    using static UrbanSolutionUtilities.WebConstants;
     using static UrbanSolution.Models.Utilities.DataConstants;
 
     public class EventEditServiceModel : IMapFrom<Event>, IValidatableObject

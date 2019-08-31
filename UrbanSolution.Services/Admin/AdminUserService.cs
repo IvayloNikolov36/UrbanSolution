@@ -1,4 +1,6 @@
-﻿namespace UrbanSolution.Services.Admin
+﻿using UrbanSolutionUtilities;
+
+namespace UrbanSolution.Services.Admin
 {
     using Data;
     using Mapping;
@@ -14,7 +16,7 @@
     using UrbanSolution.Models.Enums;
     using UrbanSolutionUtilities.Enums;
     using UrbanSolutionUtilities.Extensions;
-    using static UrbanSolution.Services.Utilities.ServiceConstants;
+    using static UrbanSolutionUtilities.WebConstants;
 
     public class AdminUserService : IAdminUserService
     {
@@ -42,12 +44,12 @@
 
             if (hasSorting)
             {
-                return await this.AllAsync(true, sortBy, sortType);
+                return await this.AllWhereAsync(true, sortBy, sortType);
             }
 
             if (!hasSearching && !hasFiltering)
             {
-                return await this.AllAsync();
+                return await this.AllWhereAsync();
             }
 
             Expression<Func<User, bool>> expression = null;
@@ -70,14 +72,14 @@
   
             }
 
-            return await this.AllAsyncWhere(expression);
+            return await this.AllFilterAsync(expression);
         }
 
         public async Task<bool> UnlockAsync(string userId)
         {
             User userFromDb = await this.userManager.FindByIdAsync(userId);
 
-            if (userFromDb == null)
+            if (userFromDb?.LockoutEnd == null)
             {
                 return false;
             }
@@ -93,7 +95,7 @@
         {
             User userFromDb = await this.userManager.FindByIdAsync(userId);
 
-            if (userFromDb == null)
+            if (userFromDb == null || userFromDb.LockoutEnd != null)
             {
                 return false;
             }
@@ -141,22 +143,22 @@
             return true;
         }
 
-        private async Task<IEnumerable<AdminUserListingServiceModel>> AllAsync(bool hasSorting = false, string orderBy = null, string orderType = null)
+        public async Task<IEnumerable<AdminUserListingServiceModel>> AllWhereAsync(bool hasSorting = false, string orderBy = null, string orderType = null)
         {
             IOrderedQueryable<User> query = this.db.Users.OrderBy(u => u.UserName);
 
             if (hasSorting)
             {
-                if (orderBy == "UserName")
+                if (orderBy == UserNameProp)
                 {
-                    query = orderType == "ASC"
-                        ? this.db.Users.OrderBy(u => u.UserName)
+                    query = orderType == SortAsc
+                        ? query
                         : this.db.Users.OrderByDescending(u => u.UserName);
                 }
 
-                if (orderBy == "Email")
+                if (orderBy == EmailProp)
                 {
-                    query = orderType == "ASC"
+                    query = orderType == SortAsc
                         ? this.db.Users.OrderBy(u => u.Email)
                         : this.db.Users.OrderByDescending(u => u.Email);
                 }
@@ -180,7 +182,7 @@
             return usersModels;
         }
 
-        private async Task<IEnumerable<AdminUserListingServiceModel>> AllAsyncWhere(
+        public async Task<IEnumerable<AdminUserListingServiceModel>> AllFilterAsync(
             Expression<Func<User, bool>> expression)
         {
             var usersRoles = new List<List<string>>();

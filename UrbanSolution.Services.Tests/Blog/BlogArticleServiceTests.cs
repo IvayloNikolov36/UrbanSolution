@@ -1,6 +1,6 @@
 ﻿namespace UrbanSolution.Services.Tests.Blog
 {
-    using Data;
+
     using FluentAssertions;
     using Mapping;
     using Microsoft.AspNetCore.Http;
@@ -14,9 +14,9 @@
     using UrbanSolution.Models;
     using UrbanSolution.Services.Blog.Implementations;
     using UrbanSolution.Services.Blog.Models;
-    using Utilities;
     using Xunit;
     using System.Linq;
+    using static UrbanSolutionUtilities.WebConstants;
 
     public class BlogArticleServiceTests : BaseServiceTest
     {
@@ -56,8 +56,8 @@
             var expectedResult = await this.Db
                 .Articles
                 .OrderByDescending(a => a.PublishDate)
-                .Skip((page - 1) * ServiceConstants.BlogArticlesPageSize)
-                .Take(ServiceConstants.BlogArticlesPageSize)
+                .Skip((page - 1) * BlogArticlesPageSize)
+                .Take(BlogArticlesPageSize)
                 .To<BlogArticleListingServiceModel>()
                 .ToListAsync();
 

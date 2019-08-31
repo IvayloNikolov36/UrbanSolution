@@ -1,6 +1,5 @@
 ﻿namespace UrbanSolution.Services.Tests
 {
-    using Data;
     using FluentAssertions;
     using Implementations;
     using Mapping;
@@ -12,61 +11,76 @@
     using System.Threading.Tasks;
     using UrbanSolution.Models;
     using UrbanSolution.Services.Manager.Models;
-    using Utilities;
     using Xunit;
+    using static Seed.UrbanIssueCreator;
+    using static UrbanSolutionUtilities.WebConstants;
 
     public class IssueServiceTests : BaseServiceTest
     {
         [Theory]
-        [InlineData(true, 1)]
-        [InlineData(true, 2)]
-        [InlineData(true, 3)]
-        [InlineData(false, 1)]
-        [InlineData(false, 2)]
-        [InlineData(false, 3)]
-        public async Task AllAsyncShould_ReturnsIssueWithCorrectModel(bool isApproved, int pageToGet)
+        [InlineData(true, 1, 1, RegionType.All, IssueType.DangerousTrees, null)]
+        [InlineData(true, 1, 1, RegionType.All, IssueType.DangerousTrees, SortAsc)]
+        [InlineData(true, 1, 1, RegionType.Central, IssueType.DangerousBuildings, SortDesc)]
+        [InlineData(false, 1, 1, RegionType.All, IssueType.DangerousBuildings, SortDesc)]
+        [InlineData(false, 1, 1, RegionType.Central, IssueType.Sidewalks, SortAsc)]
+        [InlineData(true, 2, 1, RegionType.All, IssueType.DangerousTrees, SortAsc)]
+        [InlineData(true, 2, 1, RegionType.Central, IssueType.DangerousBuildings, SortDesc)]
+        [InlineData(false, 2, 1, RegionType.All, IssueType.DangerousBuildings, SortDesc)]
+        [InlineData(false, 2, 1, RegionType.Central, IssueType.Sidewalks, SortAsc)]
+        [InlineData(true, 1, 2, RegionType.All, IssueType.DangerousTrees, SortAsc)]
+        [InlineData(true, 1, 2, RegionType.Central, IssueType.DangerousBuildings, SortDesc)]
+        [InlineData(false, 1, 2, RegionType.All, IssueType.DangerousBuildings, SortDesc)]
+        [InlineData(false, 1, 2, RegionType.Central, IssueType.Sidewalks, SortAsc)]
+        public async Task AllAsyncShould_ReturnsIssueWithCorrectModel(bool isApproved, int rowsCount, int page, RegionType region, IssueType issueType, string sortType) 
         {
             //Arrange
-            var service = new IssueService(this.Db);
-
-            var user = UserCreator.Create();
-            await this.Db.AddAsync(user);
-
-            var image = ImageInfoCreator.CreateWithFullData(user.Id);
-            await this.Db.AddRangeAsync(image);
-
-            var issue = UrbanIssueCreator.CreateIssue(true, RegionType.Central, user.Id, image.Id);
-            var secondIssue = UrbanIssueCreator.CreateIssue(true, RegionType.Central, user.Id, image.Id); 
-            var thirdIssue = UrbanIssueCreator.CreateIssue(true, RegionType.Central, user.Id, image.Id); 
+            var issue = CreateIssue(true, RegionType.Central, IssueType.DangerousTrees);
+            var secondIssue = CreateIssue(true, RegionType.Central, IssueType.Sidewalks); 
+            var thirdIssue = CreateIssue(true, RegionType.Western, IssueType.DangerousBuildings);
             await this.Db.AddRangeAsync(issue, secondIssue, thirdIssue);
 
-            var notApprovedIssue = UrbanIssueCreator.CreateIssue(false, RegionType.Central, user.Id, image.Id); 
-            var secondNotApprovedIssue = UrbanIssueCreator.CreateIssue(false, RegionType.Central, user.Id, image.Id); 
-            var thirdNotApprovedIssue = UrbanIssueCreator.CreateIssue(false, RegionType.Central, user.Id, image.Id);           
+            var notApprovedIssue = CreateIssue(false, RegionType.Central, IssueType.DangerousBuildings); 
+            var secondNotApprovedIssue = CreateIssue(false, RegionType.Central, IssueType.DangerousBuildings); 
+            var thirdNotApprovedIssue = CreateIssue(false, RegionType.South, IssueType.DangerousBuildings);           
             await this.Db.AddRangeAsync(notApprovedIssue, secondNotApprovedIssue, thirdNotApprovedIssue);
 
             await this.Db.SaveChangesAsync();
 
+            var service = new IssueService(this.Db);
             //Act
-            var result = await service.AllAsync(isApproved: isApproved, rowsCount: 1, page: pageToGet, RegionType.All.ToString(), IssueType.Other.ToString(), "ASC"); //TODO: remake this 
+            var result = (await service.AllAsync(isApproved, rowsCount, page, region.ToString(), issueType.ToString(), sortType)).ToList();
 
-            var expected = await this.Db.UrbanIssues.Where(i => i.IsApproved == isApproved)
-                .OrderByDescending(i => i.PublishedOn)
-                .Skip( (pageToGet - 1) * ServiceConstants.IssuesPageSize)
-                .Take(ServiceConstants.IssuesPageSize)
-                .To<UrbanIssuesListingServiceModel>()
-                .ToListAsync();
+            var expectedCount = await this.Db.UrbanIssues.Where(i => i.IsApproved == isApproved && i.Region == region && i.Type == issueType)
+                .Skip((page - 1) * IssuesOnRow * rowsCount)
+                .Take(IssuesOnRow).CountAsync();
+
+            var dbIssues = this.Db.UrbanIssues.ToList();
 
             //Assert
             result.Should().BeOfType<List<UrbanIssuesListingServiceModel>>();
 
-            result.Should().HaveCount(expected.Count);
+            result.Should().HaveCount(expectedCount);
 
             result.Should().NotContain(i => i.IsApproved != isApproved);
 
-            result.Should().BeInDescendingOrder(i => i.PublishedOn);
+            if (region != RegionType.All)
+            {
+                var issuesToNotContain = dbIssues.Where(x => x.Region != region);
+                result.Should().NotContain(issuesToNotContain);
+            }
 
-            result.Should().BeEquivalentTo(expected);
+            var issuesWithAnotherTypes = dbIssues.Where(x => x.Type != issueType).ToList();
+            result.Should().NotContain(issuesWithAnotherTypes);
+
+            if (sortType == null || sortType == SortDesc)
+            {
+                result.Should().BeInDescendingOrder(i => i.PublishedOn);
+            }
+            else
+            {
+                result.Should().BeInAscendingOrder(i => i.PublishedOn);
+            }
+
         }
 
         [Theory]
@@ -83,12 +97,12 @@
             var image = ImageInfoCreator.CreateWithFullData(user.Id);
             await this.Db.AddRangeAsync(image);
 
-            var issue = UrbanIssueCreator.CreateIssue(true, RegionType.Central,  user.Id, image.Id);
-            var secondIssue = UrbanIssueCreator.CreateIssue(true, RegionType.Eastern, user.Id, image.Id);
+            var issue = CreateIssue(true, RegionType.Central,  user.Id, image.Id);
+            var secondIssue = CreateIssue(true, RegionType.Eastern, user.Id, image.Id);
             await this.Db.AddRangeAsync(issue, secondIssue);
 
-            var notApprovedIssue = UrbanIssueCreator.CreateIssue(false, RegionType.North, user.Id, image.Id);
-            var secondNotApprovedIssue = UrbanIssueCreator.CreateIssue(true, RegionType.North, user.Id, image.Id);
+            var notApprovedIssue = CreateIssue(false, RegionType.North, user.Id, image.Id);
+            var secondNotApprovedIssue = CreateIssue(true, RegionType.North, user.Id, image.Id);
             await this.Db.AddRangeAsync(notApprovedIssue, secondNotApprovedIssue);
 
             await this.Db.SaveChangesAsync();
@@ -113,8 +127,8 @@
             var image = ImageInfoCreator.CreateWithFullData(user.Id);
             await this.Db.AddRangeAsync(image);
 
-            var issue = UrbanIssueCreator.CreateIssue(true, RegionType.Western, user.Id, image.Id);
-            var secondIssue = UrbanIssueCreator.CreateIssue(true, RegionType.Central, user.Id, image.Id);
+            var issue = CreateIssue(true, RegionType.Western, user.Id, image.Id);
+            var secondIssue = CreateIssue(true, RegionType.Central, user.Id, image.Id);
             await this.Db.AddRangeAsync(issue, secondIssue);
 
             await this.Db.SaveChangesAsync();
@@ -151,25 +165,34 @@
             var image = ImageInfoCreator.CreateWithFullData(user.Id);
             await this.Db.AddRangeAsync(image);
 
-            var issue = UrbanIssueCreator.CreateIssue(true, regionParam, user.Id, image.Id);
-            var notApprovedIssue = UrbanIssueCreator.CreateIssue(false, regionParam, user.Id, image.Id);
-            await this.Db.AddRangeAsync(issue, notApprovedIssue);
+            var issue = CreateIssue(true, RegionType.All, user.Id, image.Id);
+            var secondIssue = CreateIssue(true, RegionType.Thracia, user.Id, image.Id);
+            var thirdIssue = CreateIssue(true, RegionType.Western, user.Id, image.Id);
+            var notApprovedIssue = CreateIssue(false, RegionType.Western, user.Id, image.Id);
+            var secondNotApproved = CreateIssue(false, RegionType.Eastern, user.Id, image.Id);
+            await this.Db.AddRangeAsync(issue, secondIssue, thirdIssue, notApprovedIssue, secondNotApproved);
 
             await this.Db.SaveChangesAsync();
 
             var service = new IssueService(this.Db);
 
             //Act
-            var resultModel = await service.AllMapInfoDetailsAsync(isApprovedParam, regionParam);
+            var resultModel = (await service.AllMapInfoDetailsAsync(isApprovedParam, regionParam)).ToList();
 
-            var expected = this.Db.UrbanIssues
-                .Where(i => i.IsApproved == isApprovedParam && i.Region == regionParam)
-                .To<IssueMapInfoBoxDetailsServiceModel>();
+            var issuesToNotContain = this.Db.UrbanIssues.Where(i => i.IsApproved != isApprovedParam);
+
+            var notContainFromAnotherRegions = this.Db.UrbanIssues.Where(i => i.Region != regionParam);
 
             //Assert
             resultModel.Should().AllBeOfType<IssueMapInfoBoxDetailsServiceModel>();
 
-            resultModel.Should().BeEquivalentTo(expected);
+            resultModel.Should().NotContain(issuesToNotContain);
+
+            if (regionParam != RegionType.All)
+            {
+                resultModel.Should().NotContain(notContainFromAnotherRegions);
+            }
+            
         }
 
     }

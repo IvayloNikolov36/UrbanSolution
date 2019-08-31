@@ -17,5 +17,15 @@
             };
 
         }
+
+        public static User Create(string userName, string email)
+        {
+            return new User
+            {
+                Id = Guid.NewGuid().ToString(),
+                UserName = userName,
+                Email = email
+            };
+        }
     }
 }

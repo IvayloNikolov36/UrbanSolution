@@ -8,8 +8,8 @@
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using UrbanSolution.Models;
-    using Utilities;
     using static UrbanSolution.Models.Utilities.DataConstants;
+    using static UrbanSolutionUtilities.WebConstants;
 
     public class UrbanIssueEditServiceViewModel : IMapFrom<UrbanIssue>, IHaveCustomMappings, IValidatableObject
     {
@@ -55,10 +55,11 @@
         {
             if (this.PictureFile != null)
             {
+                //TODO: complete the validation for extension type
                 if (!PictureFile.FileName.EndsWith(".jpg")
-                    || PictureFile.Length > ServiceConstants.PictureUploadFileLength)
+                    || PictureFile.Length > PictureUploadFileLength)
                 {
-                    yield return new ValidationResult(ServiceConstants.MessageForImageUploadingRestrictions);
+                    yield return new ValidationResult(MessageForImageUploadingRestrictions);
                 }
             }
             

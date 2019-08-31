@@ -11,7 +11,7 @@
     using System.Threading.Tasks;
     using UrbanSolution.Models;
     using UrbanSolution.Models.MappingTables;
-    using static Utilities.ServiceConstants;
+    using static UrbanSolutionUtilities.WebConstants;
 
     public class EventService : IEventService
     {
