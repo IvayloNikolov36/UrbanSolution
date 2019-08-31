@@ -8,9 +8,9 @@
     </a>
 }
 
-@*user ManagedRegion is not null*@
 
-@if (!string.IsNullOrEmpty((string)ViewData[ViewDataManagerRegionKey]))
+@if (!string.IsNullOrEmpty((string)ViewData[ViewDataManagerRegionKey]) 
+     && this.ViewData[IssueRegionKey]?.ToString() == ViewData[ViewDataManagerRegionKey]?.ToString())
 {
     @await Html.PartialAsync("_UrbanIssueButtonsForAllManagerActions", Model, null)
 }

@@ -210,6 +210,7 @@
         public const string PageKey = "Page";
         public const string RegionFilterKey = "RegionFilter";
         public const string TypeFilterKey = "TypeFilterKey";
+        public const string IssueRegionKey = "IssueRegion";
 
         public const int ShortifyStringTo = 12;
 
@@ -233,6 +234,8 @@
         public const int AddMinutes = 15;
 
         public const string EnterLocation = "Enter location in the map";
+
+        public const int DayInSeconds = 86400;
     }
 
 }

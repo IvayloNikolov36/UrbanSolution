@@ -23,6 +23,7 @@
             this.userManager = userManager;
         }
 
+        [ResponseCache(Duration = DayInSeconds, Location = ResponseCacheLocation.Client, NoStore = true)]
         public async Task<IActionResult> Index(int pagination, IssuesSortAndFilterModel model)
         {
             var rowsCount = model.RowsCount == 0 ? DefaultRowsCount : model.RowsCount;

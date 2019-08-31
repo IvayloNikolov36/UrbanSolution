@@ -33,7 +33,7 @@
             </div>
 
             @* Buttons for approve/delete/edit... *@
-            @await Component.InvokeAsync("IssueDetailsButtons")
+            @await Component.InvokeAsync("IssueDetailsButtons", Model.Region)
 
             <h3><em>@Model.Description</em></h3>
         </div>

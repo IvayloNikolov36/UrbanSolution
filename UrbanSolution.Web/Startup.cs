@@ -48,6 +48,8 @@ namespace UrbanSolution.Web
                 .AddDefaultTokenProviders()
                 .AddEntityFrameworkStores<UrbanSolutionDbContext>();
 
+            services.AddResponseCaching();
+
             services.Configure<IdentityOptions>(options =>
             {
                 options.Password = new PasswordOptions()
@@ -133,6 +135,8 @@ namespace UrbanSolution.Web
             {
                 app.SeedDatabase();
             }
+
+            app.UseResponseCaching();
 
             app.UseMvc(routes =>
             {

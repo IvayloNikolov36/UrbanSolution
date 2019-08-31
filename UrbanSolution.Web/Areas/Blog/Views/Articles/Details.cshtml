@@ -6,9 +6,7 @@
     ViewData["Title"] = Model.Title;
 
     var userName = (string)ViewData[ViewDataUsernameKey];
-
-    var isAuthenticated = this.User.Identity.IsAuthenticated;             //TODO: make a component view
-
+    var isAuthenticated = this.User.Identity.IsAuthenticated;
     var isAdmin = User.IsInRole(AdminRole);
 }
 
@@ -144,7 +142,7 @@
                                             '<div class="panel-heading"><em>' +
                                                 '<em class="text-info">' + commentResult.publisher + '</em> on: ' +
                                                 '<em class="text-info">'+
-                                                    new Date(commentResult.postedOn).toJSON().slice(2, 19).replace('T', ' '); +
+                                                    new Date(commentResult.postedOn).toJSON().slice(2, 19).replace('T', ' ') +
                                                 '</em>';
                     var secondPart = '';
                     @if (isAdmin)

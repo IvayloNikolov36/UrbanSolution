@@ -16,13 +16,14 @@
             this.userManager = userManager;
         }
 
-        public async Task<IViewComponentResult> InvokeAsync()
+        public async Task<IViewComponentResult> InvokeAsync(RegionType region)
         {
             var user = await this.userManager.GetUserAsync(this.UserClaimsPrincipal);
 
             if (user != null)
             {
                 this.ViewData[ViewDataManagerRegionKey] = user.ManagedRegion.ToString();
+                this.ViewData[IssueRegionKey] = region;
             }
 
             return this.View();
