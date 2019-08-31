@@ -2,7 +2,6 @@
 {
     using FluentAssertions;
     using FluentAssertions.Common;
-    using Mapping;
     using Microsoft.AspNetCore.Http;
     using Microsoft.EntityFrameworkCore;
     using Models;
@@ -16,7 +15,6 @@
     using UrbanSolution.Services.Manager;
     using Xunit;
     using Seed;
-    using System.Collections.Generic;
 
     public class ManagerIssueServiceTests : BaseServiceTest
     {
@@ -355,21 +353,22 @@
             await Db.SaveChangesAsync();
 
             //Act
-            var resultAllRegions = await service.AllAsync(isApproved, RegionType.All);
-            var expectedAllRegions = await this.Db.UrbanIssues.Where(i => i.IsApproved == isApproved).To<UrbanIssuesListingServiceModel>().ToListAsync();
+            var resultAllRegions = (await service.AllAsync(isApproved, RegionType.All)).ToList();
 
-            var resultConcreteRegion = await service.AllAsync(isApproved, concreteRegion);
+            var expectedAllRegions = await this.Db.UrbanIssues.Where(i => i.IsApproved == isApproved).ToListAsync();
+
+            var resultConcreteRegion = (await service.AllAsync(isApproved, concreteRegion)).ToList();
+
             var expectedConcreteRegion = await this.Db.UrbanIssues.Where(i => i.IsApproved == isApproved)
-                .Where(i => i.Region == concreteRegion).To<UrbanIssuesListingServiceModel>().ToListAsync();
+                .Where(i => i.Region == concreteRegion).ToListAsync();
 
             //Assert
-            resultAllRegions.Should().BeOfType<List<UrbanIssuesListingServiceModel>>();
+            resultAllRegions.Should().AllBeOfType<UrbanIssuesListingServiceModel>();
             resultAllRegions.Should().HaveCount(expectedAllRegions.Count);
-            resultAllRegions.Should().BeEquivalentTo(expectedAllRegions);
 
             resultConcreteRegion.Should().HaveCount(expectedConcreteRegion.Count);
             resultConcreteRegion.Should().HaveCount(expectedConcreteRegion.Count);
-            resultConcreteRegion.Should().BeEquivalentTo(expectedConcreteRegion);
+
         }
 
         [Fact]

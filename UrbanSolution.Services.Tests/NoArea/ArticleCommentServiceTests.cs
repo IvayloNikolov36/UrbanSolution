@@ -45,18 +45,14 @@ namespace UrbanSolution.Services.Tests.NoArea
             //Act
             var result = await service.SubmitAsync(article.Id, user.Id, commentContent);
 
-            var commentModel = await this.db.Comments
-                .Where(c => c.Id == result.Id)
-                .To<CommentListingServiceModel>()
-                .FirstOrDefaultAsync();
-
             result.Should().BeOfType<CommentListingServiceModel>();
 
             result.ArticleAuthor.Should().BeEquivalentTo(user.UserName);
 
             result.ArticleId.Should().Be(article.Id);
 
-            result.Should().BeEquivalentTo(commentModel);
+            result.Id.Should().Be(result.Id);
+
         }
 
         [Fact]
@@ -100,15 +96,10 @@ namespace UrbanSolution.Services.Tests.NoArea
             //Act
             var result = await service.GetAsync(article.Id);
 
-            var expected = await this.db.Comments
-                .Where(c => c.Id == article.Id)
-                .To<CommentListingServiceModel>()
-                .FirstOrDefaultAsync();
-
             //Assert
             result.Should().BeOfType<CommentListingServiceModel>();
+            result.Id.Should().Be(article.Id);
 
-            result.Should().BeEquivalentTo(expected);
         }
 
         [Fact]
@@ -130,22 +121,21 @@ namespace UrbanSolution.Services.Tests.NoArea
             var service = new ArticleCommentService(this.db);
 
             //Act
-            var result = await service.AllAsync(article.Id);
+            var result = (await service.AllAsync(article.Id)).ToList();
 
-            var expectedComments = await this.db.Comments
+            var expectedCommentsIds = await this.db.Comments
                 .Where(c => c.ArticleId == article.Id)
                 .OrderByDescending(c => c.PostedOn)
-                .To<CommentListingServiceModel>()
-                .ToListAsync();
+                .Select(x => x.Id).ToListAsync();
 
             var expectedCount = await this.db.Comments.Where(c => c.ArticleId == article.Id).CountAsync();
 
             //Assert
-            result.Should().BeOfType<List<CommentListingServiceModel>>();
+            result.Should().AllBeOfType<CommentListingServiceModel>();
 
             result.Should().HaveCount(expectedCount);
 
-            result.Should().BeEquivalentTo(expectedComments);
+            result.Select(x => x.Id).Should().BeEquivalentTo(expectedCommentsIds);
         }
 
         [Fact]

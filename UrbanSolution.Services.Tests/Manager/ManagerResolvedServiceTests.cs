@@ -32,8 +32,8 @@
 
             var service = new ResolvedService(Db, issueService.Object, pictureService.Object, activityService.Object);
 
-            var manager = UserCreator.Create(null);
-            var publisher = UserCreator.Create(null);
+            var manager = UserCreator.Create();
+            var publisher = UserCreator.Create();
             await Db.AddRangeAsync(manager, publisher);
 
             var issue = UrbanIssueCreator.CreateIssue(RegionType.All);

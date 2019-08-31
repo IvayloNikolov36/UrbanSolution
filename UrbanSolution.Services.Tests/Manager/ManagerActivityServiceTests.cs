@@ -1,21 +1,16 @@
-﻿using System;
-using UrbanSolution.Models;
-using UrbanSolution.Models.Enums;
-
-namespace UrbanSolution.Services.Tests.Manager
+﻿namespace UrbanSolution.Services.Tests.Manager
 {
-    using Data;
     using FluentAssertions;
-    using Mapping;
     using Microsoft.EntityFrameworkCore;
     using Seed;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using UrbanSolution.Services.Manager.Implementations;
     using UrbanSolution.Services.Manager.Models;
     using Xunit;
-
+    using System;
+    using UrbanSolution.Models;
+    using UrbanSolution.Models.Enums;
     public class ManagerActivityServiceTests : BaseServiceTest
     {
 
@@ -37,22 +32,18 @@ namespace UrbanSolution.Services.Tests.Manager
             var service = new ManagerActivityService(Db);
 
             //Act
-            var result = await service.GetAsync(manager.Id);
+            var result = (await service.GetAsync(manager.Id)).ToList();
 
-            var expected = await this.Db.ManagerLogs
+            var expectedCount = await this.Db.ManagerLogs
                 .Where(m => m.ManagerId == manager.Id)
-                .OrderByDescending(a => a.DateTime)
-                .To<ManagerActivitiesListingServiceModel>()
-                .ToListAsync();
+                .CountAsync();
+
 
             //Assert
             result.Should().NotBeNull();
-
-            result.Should().BeOfType<List<ManagerActivitiesListingServiceModel>>();
-
+            result.Should().AllBeOfType<ManagerActivitiesListingServiceModel>();
             result.Should().BeInDescendingOrder(x => x.DateTime);
-
-            result.Should().BeEquivalentTo(expected);
+            result.Should().HaveCount(expectedCount);
         }
 
         [Fact]
@@ -73,23 +64,17 @@ namespace UrbanSolution.Services.Tests.Manager
             var service = new ManagerActivityService(Db);
 
             //Act
-            var result = await service.AllAsync();
+            var result = (await service.AllAsync()).ToList();
 
-            var expected = await this.Db.ManagerLogs
-                .OrderByDescending(a => a.DateTime)
-                .To<ManagerActivitiesListingServiceModel>()
-                .ToListAsync();
+            var expectedCount = await this.Db.ManagerLogs
+                .CountAsync();
 
             //Assert
             result.Should().NotBeNull();
-
-            result.Should().BeOfType<List<ManagerActivitiesListingServiceModel>>();
-
+            result.Should().AllBeOfType<ManagerActivitiesListingServiceModel>();
             result.Should().BeInDescendingOrder(x => x.DateTime);
-
-            result.Should().HaveCount(expected.Count);
-
-            result.Should().BeEquivalentTo(expected);          
+            result.Should().HaveCount(expectedCount);
+         
         }
 
         [Theory]
