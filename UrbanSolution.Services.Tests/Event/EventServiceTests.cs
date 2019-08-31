@@ -35,43 +35,26 @@
         [InlineData(4)]
         public async Task AllAsyncShould_ReturnsCorrectEventModelAndCountWith_DefaultPageEqualsToOne(int page)
         {
-            //Arrange
-            var picService = IPictureServiceMock.New(DefaultImageId);
 
-            var service = new EventService(Db, picService.Object);
+            var service = new EventService(Db, null);
 
-            var user = UserCreator.Create();
-            await this.Db.AddAsync(user);
-
-            var image = ImageInfoCreator.Create();
-            await this.Db.AddAsync(image);
-
-            var firstEvent = EventCreator.Create(user.Id, null);
-            var secondEvent = EventCreator.Create(user.Id, null);
-            var thirdEvent = EventCreator.Create(user.Id, null);
+            var firstEvent = EventCreator.Create();
+            var secondEvent = EventCreator.Create();
+            var thirdEvent = EventCreator.Create();
             await this.Db.AddRangeAsync(firstEvent, secondEvent, thirdEvent);
 
             await this.Db.SaveChangesAsync();
 
             //Act
-            var result = await service.AllAsync<EventsListingServiceModel>(page: page);  
+            var result = (await service.AllAsync<EventsListingServiceModel>(page)).ToList();  
 
-            var expected = await this.Db
-                .Events
-                .OrderByDescending(e => e.Id)
-                .Skip((page - 1) * EventsPageSize)
-                .Take(EventsPageSize)
-                .To<EventsListingServiceModel>()
-                .ToListAsync();
+            var expectedCount = await this.Db.Events.Skip((page - 1) * EventsPageSize)
+                .Take(EventsPageSize).CountAsync();
 
             //Assert
-            result.Should().HaveCount(expected.Count);
-
+            result.Should().HaveCount(expectedCount);
             result.Should().AllBeOfType<EventsListingServiceModel>();
-
             result.Should().BeInDescendingOrder(x => x.Id);
-
-            result.Should().BeEquivalentTo(expected);
         }
 
         [Fact]
@@ -171,54 +154,32 @@
         [Fact]
         public async Task GetAsyncShould_ReturnsCorrectModel()
         {
+            const int eventId = 589;
+            const string description = "Description";
+
             //Arrange
             var service = new EventService(Db, null);
+            var firstEvent = EventCreator.CreateEvent(eventId, description);
 
-            var user = UserCreator.Create();
-            await this.Db.AddAsync(user);
-
-            var image = ImageInfoCreator.Create();
-            await this.Db.AddAsync(image);
-
-            var firstEvent = EventCreator.Create(user.Id, null);
-            var secondEvent = EventCreator.Create(user.Id, null);
-            await this.Db.AddRangeAsync(firstEvent, secondEvent);
-
+            await this.Db.AddAsync(firstEvent);
             await this.Db.SaveChangesAsync();
 
             //Act
-            var result = await service.GetAsync<EventEditServiceModel>(secondEvent.Id);
-            var expected = await this.Db.Events
-                .Where(e => e.Id == secondEvent.Id)
-                .To<EventEditServiceModel>()
-                .FirstOrDefaultAsync();
-
-            var secondResult = await service.GetAsync<EventDetailsServiceModel>(firstEvent.Id);
-            var secondExpected = await this.Db.Events
-                .Where(e => e.Id == firstEvent.Id)
-                .To<EventDetailsServiceModel>()
-                .FirstOrDefaultAsync();
-
+            var result = await service.GetAsync<EventDetailsServiceModel>(firstEvent.Id);
+            
             //Assert
-            result.Should().BeOfType<EventEditServiceModel>();
-            result.Should().BeEquivalentTo(expected);
-
-            secondResult.Should().BeOfType<EventDetailsServiceModel>();
-            secondResult.Should().BeEquivalentTo(secondExpected);
+            result.Should().BeOfType<EventDetailsServiceModel>();
+            result.Id.Should().Be(eventId);
+            result.Description.Should().Be(description);
         }
 
         [Fact]
         public async Task TotalCountAsyncShould_ReturnsCorrectCountOfAllEventsInDb()
         {
             //Arrange
-            var user = UserCreator.Create();
-            await this.Db.AddAsync(user);
 
-            var image = ImageInfoCreator.Create();
-            await this.Db.AddAsync(image);
-
-            var firstEvent = EventCreator.Create(user.Id, null);
-            var secondEvent = EventCreator.Create(user.Id, null);
+            var firstEvent = EventCreator.Create();
+            var secondEvent = EventCreator.Create();
             await this.Db.AddRangeAsync(firstEvent, secondEvent);
 
             await this.Db.SaveChangesAsync();
@@ -229,6 +190,22 @@
             var result = await service.TotalCountAsync();
 
             var expectedCount = await this.Db.Events.CountAsync();
+
+            //Assert
+            result.Should().Be(expectedCount);
+        }
+
+        [Fact]
+        public async Task TotalCountAsyncShould_ReturnsCountZeroIf_NoEventsInDB()
+        {
+            //Arrange
+
+            var service = new EventService(Db, null);
+
+            //Act
+            var result = await service.TotalCountAsync();
+
+            var expectedCount = 0;
 
             //Assert
             result.Should().Be(expectedCount);

@@ -9,7 +9,7 @@
 
         private const int DefaultImageId = 983739;
 
-        public static UrbanSolution.Models.Event Create(string userId, int? imageId)
+        public static UrbanSolution.Models.Event Create(string userId = null, int? imageId = null)
         {
             var eventObj = new UrbanSolution.Models.Event
             {
@@ -19,7 +19,20 @@
                 Description = Guid.NewGuid().ToString(),
                 StartDate = DateTime.UtcNow.AddDays(2),
                 EndDate = DateTime.UtcNow.AddDays(4),
-                CreatorId = userId,
+                CreatorId = userId ?? Guid.NewGuid().ToString(),
+                Address = Guid.NewGuid().ToString(),
+            };
+
+            return eventObj;
+        }
+
+        public static UrbanSolution.Models.Event CreateEvent(int id, string description)
+        {
+            var eventObj = new UrbanSolution.Models.Event
+            {
+                Id = id,
+                Title = Guid.NewGuid().ToString(),
+                Description = description,
                 Address = Guid.NewGuid().ToString(),
             };
 
