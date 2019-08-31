@@ -1,4 +1,6 @@
-﻿namespace UrbanSolution.Web
+﻿using CloudinaryDotNet;
+
+namespace UrbanSolution.Web
 {
     using Data;
     using Infrastructure.Extensions;
@@ -65,6 +67,14 @@
                 options.Lockout.MaxFailedAccessAttempts = MaxFailedAccessAttempts;
                 options.Lockout.AllowedForNewUsers = true;
             });
+
+            Account cloudinaryCredentials = new Account(
+                this.Configuration["Cloudinary:CloudName"],
+                this.Configuration["Cloudinary:ApiKey"],
+                this.Configuration["Cloudinary:ApiSecret"]);
+
+            Cloudinary cloudinaryUtility = new Cloudinary(cloudinaryCredentials);
+            services.AddSingleton(cloudinaryUtility);
 
             services.AddDomainServices();
 

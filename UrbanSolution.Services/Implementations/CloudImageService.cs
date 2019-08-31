@@ -3,7 +3,6 @@
     using CloudinaryDotNet;
     using CloudinaryDotNet.Actions;
     using Microsoft.AspNetCore.Http;
-    using Microsoft.Extensions.Configuration;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -12,14 +11,11 @@
 
     public class CloudImageService : ICloudImageService
     {
-        private readonly IConfiguration configuration;
-        private Cloudinary cloudinary;
+        private readonly Cloudinary cloudinary;
 
-        public CloudImageService(IConfiguration configuration)
+        public CloudImageService(Cloudinary cloudinary)
         {
-            this.configuration = configuration;
-
-            this.InitializeCloudinary();
+            this.cloudinary = cloudinary;
         }
 
         public async Task<ImageUploadResult> UploadFormFileAsync(IFormFile file)
@@ -29,11 +25,11 @@
                 var uploadParams = new ImageUploadParams()
                 {
                     File = new FileDescription(Guid.NewGuid().ToString(), memoryStream),
-                    PublicId = $"urban{Guid.NewGuid()}",
-                    Transformation = new Transformation().Crop("limit").Width(800).Height(600),
-                    EagerTransforms = new List<Transformation>()
+                    PublicId = $"{PublicPicIdPrefix}{Guid.NewGuid()}",
+                    Transformation = new Transformation().Crop(CropLimit).Width(800).Height(600),
+                    EagerTransforms = new List<Transformation>
                     {
-                        new Transformation().Width(200).Height(200).Crop("thumb")
+                        new Transformation().Width(ThumbnailWidth).Height(ThumbnailHeight).Crop(CropThumb)
                     }
                 };
 
@@ -71,15 +67,5 @@
             return pictureUrl;
         }
 
-        private void InitializeCloudinary()
-        {
-
-            var key = configuration.GetSection("Cloudinary:CloudName").Value;
-            this.cloudinary = new Cloudinary(
-                new Account(
-                    configuration.GetSection("Cloudinary:CloudName").Value,
-                    configuration.GetSection("Cloudinary:ApiKey").Value,
-                    configuration.GetSection("Cloudinary:ApiSecret").Value));
-        }
     }
 }
