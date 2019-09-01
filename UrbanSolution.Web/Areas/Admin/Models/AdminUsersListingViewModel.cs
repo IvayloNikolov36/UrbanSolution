@@ -1,8 +1,12 @@
 ﻿namespace UrbanSolution.Web.Areas.Admin.Models
 {
+    using System;
     using System.Collections.Generic;
     using Microsoft.AspNetCore.Mvc.Rendering;
     using UrbanSolution.Services.Admin.Models;
+    using UrbanSolutionUtilities.Enums;
+    using UrbanSolutionUtilities.Extensions;
+    using static UrbanSolutionUtilities.WebConstants;
 
     public class AdminUsersListingViewModel
     {
@@ -10,23 +14,35 @@
 
         public IEnumerable<SelectListItem> AllRoles { get; set; }
         
-        public IEnumerable<SelectListItem> SearchFilters { get; set; }
+        public IDictionary<string, string> SearchFilters
+        {
+            get
+            {
+                var filters = new Dictionary<string, string>();
+
+                foreach (string enumName in Enum.GetNames(typeof(UsersFilters)))
+                {
+                    var filterName = enumName.SeparateStringByCapitals();
+                    if (!filters.ContainsKey(filterName))
+                    {
+                        filters.Add(filterName, enumName);
+                    }
+                }
+
+                return filters;
+            }
+        }
 
         public IEnumerable<SelectListItem> LockDays { get; set; }
 
         public IDictionary<string, string> FilterBy { get; set; }
 
-        public IEnumerable<SelectListItem> SortBy  => new List<SelectListItem>
+        public IDictionary<string, string> SortBy => new Dictionary<string, string>
         {
-            new SelectListItem { Value = null, Text = "Sort by" },
-            new SelectListItem { Value = "UserName", Text = "Username" },
-            new SelectListItem { Value = "Email", Text = "Email"  }
+            { Username, UserNameProp},
+            { EmailProp, EmailProp}
         };
 
-        public IEnumerable<SelectListItem> SortingType => new List<SelectListItem>
-        {
-            new SelectListItem { Value = "ASC", Text = "ASC" },
-            new SelectListItem { Value = "DESC", Text = "DESC" }
-        };
+        public IList<string> SortingType => new List<string> { SortAsc, SortDesc };
     }
 }

@@ -1,6 +1,4 @@
-﻿using UrbanSolutionUtilities;
-
-namespace UrbanSolution.Services.Admin
+﻿namespace UrbanSolution.Services.Admin
 {
     using Data;
     using Mapping;
@@ -34,46 +32,94 @@ namespace UrbanSolution.Services.Admin
             this.activity = activity;
 
         }
+
         public async Task<IEnumerable<AdminUserListingServiceModel>> AllAsync(string sortBy, string sortType, string searchType, string searchText, string filter)
         {
             string search = searchText;
 
             bool hasSearching = !string.IsNullOrEmpty(search);
             bool hasFiltering = filter != null && !string.IsNullOrEmpty(filter) && !filter.Equals(NoFilter);
-            bool hasSorting = sortBy != null && sortBy != SortBy;
+            bool hasSorting = sortBy != null; //&& sortBy != UserNameProp && sortType == SortAsc; //sortBy != SortBy;
 
-            if (hasSorting)
-            {
-                return await this.AllWhereAsync(true, sortBy, sortType);
-            }
-
-            if (!hasSearching && !hasFiltering)
-            {
-                return await this.AllWhereAsync();
-            }
-
-            Expression<Func<User, bool>> expression = null;
-
-            if (hasSearching)
-            {
-                if (searchType == UsersFilters.UserName.ToString())
-                    expression = u => u.UserName.Contains(search, StringComparison.InvariantCultureIgnoreCase);
-                else if (searchType == UsersFilters.Email.ToString())
-                    expression = u => u.Email.Contains(search, StringComparison.InvariantCultureIgnoreCase);
-            }
+            IQueryable<User> users = this.db.Users.OrderBy(u => u.UserName);
 
             if (hasFiltering)
             {
-                if (filter == FilterUsersBy.Locked.ToString())
-                    expression = u => u.LockoutEnd != null;
-
-                if (filter == FilterUsersBy.NotLocked.ToString().SeparateStringByCapitals())
-                    expression = u => u.LockoutEnd == null;
-  
+                users = this.AllFiltereByLockedStatus(users, filter);           
             }
 
-            return await this.AllFilterAsync(expression);
+            if (hasSearching)
+            {
+                users = this.AllFilteredBySearch(users, searchType, searchText);
+            }
+
+            if (hasSorting)
+            {
+                users = this.AllSortedBy(users, sortBy, sortType);
+            }
+
+            var usersRoles = new List<List<string>>();
+
+            foreach (var user in users.ToList())
+            {
+                var userAllRoles = await this.userManager.GetRolesAsync(user);
+                usersRoles.Add(userAllRoles.ToList());
+            }
+
+            var usersModels =  await users.To<AdminUserListingServiceModel>()
+                .ToListAsync();
+
+            for (var i = 0; i < usersModels.Count; i++)
+            {
+                usersModels[i].UserRoles = usersRoles[i];
+            }
+                
+            return usersModels;
         }
+
+        //
+        private IQueryable<User> AllFilteredBySearch(IQueryable<User> users, string searchType, string searchText)
+        {
+            Expression<Func<User, bool>> expression = null;
+
+            if (searchType == UsersFilters.UserName.ToString())
+                expression = u => u.UserName.Contains(searchText, StringComparison.InvariantCultureIgnoreCase);
+            else if (searchType == UsersFilters.Email.ToString())
+                expression = u => u.Email.Contains(searchText, StringComparison.InvariantCultureIgnoreCase);
+
+            return users.Where(expression);
+        }
+
+        private IQueryable<User> AllFiltereByLockedStatus(IQueryable<User> users, string filter)
+        {
+            Expression<Func<User, bool>> expression = null;
+
+            if (filter == FilterUsersBy.Locked.ToString())
+                expression = u => u.LockoutEnd != null;
+
+            if (filter == FilterUsersBy.NotLocked.ToString().SeparateStringByCapitals())
+                expression = u => u.LockoutEnd == null;
+
+            return users.Where(expression);
+        }
+
+        private IQueryable<User> AllSortedBy(IQueryable<User> users, string sortBy, string sortType)
+        {
+            Expression<Func<User, string>> expression = null;
+
+            if (sortBy == UserNameProp)
+                expression = u => u.UserName;
+
+            if (sortBy == EmailProp)
+                expression = u => u.Email;
+
+
+            return sortType == SortAsc
+                ? users.OrderBy(expression)
+                : users.OrderByDescending(expression);
+        }
+
+        //
 
         public async Task<bool> UnlockAsync(string userId)
         {

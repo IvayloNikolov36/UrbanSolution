@@ -211,9 +211,19 @@
         public const string RegionFilterKey = "RegionFilter";
         public const string TypeFilterKey = "TypeFilterKey";
         public const string IssueRegionKey = "IssueRegion";
+        public const string UsersSortByKey = "UsersSortBy";
+        public const string UsersSortTypeKey = "UsersSortType";
+
+
+        public const string SortByOption = "Sort by";
+        public const string Username = "Username";
+
+        public const string UsersSearchTypeKey = "UsersSearchType";
+        public const string UsersSearchTextKey = "UsersSearchText";
 
         public const int ShortifyStringTo = 12;
 
+        //images
         public const string PublicPicIdPrefix = "urban";
         public const string CropThumb = "thumb";
         public const string CropLimit = "limit";

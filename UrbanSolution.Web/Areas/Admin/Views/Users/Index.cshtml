@@ -5,6 +5,7 @@
 
 <div class="row text-info text-center">
     <h3><strong>@this.ViewData[TitleKey]</strong></h3>
+    <hr />
 </div>
 
 <div class="form-group row text-center">
@@ -15,9 +16,38 @@
             @*Sorting*@
             <div class="col-lg-4">
                 <div class="form-inline">
-                    <select name="SortBy" asp-items="Model.SortBy" class="form-control"></select>
+                    Sort by:
+                    <select name="SortBy" class="form-control">
+                        @foreach (var kvp in Model.SortBy)
+                        {
+                            if (kvp.Value == (string)this.ViewData[UsersSortByKey])
+                            {
+                                <option value="@kvp.Value" selected>@kvp.Key</option>
+                            }
+                            else
+                            {
+                                <option value="@kvp.Value">@kvp.Key</option>
+                            }
+                        }
+                    </select> 
 
-                    <select name="SortType" asp-items="Model.SortingType" class="form-control"></select>
+                    <select name="SortType" class="form-control">
+                        @if (this.ViewData[SortTypeKey] == null)
+                        {
+                            <option selected>@SortAsc</option>
+                        }
+                        @foreach (string sortType in Model.SortingType)
+                        {
+                            if (sortType == (string)this.ViewData[UsersSortTypeKey])
+                            {
+                                <option value="@sortType" selected>@sortType</option>
+                            }
+                            else
+                            {
+                                <option value="@sortType">@sortType</option>
+                            }
+                        }
+                    </select>
 
                     <input type="submit" value="Sort" class="btn btn-default" />
                 </div>
@@ -26,8 +56,23 @@
             @* Searching *@
             <div class="col-lg-4">
                 <div class="form-inline">
-                    <select name="SearchType" asp-items="Model.SearchFilters" class="form-control"></select>
-                    <input type="text" name="SearchText" class="form-control" placeholder="Search..." />
+                    <select name="SearchType" class="form-control">
+                        @foreach (var kvp in Model.SearchFilters)
+                        {
+                            if (kvp.Key == (string)this.ViewData[UsersSearchTypeKey])
+                            {
+                                <option value="@kvp.Value" selected>@kvp.Key</option>
+                            }
+                            else
+                            {
+                                <option value="@kvp.Value">@kvp.Key</option>
+                            }
+                        }
+                    </select> 
+
+
+                    <input type="text" name="SearchText" value="@(ViewData[UsersSearchTextKey]?.ToString())" class="form-control" placeholder="Search..." />
+
                     <button type="submit" value="Search" class="btn btn-default"><i class="glyphicon glyphicon-search"></i></button>
                 </div>
             </div>

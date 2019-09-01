@@ -35,12 +35,15 @@
                 model.SortBy, model.SortType, model.SearchType, model.SearchText, model.Filter);
 
             this.ViewData[FilterKey] = model.Filter;
+            this.ViewData[UsersSortByKey] = model.SortBy;
+            this.ViewData[UsersSortTypeKey] = model.SortType;
+            this.ViewData[UsersSearchTypeKey] = model.SearchType;
+            this.ViewData[UsersSearchTextKey] = model.SearchText;
 
             var viewModel = new AdminUsersListingViewModel
             {
                 Users = modelUsers,
                 AllRoles = this.RoleManager.Roles.Select(r => new SelectListItem(r.Name, r.Name)).ToList(),
-                SearchFilters = GetDropDownSearchFiltersOptions(),
                 LockDays = GetDropDownLockedDaysOptions(),
                 FilterBy = GetDropDownFilterUsersOptions()
             };
@@ -129,16 +132,6 @@
 
             return this.RedirectToAction(nameof(Index))
                 .WithSuccess(string.Empty, string.Format(UserRemovedFromRoleSuccess, user.UserName, model.Role));
-        }
-
-        private IEnumerable<SelectListItem> GetDropDownSearchFiltersOptions()
-        {
-            var filterOptions = new List<SelectListItem>();
-
-            foreach (var name in Enum.GetNames(typeof(UsersFilters)))
-                filterOptions.Add(new SelectListItem(name.SeparateStringByCapitals(), name));
-
-            return filterOptions;
         }
 
         private IEnumerable<SelectListItem> GetDropDownLockedDaysOptions()
