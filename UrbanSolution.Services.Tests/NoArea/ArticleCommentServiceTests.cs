@@ -1,20 +1,19 @@
 ﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
-using UrbanSolution.Data;
-using UrbanSolution.Models;
-using UrbanSolution.Services.Implementations;
-using UrbanSolution.Services.Mapping;
-using UrbanSolution.Services.Models;
-using UrbanSolution.Services.Tests.Seed;
-using Xunit;
+
 
 namespace UrbanSolution.Services.Tests.NoArea
 {
+    using System;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using FluentAssertions;
+    using Microsoft.EntityFrameworkCore;
+    using UrbanSolution.Data;
+    using UrbanSolution.Models;
+    using UrbanSolution.Services.Implementations;
+    using UrbanSolution.Services.Models;
+    using UrbanSolution.Services.Tests.Seed;
+    using Xunit;
     public class ArticleCommentServiceTests
     {
         private const int NotExistingArticleId = 2999999;

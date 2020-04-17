@@ -1,24 +1,24 @@
-﻿using CloudinaryDotNet;
-
-namespace UrbanSolution.Web
+﻿namespace UrbanSolution.Web
 {
+    using CloudinaryDotNet;
     using Data;
     using Infrastructure.Extensions;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Routing;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
-    using System;
+    using Microsoft.Extensions.Hosting;
     using Services.Mapping;
+    using System;
     using UrbanSolution.Models;
     using UrbanSolution.Services.Models;
     using UrbanSolution.Web.Areas.Admin.Models;
     using static UrbanSolutionUtilities.WebConstants;
+
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -27,7 +27,7 @@ namespace UrbanSolution.Web
         }
 
         public IConfiguration Configuration { get; }
-   
+
         public void ConfigureServices(IServiceCollection services)
         {
             AutoMapperConfig.RegisterMappings(
@@ -35,7 +35,7 @@ namespace UrbanSolution.Web
                 typeof(UrbanIssueDetailsServiceModel).Assembly);
 
             services.Configure<CookiePolicyOptions>(options =>
-            {               
+            {
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
@@ -49,6 +49,10 @@ namespace UrbanSolution.Web
                 .AddEntityFrameworkStores<UrbanSolutionDbContext>();
 
             services.AddResponseCaching();
+            services.AddResponseCompression(options =>
+            {
+                options.EnableForHttps = true;
+            });
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -64,7 +68,6 @@ namespace UrbanSolution.Web
 
                 options.SignIn.RequireConfirmedEmail = false;
                 options.SignIn.RequireConfirmedPhoneNumber = false;
-
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromDays(LockedProfileDays);
                 options.Lockout.MaxFailedAccessAttempts = MaxFailedAccessAttempts;
                 options.Lockout.AllowedForNewUsers = true;
@@ -94,22 +97,17 @@ namespace UrbanSolution.Web
                     options.ClientSecret = this.Configuration.GetSection("GitHub:ClientSecret").Value;
                 });
 
+
             services.AddMvc(options =>
                 {
-                    options.Filters.Add<AutoValidateAntiforgeryTokenAttribute>();
+                    //options.Filters.Add<AutoValidateAntiforgeryTokenAttribute>();
                 })
-                .AddJsonOptions(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore)
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);            
+                .AddNewtonsoftJson();
         }
 
-        public void Configure(
-            IApplicationBuilder app, 
-            IHostingEnvironment env, 
-            UserManager<User> userManager, 
-            RoleManager<IdentityRole> roleManager)
+        public void Configure(IApplicationBuilder app, IHostEnvironment env)
         {
-
-            app.UseCors(options => 
+            app.UseCors(options =>
                 options
                     .AllowAnyOrigin()
                     .AllowAnyMethod()
@@ -119,6 +117,8 @@ namespace UrbanSolution.Web
             {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
+
+                app.SeedDatabase();
             }
             else
             {
@@ -126,29 +126,30 @@ namespace UrbanSolution.Web
                 app.UseHsts();
             }
 
+            app.UseResponseCompression();
+            app.UseResponseCaching();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
+
+            app.UseRouting();
+
             app.UseAuthentication();
+            app.UseAuthorization();
 
-            if (env.IsDevelopment())
+            app.UseEndpoints(endpoints =>
             {
-                app.SeedDatabase();
-            }
-
-            app.UseResponseCaching();
-
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
+                endpoints.MapControllerRoute(
                     name: "areas",
-                    template: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+                    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
                 );
-
-                routes.MapRoute(
+                endpoints.MapControllerRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+                endpoints.MapRazorPages();
             });
+
         }
     }
 }

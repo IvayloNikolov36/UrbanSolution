@@ -1,17 +1,17 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
-using UrbanSolution.Models;
-using static UrbanSolution.Models.Utilities.DataConstants;
-
-namespace UrbanSolution.Web.Areas.Identity.Pages.Account
+﻿namespace UrbanSolution.Web.Areas.Identity.Pages.Account
 {
+    using System.ComponentModel.DataAnnotations;
+    using System.Text.Encodings.Web;
+    using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.AspNetCore.Identity.UI.Services;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.RazorPages;
+    using Microsoft.Extensions.Logging;
+    using UrbanSolution.Models;
+    using static UrbanSolution.Models.Utilities.DataConstants;
+
     [AllowAnonymous]
     public class RegisterModel : PageModel
     {
@@ -57,14 +57,16 @@ namespace UrbanSolution.Web.Areas.Identity.Pages.Account
             public int Age { get; set; }
 
             [Required]
-            [StringLength(UserPasswordMaxLength, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = UserPasswordMinLength)]
+            [StringLength(UserPasswordMaxLength, 
+                ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = UserPasswordMinLength)]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
             public string Password { get; set; }
 
             [DataType(DataType.Password)]
             [Display(Name = "Confirm password")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+            [Compare("Password", 
+                ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
         }
 
