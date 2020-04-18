@@ -18,6 +18,7 @@
     using UrbanSolution.Services.Models;
     using UrbanSolution.Web.Areas.Admin.Models;
     using static UrbanSolutionUtilities.WebConstants;
+    using Microsoft.AspNetCore.Mvc;
 
     public class Startup
     {
@@ -98,11 +99,17 @@
                 });
 
 
-            services.AddMvc(options =>
-                {
-                    //options.Filters.Add<AutoValidateAntiforgeryTokenAttribute>();
-                })
-                .AddNewtonsoftJson();
+            services.AddControllersWithViews(options =>
+            {
+                options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()); // CSRF
+            });
+
+            services.AddAntiforgery(options =>
+            {
+                options.HeaderName = "X-CSRF-TOKEN";
+            });
+
+            services.AddRazorPages();
         }
 
         public void Configure(IApplicationBuilder app, IHostEnvironment env)

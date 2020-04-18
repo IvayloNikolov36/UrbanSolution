@@ -59,110 +59,106 @@
     </div>
 }
 
-@if (Model.HasComments)
-{
-    <div class="form-group row" id="allComments">
-        <div class="col-md-8 col-md-offset-2">
-            <div class="panel panel-default">
-                <div class="panel-heading"><em class="text-info">All comments:</em></div>
-                <div class="panel-body">
-                    <div class="form-group" id="commentsContainer">
-                    </div>
+
+<div class="form-group row" id="allComments">
+    <div class="col-md-8 col-md-offset-2">
+        <div class="panel panel-default">
+            <div class="panel-heading"><span class="text-info">Comments:</span></div>
+            <div class="panel-body">
+                <div class="form-group" id="commentsContainer">
                 </div>
             </div>
         </div>
     </div>
-}
+</div>
+
+
+
 
 @section Scripts {
-
     <script>
 
+        $(document).ready(function () {
+            loadComments();
+        });
+
+        //load comments
+        function loadComments() {
+            $.ajax({
+            url: "/api/ArticleComments/all/" + @(Model.Id),
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+                success: function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        var commentElement = createCommentElement(data[i]);
+                        $("#commentsContainer").append(commentElement);
+                    }
+                }
+            });
+        }
+
+        //post comment
+        $("#submitComment").click( function () {
+            var content = $("#CommentContent").val();
+            var data = { articleId: @(Model.Id), content: content };
+            $.ajax({
+                url: "/api/ArticleComments/submit",
+                type: "POST",
+                data: JSON.stringify(data),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                headers: { 'X-CSRF-TOKEN': "@(AF.GetTokens(this.Context).RequestToken)" },
+                success: function (commentResult) {
+                    var commentElement = createCommentElement(commentResult);
+                    $("#commentsContainer").append(commentElement);
+                }
+            });
+        });
+
+        
         //delete comment
         function deleteComment(id) {
-            var url = "/ArticleComments/Delete/";
             $.ajax({
+                url: "/api/ArticleComments/delete/" + id,
                 type: "GET",
-                url: url + id,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
                 success: function () {
                     $('#commentDiv' + id).remove();
                 }
             });
         }
 
-        //load all comments
-        $.get("@Url.Action("All", "ArticleComments", new {Area = "", id = Model.Id})",
-            function(data) {
-                for (var i = 0; i < data.length; i++) {
-
-                    var firstPart = '<div id="commentDiv' + data[i].id + '">' +
+        //creates div with comment
+        function createCommentElement(comment) {
+            var firstPart = '<div id="commentDiv' + comment.id + '">' +
                                         '<div class="panel panel-default">' +
                                             '<div class="panel-heading">' +
                                                 '<em><em class="text-info">' +
-                                                        data[i].publisher +
+                                                        comment.publisher +
                                                 ' </em>' +'on ' +
-                                                '<em class="text-info">' + new Date(data[i].postedOn).toJSON().slice(2, 19).replace('T', ' '); +
+                                                '<em class="text-info">' + new Date(comment.postedOn).toJSON().slice(2, 19).replace('T', ' '); +
                                                 '</em>';
 
                     var secondPart = '';
                     @if (isAdmin)
                     {
                         @:secondPart = '<button id="delBtn" class="btn btn-sm btn-danger" onclick="deleteComment(' +
-                        @:data[i].id + ')"><i class="glyphicon glyphicon-remove"></i></button>';
+                        @:comment.id + ')"><i class="glyphicon glyphicon-remove"></i></button>';
                     }
 
                     var thirdPart =  '</div>' +
                                         '<div class="panel-body">' +
                                             '<div class="form-group">' +
-                                                '<h4>' + data[i].content + '</h4>' +
+                                                '<h4>' + comment.content + '</h4>' +
                                             '</div>' +
                                         '</div>' +
                                     '</div>' +
-                                '</div>';
+                '</div>';
 
-                    $("#commentsContainer").append(firstPart + secondPart + thirdPart);
-                }
-            });
+            return firstPart + secondPart + thirdPart;
+        }
 
-        //post comment
-        $("#submitComment").click(function() {
-            var content = $("#CommentContent").val();
-            var aft = "@AF.GetTokens(this.Context).RequestToken";
-            $.ajax({
-                type: "POST",
-                url: "/ArticleComments/submit/@Model.Id",
-                data: {
-                    content: content,
-                    aft
-                },
-                success: function (commentResult) {
-
-                    var firstPart = '<div id="commentDiv' + commentResult.id + '">' +
-                                        '<div class="panel panel-default">' +
-                                            '<div class="panel-heading"><em>' +
-                                                '<em class="text-info">' + commentResult.publisher + '</em> on: ' +
-                                                '<em class="text-info">'+
-                                                    new Date(commentResult.postedOn).toJSON().slice(2, 19).replace('T', ' ') +
-                                                '</em>';
-                    var secondPart = '';
-                    @if (isAdmin)
-                    {
-                        @:secondPart = '<button id="delBtn" class="btn btn-sm btn-danger" onclick="deleteComment(' +
-                        @:commentResult.id + ')"><i class="glyphicon glyphicon-remove"></i></button>';
-                    }
-                    var thirdPart = '</div>' +
-                                    '<div class="panel-body">' +
-                                        '<div class="form-group">' +
-                                            '<h4>' + commentResult.content + '</h4>' +
-                                        '</div>' +
-                                    '</div>' +
-                                '</div>' +
-                            '</div>';
-
-                    $("#commentsContainer").prepend(firstPart + secondPart + thirdPart);
-                    $("#CommentContent").val("");
-                }
-            });
-        });
     </script>
 }

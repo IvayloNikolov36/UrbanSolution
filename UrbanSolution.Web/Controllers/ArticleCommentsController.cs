@@ -7,9 +7,13 @@
     using Services;
     using System.Threading.Tasks;
     using UrbanSolution.Models;
+    using UrbanSolution.Services.Models;
+    using UrbanSolution.Web.Models;
     using static UrbanSolutionUtilities.WebConstants;
 
-    public class ArticleCommentsController : Controller
+    [ApiController]
+    [Route("api/[controller]")]
+    public class ArticleCommentsController : ControllerBase
     {
         private readonly UserManager<User> userManager;
         private readonly IArticleCommentService comments;
@@ -21,39 +25,38 @@
         }
 
         [ServiceFilter(typeof(ValidateArticleIdExistsAttribute))]
-        public async Task<IActionResult> All(int id)
+        [HttpGet("all/{id}")]
+        public async Task<ActionResult<CommentListingServiceModel>> All(int id)
         {
-            var allComments = await this.comments.AllAsync(id);
-
-            return new JsonResult(allComments);
+            return this.Ok(await this.comments.AllAsync(id));
         }
 
-        public async Task<IActionResult> Details(int id)
+        [HttpGet("details/{id}")]
+        public async Task<ActionResult<CommentListingServiceModel>> Details(int id)
         {
-            var comment = await this.comments.GetAsync(id);
-
-            return new JsonResult(comment);
+            return this.Ok(await this.comments.GetAsync(id));
         }
 
-        [HttpPost]
+        [HttpPost("submit")]
         [Authorize]
-        public async Task<IActionResult> Submit(int id, string content)
+        public async Task<ActionResult<CommentListingServiceModel>> Submit(CommentSubmitModel model)
         {
             //TODO: check if content is empty, length... 
             var user = await this.userManager.GetUserAsync(this.User);
 
-            var comment = await this.comments.SubmitAsync(id, user.Id, content);
+            var comment = await this.comments.SubmitAsync(model.ArticleId, user.Id, model.Content);
 
             if (comment == null)
             {
                 return this.BadRequest();
             }
 
-            return new JsonResult(comment);
+            return this.Ok(comment);
         }
 
         [Authorize(Roles = AdminRole)]
-        public async Task<IActionResult> Delete(int id)
+        [HttpGet("delete/{id}")]
+        public async Task<ActionResult> Delete(int id)
         {
             var isDeleted = await this.comments.DeleteAsync(id);
 
