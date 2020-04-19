@@ -1,7 +1,4 @@
-﻿
-
-
-namespace UrbanSolution.Services.Tests.NoArea
+﻿namespace UrbanSolution.Services.Tests.NoArea
 {
     using System;
     using System.Linq;
@@ -42,7 +39,7 @@ namespace UrbanSolution.Services.Tests.NoArea
             var service = new ArticleCommentService(this.db);
 
             //Act
-            var result = await service.SubmitAsync(article.Id, user.Id, commentContent);
+            var result = await service.SubmitAsync<CommentListingServiceModel>(article.Id, user.Id, commentContent);
 
             result.Should().BeOfType<CommentListingServiceModel>();
 
@@ -69,7 +66,7 @@ namespace UrbanSolution.Services.Tests.NoArea
             var service = new ArticleCommentService(this.db);
 
             //Act
-            var result = await service.SubmitAsync(NotExistingArticleId, user.Id, commentContent);
+            var result = await service.SubmitAsync<CommentListingServiceModel>(NotExistingArticleId, user.Id, commentContent);
 
             //Assert
             result.Should().BeNull();
@@ -93,7 +90,7 @@ namespace UrbanSolution.Services.Tests.NoArea
             var service = new ArticleCommentService(this.db);
 
             //Act
-            var result = await service.GetAsync(article.Id);
+            var result = await service.GetAsync<CommentListingServiceModel>(article.Id);
 
             //Assert
             result.Should().BeOfType<CommentListingServiceModel>();
@@ -120,7 +117,7 @@ namespace UrbanSolution.Services.Tests.NoArea
             var service = new ArticleCommentService(this.db);
 
             //Act
-            var result = (await service.AllAsync(article.Id)).ToList();
+            var result = (await service.AllAsync<CommentListingServiceModel>(article.Id)).ToList();
 
             var expectedCommentsIds = await this.db.Comments
                 .Where(c => c.ArticleId == article.Id)

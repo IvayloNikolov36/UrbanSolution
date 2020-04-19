@@ -9,7 +9,9 @@
     <tr>
         <td class="text-center">@user.UserName</td>
         <td class="text-center">@user.Email</td>
-        <td class="text-center">@user.LockoutEnd</td>
+        <td class="text-center">
+            @(user.LockoutEnd == null ? "Not Locked" :  user.LockoutEnd.Value.ToString())
+        </td>
         <td>
             @if (user.LockoutEnd != null)
             {

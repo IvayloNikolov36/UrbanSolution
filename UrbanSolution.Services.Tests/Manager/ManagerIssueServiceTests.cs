@@ -353,11 +353,11 @@
             await Db.SaveChangesAsync();
 
             //Act
-            var resultAllRegions = (await service.AllAsync(isApproved, RegionType.All)).ToList();
+            var resultAllRegions = (await service.AllAsync<UrbanIssuesListingServiceModel>(isApproved, RegionType.All)).ToList();
 
             var expectedAllRegions = await this.Db.UrbanIssues.Where(i => i.IsApproved == isApproved).ToListAsync();
 
-            var resultConcreteRegion = (await service.AllAsync(isApproved, concreteRegion)).ToList();
+            var resultConcreteRegion = (await service.AllAsync<UrbanIssuesListingServiceModel>(isApproved, concreteRegion)).ToList();
 
             var expectedConcreteRegion = await this.Db.UrbanIssues.Where(i => i.IsApproved == isApproved)
                 .Where(i => i.Region == concreteRegion).ToListAsync();

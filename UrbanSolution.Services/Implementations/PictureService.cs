@@ -39,7 +39,6 @@
             var picturePublicId = pictureFromDb.PicturePublicId;
 
             this.db.CloudinaryImages.Remove(pictureFromDb);
-
             await this.db.SaveChangesAsync();
 
             await this.cloudService.DeleteImages(picturePublicId);

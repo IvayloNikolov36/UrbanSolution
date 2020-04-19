@@ -6,6 +6,7 @@
     using System.Threading.Tasks;
     using UrbanSolution.Models;
     using UrbanSolution.Services.Manager;
+    using UrbanSolution.Services.Manager.Models;
 
     public class ActivityController : BaseController
     {
@@ -22,7 +23,8 @@
         {
             var managerId = this.UserManager.GetUserId(this.User);
 
-            var managerActivity = await this.activity.GetAsync(managerId);
+            var managerActivity = await this.activity
+                .GetAsync<ManagerActivitiesListingServiceModel>(managerId);
 
             return this.View(managerActivity);
         }
@@ -31,7 +33,8 @@
         [ServiceFilter(typeof(ValidateManagerIsMainManagerAttribute))]
         public async Task<IActionResult> AllManagersActivity()
         {                   
-            var allManagersActivity = await this.activity.AllAsync();
+            var allManagersActivity = await this.activity
+                .AllAsync<ManagerActivitiesListingServiceModel>();
 
             return this.View(allManagersActivity);
         }

@@ -12,6 +12,7 @@
     using UrbanSolution.Models;
     using UrbanSolution.Services.Manager;
     using UrbanSolution.Services.Manager.Models;
+    using UrbanSolution.Services.Models;
     using UrbanSolution.Web.Models;
     using static UrbanSolutionUtilities.WebConstants;
 
@@ -36,7 +37,8 @@
 
             RegionType? region = manager.ManagedRegion;
 
-            var issuesForRegion = await this.managerIssues.AllAsync(isApproved: false, region: region);
+            var issuesForRegion = await this.managerIssues
+                .AllAsync<UrbanIssuesListingServiceModel>(isApproved: false, region: region);
 
             var model = new IssuesListingViewModel
             {

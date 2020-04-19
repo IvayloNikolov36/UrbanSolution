@@ -1,8 +1,9 @@
 ﻿namespace UrbanSolution.Services.Admin
 {
-    using Models;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using UrbanSolution.Models;
+    using UrbanSolution.Services.Admin.Models;
 
     public interface IAdminUserService
     {

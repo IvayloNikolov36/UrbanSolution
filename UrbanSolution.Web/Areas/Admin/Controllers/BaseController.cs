@@ -10,14 +10,12 @@
     [Authorize(Roles = AdminRole)]
     public abstract class BaseController : Controller
     {
-        protected BaseController(UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
+        protected BaseController(UserManager<User> userManager)
         {
             this.UserManager = userManager;
-            this.RoleManager = roleManager;
         }
 
         protected  UserManager<User> UserManager { get; }
 
-        protected  RoleManager<IdentityRole> RoleManager { get; }
     }
 }

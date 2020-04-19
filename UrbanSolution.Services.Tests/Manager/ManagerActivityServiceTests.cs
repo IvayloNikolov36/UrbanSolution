@@ -32,7 +32,7 @@
             var service = new ManagerActivityService(Db);
 
             //Act
-            var result = (await service.GetAsync(manager.Id)).ToList();
+            var result = (await service.GetAsync<ManagerActivitiesListingServiceModel>(manager.Id)).ToList();
 
             var expectedCount = await this.Db.ManagerLogs
                 .Where(m => m.ManagerId == manager.Id)
@@ -64,7 +64,7 @@
             var service = new ManagerActivityService(Db);
 
             //Act
-            var result = (await service.AllAsync()).ToList();
+            var result = (await service.AllAsync<ManagerActivitiesListingServiceModel>()).ToList();
 
             var expectedCount = await this.Db.ManagerLogs
                 .CountAsync();

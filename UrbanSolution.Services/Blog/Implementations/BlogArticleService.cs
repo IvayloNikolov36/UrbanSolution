@@ -29,14 +29,14 @@
             this.pictureService = pictureService;
         }
 
-        public async Task<IEnumerable<BlogArticleListingServiceModel>> AllAsync(int page = 1)
+        public async Task<IEnumerable<TModel>> AllAsync<TModel>(int page = 1)
         {
             var articles = await this.db
-                .Articles
+                .Articles.AsNoTracking()
                 .OrderByDescending(a => a.PublishDate)
                 .Skip((page - 1) * BlogArticlesPageSize)
                 .Take(BlogArticlesPageSize)
-                .To<BlogArticleListingServiceModel>()
+                .To<TModel>()
                 .ToListAsync();
 
             return articles;
@@ -115,7 +115,7 @@
 
             var articlePicId = article.CloudinaryImageId;
 
-            //First delete article, than the image
+            //First deletes the article, than the image
             this.db.Articles.Remove(article);
 
             await this.db.SaveChangesAsync();

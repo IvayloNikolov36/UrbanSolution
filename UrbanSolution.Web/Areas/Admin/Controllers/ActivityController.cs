@@ -6,15 +6,15 @@
     using System.Threading.Tasks;
     using UrbanSolution.Models;
     using UrbanSolution.Services.Admin;
+    using UrbanSolution.Services.Admin.Models;
 
     public class ActivityController : BaseController
     {
         private readonly IAdminActivityService activities;
 
-        public ActivityController(UserManager<User> userManager, 
-            RoleManager<IdentityRole> roleManager, 
+        public ActivityController(UserManager<User> userManager,
             IAdminActivityService activities) 
-            : base(userManager, roleManager)
+            : base(userManager)
         {
             this.activities = activities;
         }
@@ -25,7 +25,8 @@
 
             var model = new AdminActivityIndexModel
             {
-                Activities =  await this.activities.AllAsync(adminId: admin.Id),
+                Activities =  await this.activities
+                    .AllAsync<AdminActivitiesListingServiceModel>(admin.Id),
                 AdminUserName = (await this.UserManager.GetUserAsync(this.User)).UserName
             };
 

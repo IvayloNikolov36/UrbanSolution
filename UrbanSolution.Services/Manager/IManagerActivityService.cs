@@ -7,9 +7,9 @@
     
     public interface IManagerActivityService
     {
-        Task<IEnumerable<ManagerActivitiesListingServiceModel>> GetAsync(string managerId);
+        Task<IEnumerable<TModel>> GetAsync<TModel>(string managerId);
 
-        Task<IEnumerable<ManagerActivitiesListingServiceModel>> AllAsync();
+        Task<IEnumerable<TModel>> AllAsync<TModel>();
 
         Task<int> WriteLogAsync(string managerId, ManagerActivityType activity);
     }

@@ -29,7 +29,8 @@
             var rowsCount = model.RowsCount == 0 ? DefaultRowsCount : model.RowsCount;
             var goToPage = pagination > model.Page ? pagination : model.Page;
 
-            var modelIssues = await this.issues.AllAsync(isApproved: true, rowsCount, goToPage, model.RegionFilter, model.TypeFilter, model.SortType);
+            var modelIssues = await this.issues
+                .AllAsync<UrbanIssuesListingServiceModel>(isApproved: true, rowsCount, goToPage, model.RegionFilter, model.TypeFilter, model.SortType);
             var issueModel = await this.GetModelForListingIssuesAsync(modelIssues, model.Page);
 
             this.ViewData[RowsCountKey] = rowsCount;

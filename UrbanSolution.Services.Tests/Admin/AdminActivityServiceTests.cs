@@ -33,7 +33,7 @@
             var service = new AdminActivityService(this.Db);
 
             //Act
-            var result = await service.AllAsync(admin.Id);
+            var result = await service.AllAsync<AdminActivitiesListingServiceModel>(admin.Id);
 
             var expectedCount = this.Db.AdminLogs.Count();
 

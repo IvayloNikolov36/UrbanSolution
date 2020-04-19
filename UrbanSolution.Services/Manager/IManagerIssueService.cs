@@ -15,7 +15,7 @@
 
         Task<bool> ApproveAsync(User manager, int issueId);
 
-        Task<IEnumerable<UrbanIssuesListingServiceModel>> AllAsync(bool isApproved, RegionType? region);      
+        Task<IEnumerable<TModel>> AllAsync<TModel>(bool isApproved, RegionType? region);      
 
         Task RemoveResolvedReferenceAsync(int issueId);
  

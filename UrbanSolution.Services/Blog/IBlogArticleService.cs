@@ -7,7 +7,7 @@
 
     public interface IBlogArticleService
     {
-        Task<IEnumerable<BlogArticleListingServiceModel>> AllAsync(int page = 1);
+        Task<IEnumerable<TModel>> AllAsync<TModel>(int page = 1);
 
         Task<int> TotalAsync();
 

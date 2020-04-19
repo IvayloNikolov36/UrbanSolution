@@ -6,11 +6,11 @@
 
     public interface IArticleCommentService
     {
-        Task<CommentListingServiceModel> SubmitAsync(int articleId, string userId, string content);
+        Task<TModel> SubmitAsync<TModel>(int articleId, string userId, string content);
 
-        Task<CommentListingServiceModel> GetAsync(int id);
+        Task<TModel> GetAsync<TModel>(int id);
 
-        Task<IEnumerable<CommentListingServiceModel>> AllAsync(int articleId);
+        Task<IEnumerable<TModel>> AllAsync<TModel>(int articleId);
 
         Task<bool> DeleteAsync(int commentId);
     }

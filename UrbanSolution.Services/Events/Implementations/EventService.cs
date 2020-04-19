@@ -27,7 +27,7 @@
         public async Task<IEnumerable<TModel>> AllAsync<TModel>(int page)
         {
             var eventsModel = await this.db
-                .Events
+                .Events.AsNoTracking()
                 .OrderByDescending(e => e.Id)
                 .Skip((page - 1) * EventsPageSize)
                 .Take(EventsPageSize)
@@ -58,7 +58,6 @@
             };
 
             await this.db.Events.AddAsync(eventObj);
-
             await this.db.SaveChangesAsync();
 
             return eventObj.Id;
@@ -91,7 +90,7 @@
 
         public async Task<TModel> GetAsync<TModel>(int id)
         {
-            var eventModel = await this.db.Events
+            var eventModel = await this.db.Events.AsNoTracking()
                 .Where(e => e.Id == id)
                 .To<TModel>()
                 .FirstOrDefaultAsync();
@@ -101,7 +100,9 @@
 
         public async Task<bool> Participate(int id, string userId)
         {
-            var eventFromDb = await this.db.Events.Include(e => e.Participants).FirstOrDefaultAsync(e => e.Id == id);
+            var eventFromDb = await this.db.Events
+                .Include(e => e.Participants)
+                .FirstOrDefaultAsync(e => e.Id == id);
 
             bool isUserParticipant = eventFromDb.Participants.Any(eu => eu.ParticipantId == userId);
 
@@ -117,7 +118,6 @@
             };
 
             await this.db.AddAsync(eventUser);
-
             await this.db.SaveChangesAsync();
 
             return true;

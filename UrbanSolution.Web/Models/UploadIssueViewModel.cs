@@ -8,6 +8,7 @@
     using static UrbanSolutionUtilities.WebConstants;
     public class PublishIssueViewModel : IValidatableObject
     {
+
         [Required, StringLength(IssueTitleMaxLength, MinimumLength = IssueTitleMinLength)]
         [Display(Name = "Title")]
         public string Title { get; set; }

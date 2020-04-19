@@ -21,7 +21,7 @@
             this.db = db;
         }
 
-        public async Task<IEnumerable<UrbanIssuesListingServiceModel>> AllAsync(
+        public async Task<IEnumerable<TModel>> AllAsync<TModel>(
             bool isApproved, int rowsCount, int page, string regionFilter, string typeFilter, string sortType)
         {
             bool isRegionParsed = Enum.TryParse(regionFilter, true, out RegionType regionType);
@@ -32,20 +32,24 @@
 
             if (filterByRegion && filterByType)
             {
-                predicate = i => i.IsApproved == isApproved && i.Region == regionType && i.Type == issueType;
+                predicate = i => i.IsApproved == isApproved
+                    && i.Region == regionType
+                    && i.Type == issueType;
             }
 
             if (filterByRegion && !filterByType)
             {
-                predicate = i => i.IsApproved == isApproved && i.Region == regionType;
+                predicate = i => i.IsApproved == isApproved 
+                    && i.Region == regionType;
             }
 
             if (filterByType && !filterByRegion)
             {
-                predicate = i => i.IsApproved == isApproved && i.Type == issueType;
+                predicate = i => i.IsApproved == isApproved 
+                    && i.Type == issueType;
             }
 
-            var query = this.db.UrbanIssues.Where(predicate);
+            var query = this.db.UrbanIssues.AsNoTracking().Where(predicate);
 
             if (sortType == null)
             {
@@ -56,9 +60,10 @@
                 ? query.OrderBy(i => i.PublishedOn)
                 : query.OrderByDescending(i => i.PublishedOn);
 
-            var issues = await query.Skip((page - 1) * IssuesOnRow * rowsCount)
+            var issues = await query
+                .Skip((page - 1) * IssuesOnRow * rowsCount)
                 .Take(IssuesOnRow * rowsCount)
-                .To<UrbanIssuesListingServiceModel>()
+                .To<TModel>()
                 .ToListAsync();
 
             return issues;
@@ -67,7 +72,8 @@
         public async Task<int> TotalAsync(bool isApproved)
         {
             var countOfIssues = await this.db
-                .UrbanIssues.Where(i => i.IsApproved == isApproved)
+                .UrbanIssues.AsNoTracking()
+                .Where(i => i.IsApproved == isApproved)
                 .CountAsync();
 
             return countOfIssues;
@@ -76,19 +82,20 @@
         public async Task<TModel> GetAsync<TModel>(int id)
         {
             var model = await this.db
-                .UrbanIssues.Where(i => i.Id == id)
-                .To<TModel>()               
+                .UrbanIssues.AsNoTracking()
+                .Where(i => i.Id == id)
+                .To<TModel>()
                 .FirstOrDefaultAsync();
 
             return model;
         }
 
-        public async Task<IEnumerable<IssueMapInfoBoxDetailsServiceModel>> AllMapInfoDetailsAsync(
-            bool areApproved, RegionType? region)                                   
+        public async Task<IEnumerable<TModel>> AllMapInfoDetailsAsync<TModel>(
+            bool areApproved, RegionType? region)
         {
             bool takeAllRegions = region == RegionType.All;
 
-            var issues = this.db.UrbanIssues
+            var issues = this.db.UrbanIssues.AsNoTracking()
                 .Where(i => i.IsApproved == areApproved);
 
             if (!takeAllRegions)
@@ -97,7 +104,7 @@
             }
 
             var result = await issues
-                .To<IssueMapInfoBoxDetailsServiceModel>()
+                .To<TModel>()
                 .ToListAsync();
 
             return result;

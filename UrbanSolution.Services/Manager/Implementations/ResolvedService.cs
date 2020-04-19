@@ -75,11 +75,9 @@
             var pictureId = resolvedIssue.CloudinaryImageId;          
 
             this.db.ResolvedIssues.Remove(resolvedIssue);
-
             await this.db.SaveChangesAsync();
 
             await this.pictureService.DeleteImageAsync(pictureId); //removes the picture from cloudinary and pictureInfo from DB 
-
             await this.activity.WriteLogAsync(managerId, ManagerActivityType.RemovedResolved);
 
             return true;
@@ -88,7 +86,7 @@
         public async Task<TModel> GetAsync<TModel>(int id)
         {
             var resolvedModel = await this.db.
-                ResolvedIssues
+                ResolvedIssues.AsNoTracking()
                 .Where(r => r.Id == id)
                 .To<TModel>()
                 .FirstOrDefaultAsync();
@@ -119,7 +117,6 @@
             }
 
             resolvedFromDb.Description = description;
-
             await this.db.SaveChangesAsync();
 
             await this.activity.WriteLogAsync(managerId, ManagerActivityType.UpdatedResolved);

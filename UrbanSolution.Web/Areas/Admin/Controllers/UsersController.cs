@@ -21,29 +21,31 @@
 
     public class UsersController : BaseController
     {
+        private readonly RoleManager<IdentityRole> roleManager;
         private readonly IAdminUserService users;
 
         public UsersController(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IAdminUserService users)
-            : base(userManager, roleManager)
+            : base(userManager)
         {
+            this.roleManager = roleManager;
             this.users = users;
         }
 
         public async Task<IActionResult> Index(SearchSortAndFilterModel model)
         {
-            var modelUsers = await this.users.AllAsync(
-                model.SortBy, model.SortType, model.SearchType, model.SearchText, model.Filter);
-
             this.ViewData[FilterKey] = model.Filter;
             this.ViewData[UsersSortByKey] = model.SortBy;
             this.ViewData[UsersSortTypeKey] = model.SortType;
             this.ViewData[UsersSearchTypeKey] = model.SearchType;
             this.ViewData[UsersSearchTextKey] = model.SearchText;
 
+            var modelUsers = await this.users.AllAsync(
+                 model.SortBy, model.SortType, model.SearchType, model.SearchText, model.Filter);
+
             var viewModel = new AdminUsersListingViewModel
             {
                 Users = modelUsers,
-                AllRoles = this.RoleManager.Roles.Select(r => new SelectListItem(r.Name, r.Name)).ToList(),
+                AllRoles = this.roleManager.Roles.Select(r => new SelectListItem(r.Name, r.Name)).ToList(),
                 LockDays = GetDropDownLockedDaysOptions(),
                 FilterBy = GetDropDownFilterUsersOptions()
             };

@@ -20,22 +20,22 @@
             this.db = db;
         }
 
-        public async Task<IEnumerable<ManagerActivitiesListingServiceModel>> GetAsync(string managerId)
+        public async Task<IEnumerable<TModel>> GetAsync<TModel>(string managerId)
         {
-            var activity = await this.db.ManagerLogs
+            var activity = await this.db.ManagerLogs.AsNoTracking()
                 .Where(m => m.ManagerId == managerId)
                 .OrderByDescending(a => a.DateTime)
-                .To<ManagerActivitiesListingServiceModel>()
+                .To<TModel>()
                 .ToListAsync();
 
             return activity;
         }
 
-        public async Task<IEnumerable<ManagerActivitiesListingServiceModel>> AllAsync()
+        public async Task<IEnumerable<TModel>> AllAsync<TModel>()
         {
-            var activity = await this.db.ManagerLogs
+            var activity = await this.db.ManagerLogs.AsNoTracking()
                 .OrderByDescending(a => a.DateTime)
-                .To<ManagerActivitiesListingServiceModel>()
+                .To<TModel>()
                 .ToListAsync();
 
             return activity;
@@ -51,7 +51,6 @@
             };
 
             await this.db.ManagerLogs.AddAsync(logInfo);
-
             await this.db.SaveChangesAsync();
 
             return logInfo.Id;

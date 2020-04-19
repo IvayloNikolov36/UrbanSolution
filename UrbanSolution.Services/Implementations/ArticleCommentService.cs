@@ -19,13 +19,13 @@
             this.db = db;
         }
 
-        public async Task<CommentListingServiceModel> SubmitAsync(int articleId, string userId, string content)
+        public async Task<TModel> SubmitAsync<TModel>(int articleId, string userId, string content)
         {
             var article = await this.db.FindAsync<Article>(articleId);
 
             if (article == null)
             {
-                return null;
+                return default;
             }
 
             var comment = new Comment
@@ -37,33 +37,32 @@
             };
 
             await this.db.Comments.AddAsync(comment);
-
             await this.db.SaveChangesAsync();
 
-            var result = await this.db.Comments
+            var result = await this.db.Comments.AsNoTracking()
                 .Where(c => c.Id == comment.Id)
-                .To<CommentListingServiceModel>()
+                .To<TModel>()
                 .FirstOrDefaultAsync();
 
             return result;
         }
 
-        public async Task<CommentListingServiceModel> GetAsync(int id)
+        public async Task<TModel> GetAsync<TModel>(int id)
         {
             var comment = await this.db.Comments
                 .Where(c => c.Id == id)
-                .To<CommentListingServiceModel>()
+                .To<TModel>()
                 .FirstOrDefaultAsync();
 
             return comment;
         }
 
-        public async Task<IEnumerable<CommentListingServiceModel>> AllAsync(int articleId)
+        public async Task<IEnumerable<TModel>> AllAsync<TModel>(int articleId)
         {
-            var comments = await this.db.Comments
+            var comments = await this.db.Comments.AsNoTracking()
                 .Where(c => c.ArticleId == articleId)
                 .OrderByDescending(c => c.PostedOn)
-                .To<CommentListingServiceModel>()
+                .To<TModel>()
                 .ToListAsync();
 
             return comments;
@@ -79,7 +78,6 @@
             }
 
             this.db.Remove(commentToDelete);
-
             await this.db.SaveChangesAsync();
 
             return true;

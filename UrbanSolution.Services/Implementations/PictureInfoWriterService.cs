@@ -28,7 +28,6 @@
             };
 
             await this.db.CloudinaryImages.AddAsync(image);
-
             await this.db.SaveChangesAsync();
 
             return image.Id;

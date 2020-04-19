@@ -31,7 +31,7 @@
         {
             var model = new ArticleListingViewModel
             {
-                Articles = await this.articles.AllAsync(pagination),
+                Articles = await this.articles.AllAsync<BlogArticleListingServiceModel>(pagination),
                 TotalArticles = await this.articles.TotalAsync(),
                 CurrentPage = pagination
             };

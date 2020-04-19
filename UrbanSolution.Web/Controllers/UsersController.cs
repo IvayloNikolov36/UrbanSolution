@@ -1,6 +1,5 @@
 ﻿namespace UrbanSolution.Web.Controllers
 {
-    using Infrastructure;
     using Infrastructure.Extensions;
     using Models;
     using Microsoft.AspNetCore.Authorization;

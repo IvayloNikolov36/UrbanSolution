@@ -28,13 +28,13 @@
         [HttpGet("all/{id}")]
         public async Task<ActionResult<CommentListingServiceModel>> All(int id)
         {
-            return this.Ok(await this.comments.AllAsync(id));
+            return this.Ok(await this.comments.AllAsync<CommentListingServiceModel>(id));
         }
 
         [HttpGet("details/{id}")]
         public async Task<ActionResult<CommentListingServiceModel>> Details(int id)
         {
-            return this.Ok(await this.comments.GetAsync(id));
+            return this.Ok(await this.comments.GetAsync<CommentListingServiceModel>(id));
         }
 
         [HttpPost("submit")]
@@ -44,7 +44,8 @@
             //TODO: check if content is empty, length... 
             var user = await this.userManager.GetUserAsync(this.User);
 
-            var comment = await this.comments.SubmitAsync(model.ArticleId, user.Id, model.Content);
+            var comment = await this.comments
+                .SubmitAsync<CommentListingServiceModel>(model.ArticleId, user.Id, model.Content);
 
             if (comment == null)
             {

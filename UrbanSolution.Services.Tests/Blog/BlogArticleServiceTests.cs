@@ -40,7 +40,7 @@
             var service = new BlogArticleService(Db, null, null);
 
             //Act
-            var result = (await service.AllAsync(page)).ToList();
+            var result = (await service.AllAsync<BlogArticleListingServiceModel>(page)).ToList();
 
             var expectedCount = this.Db.Articles
                 .Skip((page - 1) * BlogArticlesPageSize)

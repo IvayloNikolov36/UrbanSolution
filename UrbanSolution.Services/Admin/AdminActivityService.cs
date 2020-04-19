@@ -20,12 +20,12 @@
             this.db = db;
         }
 
-        public async Task<IEnumerable<AdminActivitiesListingServiceModel>> AllAsync(string adminId)
+        public async Task<IEnumerable<TModel>> AllAsync<TModel>(string adminId)
         {
-            var activity = await this.db.AdminLogs
+            var activity = await this.db.AdminLogs.AsNoTracking()
                 .Where(a => a.AdminId == adminId)
                 .OrderByDescending(a => a.CreatedOn)
-                .To<AdminActivitiesListingServiceModel>()
+                .To<TModel>()
                 .ToListAsync();
 
             return activity;

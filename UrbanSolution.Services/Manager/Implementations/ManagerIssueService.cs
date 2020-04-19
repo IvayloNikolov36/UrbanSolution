@@ -31,8 +31,7 @@
             User manager, int id, string title, string description, 
             RegionType region, IssueType type, string street, IFormFile pictureFile)
         {
-            var issue = await this.db
-                .FindAsync<UrbanIssue>(id);
+            var issue = await this.db.FindAsync<UrbanIssue>(id);
 
             var canUpdate = issue.Region == manager.ManagedRegion 
                             || manager.ManagedRegion == RegionType.All;
@@ -110,7 +109,7 @@
             return true;
         }
 
-        public async Task<IEnumerable<UrbanIssuesListingServiceModel>> AllAsync(
+        public async Task<IEnumerable<TModel>> AllAsync<TModel>(
             bool isApproved, RegionType? region)
         {
             bool takeAllRegions = region == RegionType.All;
@@ -125,7 +124,7 @@
             }
             
             var result = await issues
-                .To<UrbanIssuesListingServiceModel>()
+                .To<TModel>()
                 .ToListAsync();
 
             return result;

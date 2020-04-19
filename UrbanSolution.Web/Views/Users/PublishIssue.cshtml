@@ -1,7 +1,8 @@
 ﻿@using static UrbanSolutionUtilities.WebConstants;
 @inject IConfiguration Configuration
+@inject IAntiforgery AF
 
-@model PublishIssueViewModel                  
+@model PublishIssueViewModel
 @{
     ViewData["Title"] = "Publish Issue";
     var apiKey = Configuration.GetSection("Google:MapsApiKey").Value;
@@ -13,6 +14,14 @@
 <div class="row">
     <div class="col-md-8 col-md-offset-2">
         <div asp-validation-summary="All" class="text-danger"></div>
+
+        <form id="fileinfo" enctype="multipart/form-data" method="post" name="fileinfo">
+            <label>Picture File</label>
+            <input id="picFile" type="file" class="form-control" />
+        </form>
+
+        <button id="uploadPicture" type="submit" class="btn btn-default">Upload</button>
+
         <form method="post" id="urbanForm" enctype="multipart/form-data">
             <div class="row">
                 <div class="form-group col-xs-6">
@@ -29,6 +38,7 @@
                         <span asp-validation-for="PictureFile" class="text-danger"></span>
                     </div>
                 </div>
+
             </div>
 
             <label>Enter location in the map</label>
@@ -77,11 +87,13 @@
                 </div>
             </div>
 
-            <input type="hidden" id="Latitude" name="Latitude" />
-            <input type="hidden" id="Longitude" name="Longitude" />
-            <input type="hidden" id="Town" name="Town" />
+            @*TODO: remove values in lat and long and uncomment jQuery set values*@
+
+            <input type="hidden" id="Latitude" name="Latitude" value="42.1306495" />
+            <input type="hidden" id="Longitude" name="Longitude" value="24.710253" />
+            <input type="hidden" id="Town" name="Town" value="Plovdiv" />
             <hr />
-            
+
             <div class="row" style="text-align: center">
                 <button type="submit" id="publish" class="btn btn-default">Publish</button>
             </div>
@@ -91,8 +103,26 @@
 
 @section Scripts {
 
-    <partial name="_ValidationScriptsPartial"/>
-      
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        $("#uploadPicture").click(function () {
+            var formData = new FormData();
+            formData.append("file", document.getElementById("picFile").files[0]);
+            $.ajax({
+                url: "/api/IssuesApi/uploadImage",
+                type: "POST",
+                data: formData,
+                headers: { 'X-CSRF-TOKEN': "@(AF.GetTokens(this.Context).RequestToken)" },
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    console.log(data);
+                }
+            });
+        });
+    </script>
+
     <script>
         var map;
         var place;
@@ -160,7 +190,7 @@
                     streetName = place.name.trim();
                     var pointInfo = place.formatted_address.split(",");
                     town = pointInfo[2].trim();
-             
+
                     infowindowContent.children['place-name'].textContent = place.name;
                     infowindowContent.children['place-id'].textContent = place.place_id;
                     infowindowContent.children['place-address'].textContent =
@@ -172,10 +202,11 @@
 
         $("#GetAddress").click(function() {
             $("#Address").val(streetName);
-            $("#Latitude").val(coordinates.latitude);
-            $("#Longitude").val(coordinates.longitude);
-            $("#Town").val(town);
-        });    
+
+            //$("#Latitude").val(coordinates.latitude);
+            //$("#Longitude").val(coordinates.longitude);
+            //$("#Town").val(town);
+        });
     </script>
 
     <script src="https://maps.googleapis.com/maps/api/js?key=@(apiKey)&libraries=places&callback=initMap"
