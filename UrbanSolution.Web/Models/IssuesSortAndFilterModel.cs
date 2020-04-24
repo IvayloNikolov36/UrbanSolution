@@ -5,14 +5,14 @@
     public class IssuesSortAndFilterModel
     {
         //TODO: make validation
+        public string RegionFilter { get; set; } = OptionAllRegions;
+
+        public string TypeFilter { get; set; } = OptionAllIssuesTypes;
+
         public string SortType { get; set; }
 
-        public string RegionFilter { get; set; }
+        public int RowsCount { get; set; } = 1;
 
-        public string TypeFilter { get; set; }
-
-        public int RowsCount { get; set; }
-
-        public int Page { get; set; } = InitalPage;
+        public int ToPage { get; set; } = InitalPage;
     }
 }

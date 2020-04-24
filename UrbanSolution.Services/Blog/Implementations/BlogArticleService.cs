@@ -34,8 +34,8 @@
             var articles = await this.db
                 .Articles.AsNoTracking()
                 .OrderByDescending(a => a.PublishDate)
-                .Skip((page - 1) * BlogArticlesPageSize)
-                .Take(BlogArticlesPageSize)
+                .Skip((page - 1) * ArticlesPageSize)
+                .Take(ArticlesPageSize)
                 .To<TModel>()
                 .ToListAsync();
 

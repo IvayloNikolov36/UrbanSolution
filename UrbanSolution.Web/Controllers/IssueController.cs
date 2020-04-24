@@ -2,11 +2,11 @@
 {
     using Infrastructure.Extensions;
     using Infrastructure.Filters;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Models;
     using Services;
-    using System.Collections.Generic;
     using System.Threading.Tasks;
     using UrbanSolution.Models;
     using UrbanSolution.Services.Models;
@@ -23,23 +23,28 @@
             this.userManager = userManager;
         }
 
-        [ResponseCache(Duration = DayInSeconds, Location = ResponseCacheLocation.Client, NoStore = true)]
-        public async Task<IActionResult> Index(int pagination, IssuesSortAndFilterModel model)
+        public IActionResult Index()
         {
-            var rowsCount = model.RowsCount == 0 ? DefaultRowsCount : model.RowsCount;
-            var goToPage = pagination > model.Page ? pagination : model.Page;
+            var model = new IssuesIndexModel();
 
-            var modelIssues = await this.issues
-                .AllAsync<UrbanIssuesListingServiceModel>(isApproved: true, rowsCount, goToPage, model.RegionFilter, model.TypeFilter, model.SortType);
-            var issueModel = await this.GetModelForListingIssuesAsync(modelIssues, model.Page);
+            return this.View(model);
+        }
 
-            this.ViewData[RowsCountKey] = rowsCount;
-            this.ViewData[PageKey] = model.Page;
-            this.ViewData[SortTypeKey] = model.SortType ?? SortDesc;
-            this.ViewData[RegionFilterKey] = model.RegionFilter;
-            this.ViewData[TypeFilterKey] = model.TypeFilter;
+        [Authorize]
+        public async Task<IActionResult> Get([FromQuery] IssuesSortAndFilterModel model)
+        {
+            (int pagesCount, var modelIssues) = await this.issues
+                .AllAsync<UrbanIssuesListingServiceModel>(
+                isApproved: true, model.RowsCount, model.ToPage, model.RegionFilter, model.TypeFilter, model.SortType);
 
-            return this.View(issueModel);
+            var partialModel = new IssuesListingViewModel
+            {
+                Issues = modelIssues,
+                PagesCount = pagesCount,
+                Page = model.ToPage
+            };
+
+            return this.PartialView("_IssuesListingPartial", partialModel);
         }
 
         [ServiceFilter(typeof(ValidateIssueIdExistsAttribute))]
@@ -60,21 +65,6 @@
             }
 
             return this.View(issueModel);
-        }
-
-        private async Task<IssuesListingViewModel> GetModelForListingIssuesAsync(
-            IEnumerable<UrbanIssuesListingServiceModel> modelIssues, int page)
-        {
-            var totalIssues = await this.issues.TotalAsync(isApproved: true);
-
-            var model = new IssuesListingViewModel
-            {
-                Issues = modelIssues,
-                TotalIssues = totalIssues,
-                CurrentPage = page
-            };
-
-            return model;
         }
 
     }

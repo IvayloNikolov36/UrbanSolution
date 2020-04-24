@@ -2,12 +2,13 @@
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using UrbanSolution.Models;
     using UrbanSolution.Services.Admin.Models;
 
     public interface IAdminUserService
     {
-        Task<IEnumerable<AdminUserListingServiceModel>> AllAsync(string sortBy, string sortType, string searchType,
+        Task<int> AllCountAsync();
+
+        Task<(int, IEnumerable<AdminUserListingServiceModel>)> AllAsync(int page, string sortBy, string sortType, string searchType,
             string searchText, string filter);
 
         Task<bool> UnlockAsync(string userId);

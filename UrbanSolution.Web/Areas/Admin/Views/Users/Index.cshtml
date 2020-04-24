@@ -5,7 +5,6 @@
 
 <div class="row text-info text-center">
     <h3><strong>@this.ViewData[TitleKey]</strong></h3>
-    <hr />
 </div>
 
 <div class="form-group row text-center">
@@ -18,9 +17,9 @@
                 <div class="form-inline">
                     Sort by:
                     <select name="SortBy" class="form-control">
-                        @foreach (var kvp in Model.SortBy)
+                        @foreach (var kvp in Model.SortByOptions)
                         {
-                            if (kvp.Value == (string)this.ViewData[UsersSortByKey])
+                            if (kvp.Value == Model.PagesModel.SortBy)
                             {
                                 <option value="@kvp.Value" selected>@kvp.Key</option>
                             }
@@ -32,13 +31,9 @@
                     </select> 
 
                     <select name="SortType" class="form-control">
-                        @if (this.ViewData[SortTypeKey] == null)
-                        {
-                            <option selected>@SortAsc</option>
-                        }
                         @foreach (string sortType in Model.SortingType)
                         {
-                            if (sortType == (string)this.ViewData[UsersSortTypeKey])
+                            if (sortType == Model.PagesModel.SortType)
                             {
                                 <option value="@sortType" selected>@sortType</option>
                             }
@@ -48,7 +43,6 @@
                             }
                         }
                     </select>
-
                     <input type="submit" value="Sort" class="btn btn-default" />
                 </div>
             </div>
@@ -57,9 +51,9 @@
             <div class="col-lg-4">
                 <div class="form-inline">
                     <select name="SearchType" class="form-control">
-                        @foreach (var kvp in Model.SearchFilters)
+                        @foreach (var kvp in Model.SearchFiltersOptions)
                         {
-                            if (kvp.Key == (string)this.ViewData[UsersSearchTypeKey])
+                            if (kvp.Key == Model.PagesModel.SearchType)
                             {
                                 <option value="@kvp.Value" selected>@kvp.Key</option>
                             }
@@ -69,10 +63,7 @@
                             }
                         }
                     </select> 
-
-
-                    <input type="text" name="SearchText" value="@(ViewData[UsersSearchTextKey]?.ToString())" class="form-control" placeholder="Search..." />
-
+                    <input type="text" name="SearchText" value="@Model.PagesModel.SearchText" class="form-control" placeholder="Search..." />
                     <button type="submit" value="Search" class="btn btn-default"><i class="glyphicon glyphicon-search"></i></button>
                 </div>
             </div>
@@ -81,7 +72,7 @@
             <div class="col-lg-4">
                 <div class="form-inline">
                     <select id="Filter" name="Filter" class="form-control">
-                        @if (this.ViewData[FilterKey] == null)
+                        @if (Model.PagesModel.Filter == null)
                         {
                             <option selected>@NoFilter</option>
                         }
@@ -90,9 +81,9 @@
                             <option>@NoFilter</option>
                         }
 
-                        @foreach (var kvp in Model.FilterBy)
+                        @foreach (var kvp in Model.FilterByOptions)
                         {
-                            if (kvp.Value == (string)this.ViewData[FilterKey])
+                            if (kvp.Value == Model.PagesModel.Filter)
                             {
                                 <option value="@kvp.Value" selected>@kvp.Value</option>
                             }
@@ -124,6 +115,8 @@
         </tr>
     </thead>
     <tbody>
-        <partial name="_AdminUsersListingPartial" model="Model" />
-    </tbody>
+        <partial name="_AdminUsersListingPartial" model="Model.TableDataModel" />
+    </tbody>   
 </table>
+
+<partial name="_PagingPartial" model="@Model.PagesModel" />

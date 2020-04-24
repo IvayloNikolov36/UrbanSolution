@@ -3,7 +3,6 @@
     using Data;
     using Mapping;
     using Microsoft.EntityFrameworkCore;
-    using Models;
     using System.Collections.Generic;
     using System;
     using System.Linq;
@@ -21,7 +20,7 @@
             this.db = db;
         }
 
-        public async Task<IEnumerable<TModel>> AllAsync<TModel>(
+        public async Task<(int, IEnumerable<TModel>)> AllAsync<TModel>(
             bool isApproved, int rowsCount, int page, string regionFilter, string typeFilter, string sortType)
         {
             bool isRegionParsed = Enum.TryParse(regionFilter, true, out RegionType regionType);
@@ -60,13 +59,16 @@
                 ? query.OrderBy(i => i.PublishedOn)
                 : query.OrderByDescending(i => i.PublishedOn);
 
+            int filteredIssuesCount = await query.CountAsync();
+            int pagesCount = (int)Math.Ceiling((double)filteredIssuesCount / (IssuesOnRow * rowsCount));
+
             var issues = await query
                 .Skip((page - 1) * IssuesOnRow * rowsCount)
                 .Take(IssuesOnRow * rowsCount)
                 .To<TModel>()
                 .ToListAsync();
 
-            return issues;
+            return (pagesCount, issues);
         }
 
         public async Task<int> TotalAsync(bool isApproved)

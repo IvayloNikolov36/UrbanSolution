@@ -43,8 +43,8 @@
             var result = (await service.AllAsync<BlogArticleListingServiceModel>(page)).ToList();
 
             var expectedCount = this.Db.Articles
-                .Skip((page - 1) * BlogArticlesPageSize)
-                .Take(BlogArticlesPageSize)
+                .Skip((page - 1) * ArticlesPageSize)
+                .Take(ArticlesPageSize)
                 .Count();
 
             //Assert

@@ -33,8 +33,10 @@
             this.activity = activity;
         }
 
-        public async Task<IEnumerable<AdminUserListingServiceModel>> AllAsync(
-            string sortBy, string sortType, string searchType, string searchText, string filter)
+        public Task<int> AllCountAsync() => this.db.Users.CountAsync();
+
+        public async Task<(int, IEnumerable<AdminUserListingServiceModel>)> AllAsync(
+            int page, string sortBy, string sortType, string searchType, string searchText, string filter)
         {
             string search = searchText;
             bool hasSearching = !string.IsNullOrEmpty(search);
@@ -67,7 +69,12 @@
                 usersRoles.Add(userAllRoles.ToList());
             }
 
-            var usersModels = await users.To<AdminUserListingServiceModel>()
+            var filteredUsersCount = await users.CountAsync();
+
+            var usersModels = await users
+                .Skip((page - 1) * UsersOnPage)
+                .Take(UsersOnPage)
+                .To<AdminUserListingServiceModel>()
                 .ToListAsync();
 
             for (var i = 0; i < usersModels.Count; i++)
@@ -75,7 +82,7 @@
                 usersModels[i].UserRoles = usersRoles[i];
             }
 
-            return usersModels;
+            return (filteredUsersCount, usersModels);
         }
 
         private IQueryable<User> AllFilteredBySearch(IQueryable<User> users, string searchType, string searchText)

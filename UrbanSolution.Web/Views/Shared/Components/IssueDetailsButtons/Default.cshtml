@@ -1,16 +1,19 @@
 ﻿@using static UrbanSolutionUtilities.WebConstants;
+@{
+    string issueRegion = this.ViewData[IssueRegionKey]?.ToString();
+    string managerRegion = this.ViewData[ViewDataManagerRegionKey]?.ToString();
+}
 
 @if (Model.HasResolved)
-{ 
+{
     <a class="btn btn-primary" asp-area="Manager" asp-controller="Resolved" asp-action="Details"
        asp-route-id="@Model.ResolvedId">
         <i class="glyphicon glyphicon-sunglasses"></i> Resolved
     </a>
 }
 
-
-@if (!string.IsNullOrEmpty((string)ViewData[ViewDataManagerRegionKey]) 
-     && this.ViewData[IssueRegionKey]?.ToString() == ViewData[ViewDataManagerRegionKey]?.ToString())
+@*if managerRegion = issueRegion or user is Main Manager -> show buttons for approve, edit and delete*@
+@if (issueRegion == managerRegion || managerRegion == RegionType.All.ToString())
 {
     @await Html.PartialAsync("_UrbanIssueButtonsForAllManagerActions", Model, null)
 }

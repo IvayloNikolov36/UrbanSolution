@@ -164,7 +164,8 @@
 
 
         public const int IssuesOnRow = 6;
-        public const int BlogArticlesPageSize = 2;
+        public const int UsersOnPage = 6;
+        public const int ArticlesPageSize = 2;
         public const int EventsPageSize = 2;
 
         public const string CloudinaryGetImageUrl = "{0}.jpg";
@@ -189,9 +190,8 @@
         //DropDowns
         public const string UsersFilter = "Filter by";
         public const string NoFilter = "No Filter";
-        public const string OptionAll = "All";
-        public const string OptionTextAllRegions = "All regions";
-        public const string OptionTextAllTypes = "All types";
+        public const string OptionAllIssuesTypes = "All types";
+        public const string OptionAllRegions = "All";
 
         public const string SortingDateDesc = "Newest";
         public const string SortingDateAsc = "Oldest";

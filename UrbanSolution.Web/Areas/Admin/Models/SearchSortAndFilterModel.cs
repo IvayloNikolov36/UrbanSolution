@@ -1,15 +1,9 @@
-﻿
-
-using System;
-using System.Collections.Generic;
-using UrbanSolution.Web.Infrastructure.Enums;
-using UrbanSolution.Web.Infrastructure.Extensions;
-
-namespace UrbanSolution.Web.Areas.Admin.Models
+﻿namespace UrbanSolution.Web.Areas.Admin.Models
 {
+    using static UrbanSolutionUtilities.WebConstants;
+
     public class SearchSortAndFilterModel
     {
-
         public string SearchType { get; set; }
 
         public string SearchText { get; set; }
@@ -20,7 +14,6 @@ namespace UrbanSolution.Web.Areas.Admin.Models
 
         public string SortType { get; set; }
 
-
-
+        public int Page { get; set; } = InitalPage;
     }
 }

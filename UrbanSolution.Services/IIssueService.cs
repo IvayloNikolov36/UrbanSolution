@@ -6,7 +6,7 @@
 
     public interface IIssueService
     {
-        Task<IEnumerable<TModel>> AllAsync<TModel>(bool isApproved, int rowsCount, int page, string regionFilter, string typeFilter, string sortType);
+        Task<(int, IEnumerable<TModel>)> AllAsync<TModel>(bool isApproved, int rowsCount, int page, string regionFilter, string typeFilter, string sortType);
 
         Task<int> TotalAsync(bool isApproved);
 

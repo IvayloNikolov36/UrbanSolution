@@ -48,7 +48,9 @@
 
             var service = new IssueService(this.Db);
             //Act
-            var result = (await service.AllAsync<UrbanIssuesListingServiceModel>(isApproved, rowsCount, page, region.ToString(), issueType.ToString(), sortType)).ToList();
+            (var pagesCount, var issues) = await service
+                .AllAsync<UrbanIssuesListingServiceModel>(isApproved, rowsCount, page, region.ToString(), issueType.ToString(), sortType);
+            var result = issues.ToList();
 
             var expectedCount = await this.Db.UrbanIssues.Where(i => i.IsApproved == isApproved && i.Region == region && i.Type == issueType)
                 .Skip((page - 1) * IssuesOnRow * rowsCount)

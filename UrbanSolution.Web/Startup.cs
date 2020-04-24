@@ -6,6 +6,7 @@
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Routing;
     using Microsoft.EntityFrameworkCore;
@@ -18,7 +19,6 @@
     using UrbanSolution.Services.Models;
     using UrbanSolution.Web.Areas.Admin.Models;
     using static UrbanSolutionUtilities.WebConstants;
-    using Microsoft.AspNetCore.Mvc;
 
     public class Startup
     {
@@ -97,7 +97,6 @@
                     options.ClientId = this.Configuration.GetSection("GitHub:ClientID").Value;
                     options.ClientSecret = this.Configuration.GetSection("GitHub:ClientSecret").Value;
                 });
-
 
             services.AddControllersWithViews(options =>
             {

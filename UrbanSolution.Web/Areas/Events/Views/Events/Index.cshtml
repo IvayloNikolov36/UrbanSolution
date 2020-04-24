@@ -1,19 +1,10 @@
 ﻿@model UrbanSolution.Web.Areas.Events.Models.EventsListingViewModel
 @{
     ViewData["Title"] = "All Events";
-
-    var pagesModel = new PagesModel
-    {
-        CurrentPage = Model.CurrentPage,
-        NextPage = Model.NextPage,
-        TotalPages = Model.TotalPages,
-        PreviousPage = Model.PreviousPage
-    };
 }
 
 <h3 class="text-center text-info">@ViewData["Title"]</h3>
 <hr />
-
 
 <div class="row">
     @foreach (var e in Model.Events)
@@ -31,4 +22,4 @@
 
 @*paging*@
 
-<partial name="_PagingPartial" model="pagesModel" />
+<partial name="_PagingPartial" model="Model.PagesModel" />

@@ -1,15 +1,17 @@
 ﻿namespace UrbanSolution.Web.Areas.Blog.Controllers
 {
+    using Infrastructure.Extensions;
+    using Infrastructure.Filters;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Models;
-    using Infrastructure.Extensions;
-    using Infrastructure.Filters;
     using System.Threading.Tasks;
+
     using UrbanSolution.Models;
     using UrbanSolution.Services.Blog;
     using UrbanSolution.Services.Blog.Models;
+    using UrbanSolution.Web.Models;
     using static UrbanSolutionUtilities.WebConstants;
 
     [Area(BlogArea)]
@@ -27,13 +29,17 @@
         }
 
         [AllowAnonymous]
-        public async Task<IActionResult> Index(int pagination = 1)
+        public async Task<IActionResult> Index(int page = 1)
         {
             var model = new ArticleListingViewModel
             {
-                Articles = await this.articles.AllAsync<BlogArticleListingServiceModel>(pagination),
-                TotalArticles = await this.articles.TotalAsync(),
-                CurrentPage = pagination
+                Articles = await this.articles.AllAsync<BlogArticleListingServiceModel>(page),
+                PagesModel = new PagesModel
+                {
+                    TotalItems = await this.articles.TotalAsync(),
+                    CurrentPage = page,
+                    ItemsOnPage = ArticlesPageSize
+                }
             };
 
             return this.View(model);

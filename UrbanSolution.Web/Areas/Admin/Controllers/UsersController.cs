@@ -1,23 +1,22 @@
 ﻿namespace UrbanSolution.Web.Areas.Admin.Controllers
 {
-    using Infrastructure.Enums;
-    using Infrastructure.Extensions;
-    using Infrastructure.Filters;
+    using UrbanSolution.Web.Infrastructure.Enums;
+    using UrbanSolution.Web.Infrastructure.Extensions;
+    using UrbanSolution.Web.Infrastructure.Filters;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Rendering;
-    using Models;
+    using UrbanSolution.Web.Areas.Admin.Models;
     using System.Linq;
     using System;
     using System.Collections.Generic;
-    using System.Linq.Expressions;
     using System.Threading.Tasks;
     using UrbanSolution.Models;
     using UrbanSolution.Services.Admin;
-    using UrbanSolution.Services.Admin.Models;
     using UrbanSolutionUtilities.Enums;
     using UrbanSolutionUtilities.Extensions;
     using static UrbanSolutionUtilities.WebConstants;
+    using UrbanSolution.Web.Models;
 
     public class UsersController : BaseController
     {
@@ -33,21 +32,37 @@
 
         public async Task<IActionResult> Index(SearchSortAndFilterModel model)
         {
-            this.ViewData[FilterKey] = model.Filter;
-            this.ViewData[UsersSortByKey] = model.SortBy;
-            this.ViewData[UsersSortTypeKey] = model.SortType;
-            this.ViewData[UsersSearchTypeKey] = model.SearchType;
-            this.ViewData[UsersSearchTextKey] = model.SearchText;
+            (int totalUsers, var modelUsers) = await this.users.AllAsync(
+                model.Page, model.SortBy, model.SortType, model.SearchType, model.SearchText, model.Filter);
 
-            var modelUsers = await this.users.AllAsync(
-                 model.SortBy, model.SortType, model.SearchType, model.SearchText, model.Filter);
+            var allRoles = this.roleManager.Roles
+                .Select(r => new SelectListItem(r.Name, r.Name))
+                .ToList();
+
+            var tableDataModel = new AdminUsersListingTableModel
+            {
+                Users = modelUsers,
+                AllRoles = allRoles,
+                LockDays = GetDropDownLockedDaysOptions()
+            };
+
+            var pagesModel = new PagesModel
+            {
+                ItemsOnPage = UsersOnPage,
+                CurrentPage = model.Page,
+                TotalItems = totalUsers,
+                SortBy = model.SortBy,
+                SortType = model.SortType,
+                SearchType = model.SearchType,
+                SearchText = model.SearchText,
+                Filter = model.Filter
+            };
 
             var viewModel = new AdminUsersListingViewModel
             {
-                Users = modelUsers,
-                AllRoles = this.roleManager.Roles.Select(r => new SelectListItem(r.Name, r.Name)).ToList(),
-                LockDays = GetDropDownLockedDaysOptions(),
-                FilterBy = GetDropDownFilterUsersOptions()
+                TableDataModel = tableDataModel,               
+                PagesModel = pagesModel,
+                FilterByOptions = GetDropDownFilterUsersOptions(),
             };
 
             return this.View(viewModel);

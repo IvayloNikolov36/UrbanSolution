@@ -10,6 +10,7 @@
     using UrbanSolution.Models;
     using UrbanSolution.Services.Events.Models;
     using UrbanSolution.Web.Areas.Events.Models;
+    using UrbanSolution.Web.Models;
     using static UrbanSolutionUtilities.WebConstants;
 
     [Area(EventsArea)]
@@ -26,17 +27,21 @@
         }
 
         [AllowAnonymous]
-        public async Task<IActionResult> Index(int pagination = 1)
+        public async Task<IActionResult> Index(int page = 1)
         {
-            var allEvents = await this.events.AllAsync<EventsListingServiceModel>(pagination);
+            var allEvents = await this.events.AllAsync<EventsListingServiceModel>(page);
 
             var totalEvents = await this.events.TotalCountAsync();
 
             var model = new EventsListingViewModel
             {
                 Events = allEvents,
-                TotalEvents = totalEvents,
-                CurrentPage = pagination
+                PagesModel = new PagesModel
+                {
+                    TotalItems = totalEvents,
+                    CurrentPage = page,
+                    ItemsOnPage = EventsPageSize
+                }
             };
 
             return View(model);
