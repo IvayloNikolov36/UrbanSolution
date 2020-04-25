@@ -69,8 +69,13 @@
     </div>
     <hr />
 
+    @* Div for issues partial loaded with Ajax request *@
     <div id="issuesListing" class="row issues-listing">
     </div>
+
+    @* Pagination *@
+    <ul id="issuesPagination" class="pagination">
+    </ul>
 
 </div>
 
@@ -81,33 +86,83 @@
             loadIssues();
         });
 
-        function loadIssues() {
-
+        //page parameter is passed when pagination link is clicked
+        function loadIssues(page) {
             var data = {
                 RegionFilter: $("#regionSelect").find(":selected").val(),
                 TypeFilter: $("#typeSelect").find(":selected").text(),
                 SortType: $("#sortType").find(":selected").val(),
                 RowsCount: $("#rowsCount").find(":selected").val(),
-                ToPage: $("#toPage").val()
+                ToPage: page ?? $("#toPage").val() 
             };
-
-            console.log(data);
 
             $.ajax({
                 url: "/Issue/Get?" + $.param(data),
                 type: "GET",
                 dataType: "html",
                 success: function (issuesHtml) {
-                    $("#issuesListing").empty();
-                    $("#issuesListing").append(issuesHtml);
+                    fadeInEffect(issuesHtml);
                     var pagesCount = $("#pagesCount").val();
                     var page = $("#page").val();
+
                     $("#toPage").attr({ "max": pagesCount, "value": page });
+
+                    createPagination(page, pagesCount);
                 }
             });
         }
 
+        function createPagination(page, pagesCount) {
+            $("#issuesPagination").empty();
+
+            //Show or Hide Button for Previous Page
+            if (+page !== 1) {
+                var element = `<li><a onclick="paginationLiClicked(${+page - 1})" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>`;
+                $("#issuesPagination").append(element);
+            }
+
+            //previos pages buttons
+            var i;
+            var label;
+            for (i = 5; i >= 1; i--) {
+                if (+page - i > 0) {
+                    label = +page - +i;
+                    var element = `<li class="inactive"><a onclick="paginationLiClicked(${label})">${label}<span class="sr-only"></span></a></li>`;
+                    $("#issuesPagination").append(element);
+                }
+            }
+
+            //current page button
+            $("#issuesPagination").append(`<li class="active"><a>${page}</a></li>`);
+
+            //next pages buttons
+            for (i = 1; i < 5; i++) {
+                if (+page + i <= +pagesCount) {
+                    label = +page + +i;
+                    var element = `<li class="inactive"><a onclick="paginationLiClicked(${label})">${label}<span class="sr-only"></span></a></li>`;
+                    $("#issuesPagination").append(element);
+                }
+            }
+
+            //Show or not button for next page
+            if (+page + 1 <= +pagesCount) {
+                var element = `<li><a onclick="paginationLiClicked(${+page + 1})" aria-label="Next"><span aria-hidden="true"> &raquo;</span></a></li>`;
+                $("#issuesPagination").append(element);
+            }
+        }
+
+        function paginationLiClicked(page) {
+            $("#issuesPagination").empty();
+            loadIssues(page);
+        }
+
+        function fadeInEffect(html) {
+            $("#issuesListing").empty();
+            $("#issuesListing").html(html).hide().fadeIn(1000);
+        }
+
         $("#filterBtn").click(function () {
+            $("#toPage").val(1);
             loadIssues();
         });
 
@@ -116,6 +171,7 @@
         });
 
         $("#rowsCountBtn").click(function () {
+            $("#toPage").val(1);
             loadIssues();
         });
 
