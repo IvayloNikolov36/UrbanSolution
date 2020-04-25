@@ -23,8 +23,8 @@
         private readonly IAdminActivityService activity;
 
         public AdminUserService(
-            UrbanSolutionDbContext db, 
-            UserManager<User> userManager, 
+            UrbanSolutionDbContext db,
+            UserManager<User> userManager,
             IAdminActivityService activity)
         {
             //TODO: Remove userManeger!!!!!
@@ -41,7 +41,7 @@
             string search = searchText;
             bool hasSearching = !string.IsNullOrEmpty(search);
             bool hasFiltering = filter != null && !string.IsNullOrEmpty(filter) && !filter.Equals(NoFilter);
-            bool hasSorting = sortBy != null; 
+            bool hasSorting = sortBy != null;
 
             IQueryable<User> users = this.db.Users.AsNoTracking()
                 .OrderBy(u => u.UserName);
@@ -61,28 +61,30 @@
                 users = this.AllSortedBy(users, sortBy, sortType);
             }
 
-            var usersRoles = new List<List<string>>();
+            var filteredUsersCount = await users.CountAsync();
 
-            foreach (var user in users.ToList())
+            var usersForPage = users.Skip((page - 1) * UsersOnPage).Take(UsersOnPage);
+
+            // for every users gets roles as List<string> and adds the list to List usersRoles
+            List<List<string>> usersRoles = new List<List<string>>();
+            List<User> materializedUsersForPage = await usersForPage.ToListAsync();
+            foreach (var user in materializedUsersForPage)
             {
                 var userAllRoles = await this.userManager.GetRolesAsync(user);
                 usersRoles.Add(userAllRoles.ToList());
             }
 
-            var filteredUsersCount = await users.CountAsync();
-
-            var usersModels = await users
-                .Skip((page - 1) * UsersOnPage)
-                .Take(UsersOnPage)
+            var usersModels = await usersForPage
                 .To<AdminUserListingServiceModel>()
                 .ToListAsync();
 
+            //for every user sets the roles
             for (var i = 0; i < usersModels.Count; i++)
             {
                 usersModels[i].UserRoles = usersRoles[i];
             }
 
-            return (filteredUsersCount, usersModels);
+            return (filteredUsersCount, usersModels);  
         }
 
         private IQueryable<User> AllFilteredBySearch(IQueryable<User> users, string searchType, string searchText)
