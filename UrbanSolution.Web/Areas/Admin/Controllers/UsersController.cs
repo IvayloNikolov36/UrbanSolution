@@ -125,7 +125,7 @@
             if (!isSetRole)
             {
                 return this.RedirectToAction(nameof(Index))
-                    .WithWarning(string.Empty, string.Format(UserAlreadyInRole, user.UserName, model.Role));
+                    .WithWarning(string.Empty, string.Format(InvalidUserOrRole, user.UserName, model.Role));
             }
 
             return this.RedirectToAction(nameof(Index))

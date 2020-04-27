@@ -1,9 +1,8 @@
 ﻿namespace UrbanSolution.Services.Admin
 {
-    using Data;
-    using Mapping;
+    using UrbanSolution.Data;
+    using UrbanSolution.Services.Mapping;
     using Microsoft.EntityFrameworkCore;
-    using Microsoft.AspNetCore.Identity;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -14,19 +13,18 @@
     using UrbanSolutionUtilities.Enums;
     using UrbanSolutionUtilities.Extensions;
     using static UrbanSolutionUtilities.WebConstants;
+    using Microsoft.Data.SqlClient;
+    using System.Data;
 
     public class AdminUserService : IAdminUserService
     {
         private readonly UrbanSolutionDbContext db;
-        private readonly UserManager<User> userManager;
         private readonly IAdminActivityService activity;
 
         public AdminUserService(UrbanSolutionDbContext db,
-            UserManager<User> userManager,
             IAdminActivityService activity)
         {
             this.db = db;
-            this.userManager = userManager;
             this.activity = activity;
         }
 
@@ -136,37 +134,53 @@
 
         public async Task<bool> AddToRoleAsync(string adminId, string userId, string role)
         {
-            User user = await this.userManager.FindByIdAsync(userId);
+            bool isDone = await ExecuteProcedureAsync("[dbo].AssignUserToRole", userId, role);
 
-            bool userAlreadyInRole = await this.userManager.IsInRoleAsync(user, role);
-
-            if (userAlreadyInRole)
+            if (isDone)
             {
-                return false;
+                await this.activity.WriteInfoAsync(adminId, userId, role, AdminActivityType.AddedToRole);
             }
 
-            await this.userManager.AddToRoleAsync(user, role);
-            await this.activity.WriteInfoAsync(adminId, userId, role, AdminActivityType.AddedToRole);
-
-            return true;
+            return isDone;
         }
 
         public async Task<bool> RemoveFromRoleAsync(string adminId, string userId, string role)
         {
-            User user = await this.userManager.FindByIdAsync(userId);
+            bool isDone = await ExecuteProcedureAsync("[dbo].RemoveUserRole", userId, role);
 
-            bool userInRole = await this.userManager.IsInRoleAsync(user, role);
+            if (isDone)
+            {
+                await this.activity.WriteInfoAsync(adminId, userId, role, AdminActivityType.RemovedFromRole);
+            }
 
-            if (!userInRole)
+            return isDone;
+        }
+
+        private async Task<bool> ExecuteProcedureAsync(string procedureName, string userId, string role)
+        {
+            var userIdParam = new SqlParameter("@userId", SqlDbType.NVarChar)
+            {
+                Direction = ParameterDirection.Input,
+                Value = userId
+            };
+
+            var roleParam = new SqlParameter("@role", SqlDbType.NVarChar)
+            {
+                Direction = ParameterDirection.Input,
+                Value = role
+            };
+
+            try
+            {
+                await this.db.Database.ExecuteSqlInterpolatedAsync(
+                     $"EXEC {procedureName} {userIdParam}, {roleParam}");
+            }
+            catch (Exception)
             {
                 return false;
             }
 
-            await this.userManager.RemoveFromRoleAsync(user, role);
-            await this.activity.WriteInfoAsync(adminId, userId, role, AdminActivityType.RemovedFromRole);
-
             return true;
         }
-
     }
 }

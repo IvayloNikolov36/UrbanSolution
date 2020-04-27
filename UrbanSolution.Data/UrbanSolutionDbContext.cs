@@ -32,6 +32,7 @@
 
         public DbSet<Rating> Ratings { get; set; }
 
+        //for views
         public DbSet<UsersWithRoles> UsersWithRoles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)

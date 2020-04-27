@@ -33,7 +33,7 @@
             await userManagerMock.Object.AddToRoleAsync(user, ManagerRole);
 
             //TODO: rewrite this test (now there is no need for userManager)
-            var service = new AdminUserService(Db, userManagerMock.Object, null);
+            var service = new AdminUserService(Db, null);
 
             //Act
             var result = await service.AddToRoleAsync(admin.Id, user.Id, ManagerRole);
@@ -61,7 +61,7 @@
             var activityService = new Mock<IAdminActivityService>();
 
             //TODO: rewrite this test (now there is no need for userManager)
-            var service = new AdminUserService(Db, userManagerMock.Object, activityService.Object);
+            var service = new AdminUserService(Db, activityService.Object);
 
             //Act
             var result = await service.AddToRoleAsync(admin.Id, user.Id, Role);
@@ -90,7 +90,7 @@
             userManagerMock.Setup(u => u.IsInRoleAsync(user, Role)).Returns(Task.FromResult(false));
 
             //TODO: rewrite this test (now there is no need for userManager)
-            var service = new AdminUserService(Db, userManagerMock.Object, null);
+            var service = new AdminUserService(Db, null);
 
             //Act
             var result = await service.RemoveFromRoleAsync(admin.Id, user.Id, Role);
@@ -120,7 +120,7 @@
             var activityService = new Mock<IAdminActivityService>();
 
             //TODO: rewrite this test (now there is no need for userManager)
-            var service = new AdminUserService(Db, userManagerMock.Object, activityService.Object);
+            var service = new AdminUserService(Db, activityService.Object);
 
             //Act
             var result = await service.RemoveFromRoleAsync(admin.Id, user.Id, Role);
@@ -148,7 +148,7 @@
             userManagerMock.Setup(u => u.FindByIdAsync(user.Id)).Returns(Task.FromResult(user));
 
             //TODO: rewrite this test (now there is no need for userManager)
-            var service = new AdminUserService(Db, userManagerMock.Object, null);
+            var service = new AdminUserService(Db, null);
 
             //Act
             bool expected = true;
@@ -173,7 +173,7 @@
             userManagerMock.Setup(u => u.FindByIdAsync(user.Id)).Returns(Task.FromResult(user));
 
             //TODO: rewrite this test (now there is no need for userManager)
-            var service = new AdminUserService(Db, userManagerMock.Object, null);
+            var service = new AdminUserService(Db, null);
 
             //Act
             bool expected = false;
@@ -201,7 +201,7 @@
             userManagerMock.Setup(u => u.FindByIdAsync(user.Id)).Returns(Task.FromResult(user));
 
             //TODO: rewrite this test (now there is no need for userManager)
-            var service = new AdminUserService(Db, userManagerMock.Object, null);
+            var service = new AdminUserService(Db, null);
 
             //Act
             bool expected = false;
@@ -231,7 +231,7 @@
             userManagerMock.Setup(u => u.FindByIdAsync(user.Id)).Returns(Task.FromResult(user));
 
             //TODO: rewrite this test (now there is no need for userManager)
-            var service = new AdminUserService(Db, userManagerMock.Object, null);
+            var service = new AdminUserService(Db, null);
 
             //Act
             bool expected = true;
@@ -260,7 +260,7 @@
             userManagerMock.Setup(u => u.FindByIdAsync(user.Id)).Returns(Task.FromResult(user));
 
             //TODO: rewrite this test (now there is no need for userManager)
-            var service = new AdminUserService(Db, userManagerMock.Object, null);
+            var service = new AdminUserService(Db, null);
 
             //Act
             bool expected = false;
@@ -284,7 +284,7 @@
             userManagerMock.Setup(u => u.FindByIdAsync(user.Id)).Returns(Task.FromResult(user));
 
             //TODO: rewrite this test (now there is no need for userManager)
-            var service = new AdminUserService(Db, userManagerMock.Object, null);
+            var service = new AdminUserService(Db, null);
 
             //Act
             bool expected = false;
