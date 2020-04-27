@@ -1,8 +1,7 @@
 ﻿@model UrbanSolution.Services.Admin.Models.AdminActivitiesListingServiceModel
 
 <tr>
-    <td class="text-center">@Model.EditedUserUserName</td>
-    <td class="text-center">@(Model.Activity + " " + Model.ForRole)</td>
+    <td class="text-center">@(Model.EditedUserUserName + Model.Activity + Model.ForRole)</td>
     <td class="text-center">@Model.CreatedOn</td>
 </tr>
 

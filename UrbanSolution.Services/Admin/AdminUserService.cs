@@ -2,7 +2,6 @@
 {
     using Data;
     using Mapping;
-    using Models;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.AspNetCore.Identity;
     using System;
@@ -22,40 +21,35 @@
         private readonly UserManager<User> userManager;
         private readonly IAdminActivityService activity;
 
-        public AdminUserService(
-            UrbanSolutionDbContext db,
+        public AdminUserService(UrbanSolutionDbContext db,
             UserManager<User> userManager,
             IAdminActivityService activity)
         {
-            //TODO: Remove userManeger!!!!!
             this.db = db;
             this.userManager = userManager;
             this.activity = activity;
         }
 
-        public Task<int> AllCountAsync() => this.db.Users.CountAsync();
-
-        public async Task<(int, IEnumerable<AdminUserListingServiceModel>)> AllAsync(
-            int page, string sortBy, string sortType, string searchType, string searchText, string filter)
+        public async Task<(int, IEnumerable<T>)> AllAsync<T>(int page, string sortBy, 
+            string sortType, string searchType, string searchText, string filter)
         {
             string search = searchText;
             bool hasSearching = !string.IsNullOrEmpty(search);
             bool hasFiltering = filter != null && !string.IsNullOrEmpty(filter) && !filter.Equals(NoFilter);
             bool hasSorting = sortBy != null;
 
-            IQueryable<User> users = this.db.Users.AsNoTracking()
+            IQueryable<UsersWithRoles> users = this.db.UsersWithRoles
+                .AsNoTracking()
                 .OrderBy(u => u.UserName);
 
             if (hasFiltering)
             {
                 users = this.AllFilteredByLockedStatus(users, filter);
             }
-
             if (hasSearching)
             {
                 users = this.AllFilteredBySearch(users, searchType, searchText);
             }
-
             if (hasSorting)
             {
                 users = this.AllSortedBy(users, sortBy, sortType);
@@ -65,31 +59,14 @@
 
             var usersForPage = users.Skip((page - 1) * UsersOnPage).Take(UsersOnPage);
 
-            // for every users gets roles as List<string> and adds the list to List usersRoles
-            List<List<string>> usersRoles = new List<List<string>>();
-            List<User> materializedUsersForPage = await usersForPage.ToListAsync();
-            foreach (var user in materializedUsersForPage)
-            {
-                var userAllRoles = await this.userManager.GetRolesAsync(user);
-                usersRoles.Add(userAllRoles.ToList());
-            }
-
-            var usersModels = await usersForPage
-                .To<AdminUserListingServiceModel>()
-                .ToListAsync();
-
-            //for every user sets the roles
-            for (var i = 0; i < usersModels.Count; i++)
-            {
-                usersModels[i].UserRoles = usersRoles[i];
-            }
+            var usersModels = await usersForPage.To<T>().ToListAsync();
 
             return (filteredUsersCount, usersModels);  
         }
 
-        private IQueryable<User> AllFilteredBySearch(IQueryable<User> users, string searchType, string searchText)
+        private IQueryable<UsersWithRoles> AllFilteredBySearch(IQueryable<UsersWithRoles> users, string searchType, string searchText)
         {
-            Expression<Func<User, bool>> expression = null;
+            Expression<Func<UsersWithRoles, bool>> expression = null;
 
             if (searchType == UsersFilters.UserName.ToString())
                 expression = u => u.UserName.ToUpper().Contains(searchText.ToUpper());
@@ -99,9 +76,9 @@
             return users.Where(expression);
         }
 
-        private IQueryable<User> AllFilteredByLockedStatus(IQueryable<User> users, string filter)
+        private IQueryable<UsersWithRoles> AllFilteredByLockedStatus(IQueryable<UsersWithRoles> users, string filter)
         {
-            Expression<Func<User, bool>> expression = null;
+            Expression<Func<UsersWithRoles, bool>> expression = null;
 
             if (filter == FilterUsersBy.Locked.ToString())
                 expression = u => u.LockoutEnd != null;
@@ -112,9 +89,9 @@
             return users.Where(expression);
         }
 
-        private IQueryable<User> AllSortedBy(IQueryable<User> users, string sortBy, string sortType)
+        private IQueryable<UsersWithRoles> AllSortedBy(IQueryable<UsersWithRoles> users, string sortBy, string sortType)
         {
-            Expression<Func<User, string>> expression = null;
+            Expression<Func<UsersWithRoles, string>> expression = null;
 
             if (sortBy == UserNameProp)
                 expression = u => u.UserName;
@@ -127,32 +104,32 @@
                 : users.OrderByDescending(expression);
         }
 
-        public async Task<bool> UnlockAsync(string userId)
+        public async Task<bool> UnlockAsync(string adminId, User user)
         {
-            User userFromDb = await this.userManager.FindByIdAsync(userId);
-
-            if (userFromDb?.LockoutEnd == null)
+            if (user.LockoutEnd == null)
             {
                 return false;
             }
 
-            userFromDb.LockoutEnd = null;
+            user.LockoutEnd = null;
             await this.db.SaveChangesAsync();
+
+            await this.activity.WriteInfoAsync(adminId, user.Id, string.Empty, AdminActivityType.UnlockedUser);
 
             return true;
         }
 
-        public async Task<bool> LockAsync(string userId, int lockDays)
+        public async Task<bool> LockAsync(string adminId, User user, int lockDays)
         {
-            User userFromDb = await this.userManager.FindByIdAsync(userId);
-
-            if (userFromDb == null || userFromDb.LockoutEnd != null)
+            if (user.LockoutEnd != null)
             {
                 return false;
             }
 
-            userFromDb.LockoutEnd = new DateTimeOffset(DateTime.UtcNow.AddDays(lockDays));
+            user.LockoutEnd = new DateTimeOffset(DateTime.UtcNow.AddDays(lockDays));
             await this.db.SaveChangesAsync();
+
+            await this.activity.WriteInfoAsync(adminId, user.Id, string.Empty, AdminActivityType.LockedUser);
 
             return true;
         }

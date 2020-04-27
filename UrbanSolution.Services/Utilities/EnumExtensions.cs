@@ -9,9 +9,13 @@
             switch (adminActivityType)
             {
                 case AdminActivityType.AddedToRole:
-                    return "User added to role";
+                    return " has been added to role ";
                 case AdminActivityType.RemovedFromRole:
-                    return "User removed from role";
+                    return " has been removed from role ";
+                case AdminActivityType.LockedUser:
+                    return " has been locked";
+                case AdminActivityType.UnlockedUser:
+                    return " has been unlocked";
                 default:
                     return null;
             }

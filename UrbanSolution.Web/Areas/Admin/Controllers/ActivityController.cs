@@ -7,6 +7,8 @@
     using UrbanSolution.Models;
     using UrbanSolution.Services.Admin;
     using UrbanSolution.Services.Admin.Models;
+    using UrbanSolution.Web.Models;
+    using static UrbanSolutionUtilities.WebConstants;
 
     public class ActivityController : BaseController
     {
@@ -19,15 +21,23 @@
             this.activities = activities;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
             var admin = await this.UserManager.GetUserAsync(this.User);
 
+            (int count, var activities) = await this.activities
+                    .AllAsync<AdminActivitiesListingServiceModel>(admin.Id, page);
+
             var model = new AdminActivityIndexModel
             {
-                Activities =  await this.activities
-                    .AllAsync<AdminActivitiesListingServiceModel>(admin.Id),
-                AdminUserName = (await this.UserManager.GetUserAsync(this.User)).UserName
+                Activities = activities,
+                AdminUserName = admin.UserName,
+                PagesModel = new PagesModel 
+                { 
+                    CurrentPage = page,
+                    TotalItems = count,
+                    ItemsOnPage = ActivityRowsOnPage
+                }
             };
 
             return this.View(model);

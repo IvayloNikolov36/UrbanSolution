@@ -20,7 +20,7 @@
         {
             configuration.CreateMap<AdminLog, AdminActivitiesListingServiceModel>()
                 .ForMember(x => x.EditedUserUserName, m => m.MapFrom(e => e.EditedUser.UserName))
-                .ForMember(x => x.Activity, m => m.MapFrom(e => e.Activity.ToFriendlyName()));  
+                .ForMember(x => x.Activity, m => m.MapFrom(e => e.Activity.ToFriendlyName()));
         }
 
     }

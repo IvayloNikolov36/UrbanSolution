@@ -10,6 +10,8 @@
     <Compile Remove="Migrations\20181203133830_AddedRatingTable.cs" />
     <Compile Remove="Migrations\20181224142002_AddedCloudinaryImagesTable.cs" />
     <Compile Remove="Migrations\20190103131001_AddedArticleImageColumn.cs" />
+    <Compile Remove="Migrations\20200426225710_UsersWithRoles.cs" />
+    <Compile Remove="Migrations\20200426225710_UsersWithRoles.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

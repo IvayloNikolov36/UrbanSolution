@@ -15,15 +15,18 @@
     using UrbanSolution.Services.Admin;
     using UrbanSolutionUtilities.Enums;
     using UrbanSolutionUtilities.Extensions;
-    using static UrbanSolutionUtilities.WebConstants;
     using UrbanSolution.Web.Models;
+    using static UrbanSolutionUtilities.WebConstants;
+    using UrbanSolution.Services.Admin.Models;
 
     public class UsersController : BaseController
     {
         private readonly RoleManager<IdentityRole> roleManager;
         private readonly IAdminUserService users;
 
-        public UsersController(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IAdminUserService users)
+        public UsersController(UserManager<User> userManager, 
+            RoleManager<IdentityRole> roleManager, 
+            IAdminUserService users)
             : base(userManager)
         {
             this.roleManager = roleManager;
@@ -32,17 +35,16 @@
 
         public async Task<IActionResult> Index(SearchSortAndFilterModel model)
         {
-            (int totalUsers, var modelUsers) = await this.users.AllAsync(
-                model.Page, model.SortBy, model.SortType, model.SearchType, model.SearchText, model.Filter);
-
-            var allRoles = this.roleManager.Roles
-                .Select(r => new SelectListItem(r.Name, r.Name))
-                .ToList();
+            (int filteredUsersCount, var modelUsers) = await this.users
+                .AllAsync<AdminUserListingServiceModel>(model.Page, model.SortBy, 
+                    model.SortType, model.SearchType, model.SearchText, model.Filter);
 
             var tableDataModel = new AdminUsersListingTableModel
             {
                 Users = modelUsers,
-                AllRoles = allRoles,
+                AllRoles = this.roleManager.Roles
+                .Select(r => new SelectListItem(r.Name, r.Name))
+                .ToList(),
                 LockDays = GetDropDownLockedDaysOptions()
             };
 
@@ -50,7 +52,7 @@
             {
                 ItemsOnPage = UsersOnPage,
                 CurrentPage = model.Page,
-                TotalItems = totalUsers,
+                TotalItems = filteredUsersCount,
                 SortBy = model.SortBy,
                 SortType = model.SortType,
                 SearchType = model.SearchType,
@@ -71,9 +73,10 @@
         [HttpPost]
         public async Task<IActionResult> Unlock(string userId)
         {
-            var user = await this.UserManager.FindByIdAsync(userId);
+            User admin = await this.UserManager.GetUserAsync(this.User);
+            User user = await this.UserManager.FindByIdAsync(userId);
 
-            bool isUnlocked = await this.users.UnlockAsync(userId);
+            bool isUnlocked = await this.users.UnlockAsync(admin.Id, user);
 
             if (!isUnlocked)
             {
@@ -94,10 +97,10 @@
                 this.RedirectToAction(nameof(Index))
                     .WithDanger(string.Empty, LockDaysNotValid);
             }
-
+            User admin = await this.UserManager.GetUserAsync(this.User);
             var user = await this.UserManager.FindByIdAsync(userId);
 
-            bool isLocked = await this.users.LockAsync(userId, daysToLock);
+            bool isLocked = await this.users.LockAsync(admin.Id, user, daysToLock);
 
             if (!isLocked)
             {
@@ -114,13 +117,12 @@
         [ServiceFilter(typeof(ValidateUserAndRoleExistsAttribute))]
         public async Task<IActionResult> AddToRole(UserToRoleFormModel model)
         {
-            var admin = await this.UserManager.GetUserAsync(this.User);
+            User admin = await this.UserManager.GetUserAsync(this.User);
+            User user = await this.UserManager.FindByIdAsync(model.UserId);
 
-            var user = await this.UserManager.FindByIdAsync(model.UserId);
+            bool isSetRole = await this.users.AddToRoleAsync(admin.Id, user.Id, model.Role);
 
-            var isAdded = await this.users.AddToRoleAsync(admin.Id, user.Id, model.Role);
-
-            if (!isAdded)
+            if (!isSetRole)
             {
                 return this.RedirectToAction(nameof(Index))
                     .WithWarning(string.Empty, string.Format(UserAlreadyInRole, user.UserName, model.Role));
@@ -135,13 +137,12 @@
         [ServiceFilter(typeof(ValidateUserAndRoleExistsAttribute))]
         public async Task<IActionResult> RemoveFromRole(UserToRoleFormModel model)
         {
-            var admin = await this.UserManager.GetUserAsync(this.User);
+            User admin = await this.UserManager.GetUserAsync(this.User);
+            User user = await this.UserManager.FindByIdAsync(model.UserId);
 
-            var user = await this.UserManager.FindByIdAsync(model.UserId);
+            bool isDone = await this.users.RemoveFromRoleAsync(admin.Id, user.Id, model.Role);
 
-            var isDeleted = await this.users.RemoveFromRoleAsync(admin.Id, user.Id, model.Role);
-
-            if (!isDeleted)
+            if (!isDone)
             {
                 return this.RedirectToAction(nameof(Index))
                     .WithWarning(string.Empty, string.Format(UserIsNotSetToRole, user.UserName, model.Role));

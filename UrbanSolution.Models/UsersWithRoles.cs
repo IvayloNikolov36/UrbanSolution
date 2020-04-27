@@ -1,10 +1,8 @@
-﻿namespace UrbanSolution.Services.Admin.Models
-{
-    using Mapping;
-    using System;
-    using UrbanSolution.Models;
+﻿using System;
 
-    public class AdminUserListingServiceModel : IMapFrom<UsersWithRoles>
+namespace UrbanSolution.Models
+{
+    public class UsersWithRoles
     {
         public string Id { get; set; }
 
@@ -15,6 +13,5 @@
         public DateTimeOffset? LockoutEnd { get; set; }
 
         public string UserRoles { get; set; }
-
     }
 }

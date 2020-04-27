@@ -6,7 +6,6 @@
     using System.Collections.Generic;
     using System;
     using System.Linq;
-    using System.Linq.Expressions;
     using System.Threading.Tasks;
     using UrbanSolution.Models;
     using static UrbanSolutionUtilities.WebConstants;
@@ -27,48 +26,37 @@
             bool filterByRegion = isRegionParsed && regionType != RegionType.All;
             bool filterByType = Enum.TryParse(typeFilter, true, out IssueType issueType);
 
-            Expression<Func<UrbanIssue, bool>> predicate = i => i.IsApproved == isApproved;
+            var issues = this.db.UrbanIssues.AsNoTracking().Where(i => i.IsApproved);
 
-            if (filterByRegion && filterByType)
+            if (filterByRegion)
             {
-                predicate = i => i.IsApproved == isApproved
-                    && i.Region == regionType
-                    && i.Type == issueType;
+                issues = issues.Where(i => i.Region == regionType);
             }
 
-            if (filterByRegion && !filterByType)
+            if (filterByType)
             {
-                predicate = i => i.IsApproved == isApproved 
-                    && i.Region == regionType;
+                issues = issues.Where(i => i.Type == issueType);
             }
-
-            if (filterByType && !filterByRegion)
-            {
-                predicate = i => i.IsApproved == isApproved 
-                    && i.Type == issueType;
-            }
-
-            var query = this.db.UrbanIssues.AsNoTracking().Where(predicate);
 
             if (sortType == null)
             {
                 sortType = SortDesc;
             }
 
-            query = sortType == SortAsc
-                ? query.OrderBy(i => i.PublishedOn)
-                : query.OrderByDescending(i => i.PublishedOn);
+            issues = sortType == SortAsc
+                ? issues.OrderBy(i => i.PublishedOn)
+                : issues.OrderByDescending(i => i.PublishedOn);
 
-            int filteredIssuesCount = await query.CountAsync();
+            int filteredIssuesCount = await issues.CountAsync();
             int pagesCount = (int)Math.Ceiling((double)filteredIssuesCount / (IssuesOnRow * rowsCount));
 
-            var issues = await query
+            var issuesModel = await issues
                 .Skip((page - 1) * IssuesOnRow * rowsCount)
                 .Take(IssuesOnRow * rowsCount)
                 .To<TModel>()
                 .ToListAsync();
 
-            return (pagesCount, issues);
+            return (pagesCount, issuesModel);
         }
 
         public async Task<int> TotalAsync(bool isApproved)

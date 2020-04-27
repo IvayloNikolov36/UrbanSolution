@@ -1,6 +1,5 @@
 ﻿namespace UrbanSolution.Web.Areas.Manager.Controllers
 {
-    using Infrastructure;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;

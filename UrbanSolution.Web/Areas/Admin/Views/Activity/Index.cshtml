@@ -1,6 +1,6 @@
 ﻿@model AdminActivityIndexModel
 @{
-    ViewData["Title"] = "Administrators activity";
+    ViewData["Title"] = "Your activity";
 }
 
 <div row class="text-info text-center">
@@ -11,7 +11,6 @@
 <table class="table table-bordered table-striped table table-hover">
     <thead>
     <tr>
-        <th class="text-center"><strong>Username</strong></th>
         <th class="text-center"><strong>Action</strong></th>
         <th class="text-center"><strong>Date</strong></th>
     </tr>   
@@ -21,3 +20,4 @@
     </tbody>
 </table>
 
+<partial name="_PagingPartial" model="@Model.PagesModel">

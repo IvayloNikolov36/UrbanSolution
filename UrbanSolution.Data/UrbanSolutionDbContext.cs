@@ -32,6 +32,8 @@
 
         public DbSet<Rating> Ratings { get; set; }
 
+        public DbSet<UsersWithRoles> UsersWithRoles { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             //Mappings
@@ -87,6 +89,11 @@
                 .HasMany(u => u.PublishedArticles)
                 .WithOne(a => a.Author)
                 .HasForeignKey(e => e.AuthorId);
+
+            // DB VIEW
+            builder.Entity<UsersWithRoles>()
+                .HasNoKey()
+                .ToView("UsersWithRoles", "dbo");
 
             base.OnModelCreating(builder);
         }

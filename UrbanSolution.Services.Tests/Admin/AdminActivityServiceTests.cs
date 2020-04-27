@@ -32,8 +32,9 @@
 
             var service = new AdminActivityService(this.Db);
 
+            //TODO: rewrite the test - there is new parameter - page
             //Act
-            var result = await service.AllAsync<AdminActivitiesListingServiceModel>(admin.Id);
+            (int count, var result) = await service.AllAsync<AdminActivitiesListingServiceModel>(admin.Id, 1);
 
             var expectedCount = this.Db.AdminLogs.Count();
 
@@ -55,7 +56,6 @@
             {
                 var log = logsModel[i];
                 editedUsersUserNames[i].Should().Be(log.EditedUserUserName);
-
             }
         }
 
