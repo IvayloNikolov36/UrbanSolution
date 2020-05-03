@@ -4,9 +4,9 @@
     using System.Collections.Generic;
     using UrbanSolution.Services.Admin.Models;
 
-    public class AdminUsersListingTableModel
+    public class AdminUserTableRowModel
     {
-        public IEnumerable<AdminUserListingServiceModel> Users { get; set; }
+        public AdminUserListingServiceModel User { get; set; }
 
         public IEnumerable<SelectListItem> LockDays { get; set; }
     }

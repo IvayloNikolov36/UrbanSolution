@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace UrbanSolution.Models
+﻿namespace UrbanSolution.Models
 {
+    using System;
+
     public class UsersWithRoles
     {
         public string Id { get; set; }
@@ -13,5 +13,7 @@ namespace UrbanSolution.Models
         public DateTimeOffset? LockoutEnd { get; set; }
 
         public string UserRoles { get; set; }
+
+        public string UserNotInRoles { get; set; }
     }
 }

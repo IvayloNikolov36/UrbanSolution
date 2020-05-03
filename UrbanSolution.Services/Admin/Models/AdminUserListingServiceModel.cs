@@ -16,5 +16,6 @@
 
         public string UserRoles { get; set; }
 
+        public string UserNotInRoles { get; set; }
     }
 }

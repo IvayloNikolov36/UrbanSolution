@@ -1,0 +1,54 @@
+﻿@model UrbanSolution.Web.Areas.Admin.Models.AdminUserTableRowModel
+@{
+    var userAddToRoles = Model.User.UserNotInRoles.Split(new[] {','}).Select(r => new SelectListItem(r, r));
+    var userRemoveFromRoles = Model.User.UserRoles.Split(new[] {','}).Select(r => new SelectListItem(r, r));
+}
+
+<td class="text-center">@Model.User.UserName</td>
+<td class="text-center">@Model.User.Email</td>
+<td class="text-center">
+    @(@Model.User.LockoutEnd == null ? "Not Locked" : @Model.User.LockoutEnd.Value.ToString())
+</td>
+<td>
+    @if (@Model.User.LockoutEnd != null)
+    {
+        <div class="form-inline text-center">
+            <button onclick="unlockUser('@Model.User.Id')" type="button" class="btn btn-sm btn-success">Unlock</button>
+        </div>
+    }
+    else
+    {
+        <div class="form-inline text-center">
+            <select id="lockDays@(Model.User.Id)" name="LockDays" asp-items="Model.LockDays" class="form-control"></select>
+            <button onclick="lockUser('@Model.User.Id')" type="button" class="btn btn-sm btn-danger"><i class="glyphicon glyphicon-lock"></i></button>
+        </div>
+    }
+
+</td>
+@*AddToRole*@
+<td>
+    @if (userAddToRoles.Any())
+    {
+        <div class="form-inline text-center">
+            <select id="addToRole@(Model.User.Id)" asp-items="userAddToRoles" class="form-control"></select>
+            <button onclick="addToRole('@Model.User.Id')" class="btn btn-sm btn-success" type="button">
+                <i class="glyphicon glyphicon-ok"></i>
+            </button>
+        </div>
+    }
+</td>
+@*RemoveFromRole*@
+<td>
+    @if (userRemoveFromRoles.Any())
+    {
+        <div class="col-md-8">
+            <select id="removeFromRole@(Model.User.Id)" asp-items="userRemoveFromRoles" class="form-control"></select>
+        </div>
+        <div class="col-md-2">
+            <button onclick="removeFromRole('@Model.User.Id')" class="btn btn-sm btn-danger" type="button">
+                <i class="glyphicon glyphicon-remove"></i>
+            </button>
+        </div>
+    }
+</td>
+

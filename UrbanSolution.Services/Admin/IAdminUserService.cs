@@ -6,6 +6,8 @@
 
     public interface IAdminUserService
     {
+        Task<T> SingleAsync<T>(string userId);
+
         Task<(int, IEnumerable<T>)> AllAsync<T>(int page, string sortBy, string sortType, string searchType,
             string searchText, string filter);
 

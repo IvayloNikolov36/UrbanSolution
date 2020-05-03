@@ -1,13 +1,10 @@
 ﻿namespace UrbanSolution.Web.Areas.Admin.Controllers
 {
     using UrbanSolution.Web.Infrastructure.Enums;
-    using UrbanSolution.Web.Infrastructure.Extensions;
-    using UrbanSolution.Web.Infrastructure.Filters;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Rendering;
     using UrbanSolution.Web.Areas.Admin.Models;
-    using System.Linq;
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
@@ -16,16 +13,17 @@
     using UrbanSolutionUtilities.Enums;
     using UrbanSolutionUtilities.Extensions;
     using UrbanSolution.Web.Models;
-    using static UrbanSolutionUtilities.WebConstants;
     using UrbanSolution.Services.Admin.Models;
+    using UrbanSolution.Web.Infrastructure.Extensions;
+    using static UrbanSolutionUtilities.WebConstants;
 
     public class UsersController : BaseController
     {
         private readonly RoleManager<IdentityRole> roleManager;
         private readonly IAdminUserService users;
 
-        public UsersController(UserManager<User> userManager, 
-            RoleManager<IdentityRole> roleManager, 
+        public UsersController(UserManager<User> userManager,
+            RoleManager<IdentityRole> roleManager,
             IAdminUserService users)
             : base(userManager)
         {
@@ -36,15 +34,12 @@
         public async Task<IActionResult> Index(SearchSortAndFilterModel model)
         {
             (int filteredUsersCount, var modelUsers) = await this.users
-                .AllAsync<AdminUserListingServiceModel>(model.Page, model.SortBy, 
+                .AllAsync<AdminUserListingServiceModel>(model.Page, model.SortBy,
                     model.SortType, model.SearchType, model.SearchText, model.Filter);
 
             var tableDataModel = new AdminUsersListingTableModel
             {
                 Users = modelUsers,
-                AllRoles = this.roleManager.Roles
-                .Select(r => new SelectListItem(r.Name, r.Name))
-                .ToList(),
                 LockDays = GetDropDownLockedDaysOptions()
             };
 
@@ -62,7 +57,7 @@
 
             var viewModel = new AdminUsersListingViewModel
             {
-                TableDataModel = tableDataModel,               
+                TableDataModel = tableDataModel,
                 PagesModel = pagesModel,
                 FilterByOptions = GetDropDownFilterUsersOptions(),
             };
@@ -71,92 +66,122 @@
         }
 
         [HttpPost]
-        public async Task<IActionResult> Unlock(string userId)
+        public async Task<IActionResult> Unlock([FromBody] UnlockUserInputModel model)
         {
+            if (!this.ModelState.IsValid)
+            {
+                this.TempData.AddErrorMessage(this.ModelState.ErrorsAsString());
+                return this.Json(new { redirectTo = Url.Action(nameof(Index)) });
+            }
+
+            User user = await this.UserManager.FindByIdAsync(model.UserId);
+            if (user == null)
+            {
+                this.TempData.AddErrorMessage(NoUserFound);
+                return this.Json(new { redirectTo = Url.Action(nameof(Index)) });
+            }
+
             User admin = await this.UserManager.GetUserAsync(this.User);
-            User user = await this.UserManager.FindByIdAsync(userId);
 
             bool isUnlocked = await this.users.UnlockAsync(admin.Id, user);
-
             if (!isUnlocked)
             {
-                return this.RedirectToAction(nameof(Index))
-                    .WithDanger(string.Empty, string.Format(UserIsNotUnlocked, user.UserName));
+                this.TempData.AddErrorMessage(string.Format(UserIsNotUnlocked, user.UserName));
+                return this.Json(new { redirectTo = Url.Action(nameof(Index)) });
             }
 
-            return this.RedirectToAction(nameof(Index))
-                .WithSuccess(string.Empty, string.Format(UserUnlocked, user.UserName));
+            var partialViewModel = await CreatePartialViewModelAsync(model.UserId);
+
+            return this.PartialView("_AdminUserTableRow", partialViewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Lock(string userId, string LockDays)
+        public async Task<IActionResult> Lock([FromBody] LockUserInputModel model)
         {
-            bool isParsed = int.TryParse(LockDays, out int daysToLock);
-            if (!isParsed)
+            if (!this.ModelState.IsValid)
             {
-                this.RedirectToAction(nameof(Index))
-                    .WithDanger(string.Empty, LockDaysNotValid);
+                this.TempData.AddErrorMessage(this.ModelState.ErrorsAsString());
+                return this.Json(new { redirectTo = Url.Action(nameof(Index)) });
             }
+
             User admin = await this.UserManager.GetUserAsync(this.User);
-            var user = await this.UserManager.FindByIdAsync(userId);
+            var user = await this.UserManager.FindByIdAsync(model.UserId);
 
-            bool isLocked = await this.users.LockAsync(admin.Id, user, daysToLock);
-
+            bool isLocked = await this.users.LockAsync(admin.Id, user, model.LockDays);
             if (!isLocked)
             {
-                return this.RedirectToAction(nameof(Index))
-                    .WithDanger(string.Empty, string.Format(UserIsNotLocked, user.UserName));
+                this.TempData.AddErrorMessage(string.Format(UserIsNotLocked, user.UserName));
+                return this.Json(new { redirectTo = Url.Action(nameof(Index)) });
             }
 
-            return this.RedirectToAction(nameof(Index))
-                .WithSuccess(string.Empty, string.Format(UserLocked, user.UserName, $"{LockDays} days."));
+            var partialViewModel = await CreatePartialViewModelAsync(model.UserId);
+
+            return this.PartialView("_AdminUserTableRow", partialViewModel);
         }
 
         [HttpPost]
-        [RedirectIfModelStateIsInvalid]
-        [ServiceFilter(typeof(ValidateUserAndRoleExistsAttribute))]
-        public async Task<IActionResult> AddToRole(UserToRoleFormModel model)
+        public async Task<IActionResult> AddToRole([FromBody] UserToRoleFormModel model)
         {
+            if (!this.ModelState.IsValid)
+            {
+                this.TempData.AddErrorMessage(this.ModelState.ErrorsAsString());
+                return this.Json(new { redirectTo = Url.Action(nameof(Index)) });
+            }
+
             User admin = await this.UserManager.GetUserAsync(this.User);
             User user = await this.UserManager.FindByIdAsync(model.UserId);
 
             bool isSetRole = await this.users.AddToRoleAsync(admin.Id, user.Id, model.Role);
-
             if (!isSetRole)
             {
-                return this.RedirectToAction(nameof(Index))
-                    .WithWarning(string.Empty, string.Format(InvalidUserOrRole, user.UserName, model.Role));
+                this.TempData.AddErrorMessage(string.Format(InvalidUserOrRole, user.UserName, model.Role));
+                return this.Json(new { redirectTo = Url.Action(nameof(Index)) });
             }
 
-            return this.RedirectToAction(nameof(Index))
-                .WithSuccess(string.Empty, string.Format(UserAddedToRoleSuccess, user.UserName, model.Role));
+            var partialViewModel = await CreatePartialViewModelAsync(model.UserId);
+
+            return this.PartialView("_AdminUserTableRow", partialViewModel);
         }
 
         [HttpPost]
-        [RedirectIfModelStateIsInvalid]
-        [ServiceFilter(typeof(ValidateUserAndRoleExistsAttribute))]
-        public async Task<IActionResult> RemoveFromRole(UserToRoleFormModel model)
+        public async Task<IActionResult> RemoveFromRole([FromBody] UserToRoleFormModel model)
         {
+            if (!this.ModelState.IsValid)
+            {
+                this.TempData.AddErrorMessage(this.ModelState.ErrorsAsString());
+                return this.Json(new { redirectTo = Url.Action(nameof(Index)) });
+            }
+
             User admin = await this.UserManager.GetUserAsync(this.User);
             User user = await this.UserManager.FindByIdAsync(model.UserId);
 
             bool isDone = await this.users.RemoveFromRoleAsync(admin.Id, user.Id, model.Role);
-
             if (!isDone)
             {
-                return this.RedirectToAction(nameof(Index))
-                    .WithWarning(string.Empty, string.Format(UserIsNotSetToRole, user.UserName, model.Role));
+                this.TempData.AddErrorMessage(string.Format(UserNotRemovedFromRole, user.UserName, model.Role));
+                return this.Json(new { redirectTo = Url.Action(nameof(Index)) });
             }
 
-            return this.RedirectToAction(nameof(Index))
-                .WithSuccess(string.Empty, string.Format(UserRemovedFromRoleSuccess, user.UserName, model.Role));
+            var partialViewModel = await CreatePartialViewModelAsync(model.UserId);
+
+            return this.PartialView("_AdminUserTableRow", partialViewModel);
+        }
+
+        private async Task<AdminUserTableRowModel> CreatePartialViewModelAsync(string userId)
+        {
+            return new AdminUserTableRowModel
+            {
+                User = await this.users
+                    .SingleAsync<AdminUserListingServiceModel>(userId),
+                LockDays = this.GetDropDownLockedDaysOptions()
+            };
         }
 
         private IEnumerable<SelectListItem> GetDropDownLockedDaysOptions()
         {
             var lockDays = new List<SelectListItem>();
 
-            foreach (var ld in (int[])Enum.GetValues(typeof(LockDays)))
+            foreach (int ld in Enum.GetValues(typeof(LockDays)))
                 lockDays.Add(new SelectListItem(ld.ToString(), ld.ToString()));
 
             return lockDays;
@@ -169,9 +194,7 @@
             foreach (string filter in Enum.GetNames(typeof(FilterUsersBy)))
             {
                 if (!filterBy.ContainsKey(filter))
-                {
                     filterBy.Add(filter, filter.SeparateStringByCapitals());
-                }
             }
 
             return filterBy;

@@ -28,6 +28,15 @@
             this.activity = activity;
         }
 
+
+        public async Task<T> SingleAsync<T>(string userId)
+        {
+            return await this.db.UsersWithRoles.AsNoTracking()
+                .Where(u => u.Id == userId)
+                .To<T>()
+                .FirstOrDefaultAsync();
+        }
+
         public async Task<(int, IEnumerable<T>)> AllAsync<T>(int page, string sortBy, 
             string sortType, string searchType, string searchText, string filter)
         {
@@ -110,7 +119,7 @@
             }
 
             user.LockoutEnd = null;
-            await this.db.SaveChangesAsync();
+            //await this.db.SaveChangesAsync(); it will be invoked in WriteInfoAsync
 
             await this.activity.WriteInfoAsync(adminId, user.Id, string.Empty, AdminActivityType.UnlockedUser);
 
@@ -125,7 +134,7 @@
             }
 
             user.LockoutEnd = new DateTimeOffset(DateTime.UtcNow.AddDays(lockDays));
-            await this.db.SaveChangesAsync();
+            //await this.db.SaveChangesAsync();
 
             await this.activity.WriteInfoAsync(adminId, user.Id, string.Empty, AdminActivityType.LockedUser);
 
@@ -182,5 +191,6 @@
 
             return true;
         }
+
     }
 }

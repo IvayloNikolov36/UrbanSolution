@@ -101,7 +101,7 @@
             services.AddControllersWithViews(options =>
             {
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()); // CSRF
-            });
+            }).AddNewtonsoftJson();
 
             services.AddAntiforgery(options =>
             {

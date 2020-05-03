@@ -1,37 +1,33 @@
 ﻿@model UrbanSolution.Web.Areas.Admin.Models.AdminUsersListingTableModel
 
-
 @foreach (var user in Model.Users)
 {
-    var userAddToRoles = Model.AllRoles.Where(r => !user.UserRoles.Contains(r.Text));
-    var userRemoveFromRoles = Model.AllRoles.Where(r => user.UserRoles.Contains(r.Text));
+    IEnumerable<SelectListItem> userAddToRoles = user.UserNotInRoles
+        .Split(new[] { ',' }).Select(r => new SelectListItem(r, r));
+    IEnumerable<SelectListItem> userRemoveFromRoles = user.UserRoles.Split(new[] { ',' })
+        .Select(r => new SelectListItem(r, r));
 
-    <tr>
+    <tr id="tr@(user.Id)">
         <td class="text-center">@user.UserName</td>
         <td class="text-center">@user.Email</td>
         <td class="text-center">
-            @(user.LockoutEnd == null ? "Not Locked" :  user.LockoutEnd.Value.ToString())
+            @(user.LockoutEnd == null ? "Not Locked" : user.LockoutEnd.Value.ToString())
         </td>
         <td>
             @if (user.LockoutEnd != null)
             {
-                <form asp-controller="Users" asp-action="Unlock" method="post">
-                    <input type="hidden" name="UserId" value="@user.Id" />
-                    <div class="form-inline text-center">
-                        <input class="btn btn-sm btn-success" type="submit" value="Unlock" />
-                    </div>
-                </form>
+                //Unlock user unlockUser
+                <div class="form-inline text-center">
+                    <button onclick="unlockUser('@user.Id')" type="button" class="btn btn-sm btn-success">Unlock</button>
+                </div>
             }
             else
             {
-                <form asp-controller="Users" asp-action="Lock" method="post">
-                    <input type="hidden" name="UserId" value="@user.Id" />
-                    <div class="form-inline text-center">
-                        <select name="LockDays" asp-items="Model.LockDays" class="form-control"></select>
-                        <button class="btn btn-sm btn-danger" type="submit" value="Lock"><i class="glyphicon glyphicon-lock"></i></button>
-                    </div>
-
-                </form>
+                //Lock  User
+                <div class="form-inline text-center">
+                    <select id="lockDays@(user.Id)" name="LockDays" asp-items="Model.LockDays" class="form-control"></select>
+                    <button onclick="lockUser('@user.Id')" type="button" class="btn btn-sm btn-danger"><i class="glyphicon glyphicon-lock"></i></button>
+                </div>
             }
 
         </td>
@@ -39,32 +35,26 @@
         <td>
             @if (userAddToRoles.Any())
             {
-                <form asp-controller="Users" asp-action="AddToRole" method="post">
-                    <div class="form-inline text-center">
-                        <input type="hidden" name="UserId" value="@user.Id" />
-                        <select name="Role" asp-items="userAddToRoles" class="form-control"></select>
-                        <button class="btn btn-sm btn-success" type="submit" value="Add">
-                            <i class="glyphicon glyphicon-ok"></i>
-                        </button>
-                    </div>
-                </form>
+                <div class="form-inline text-center">
+                    <select id="addToRole@(user.Id)" asp-items="userAddToRoles" class="form-control"></select>
+                    <button onclick="addToRole('@user.Id')" class="btn btn-sm btn-success" type="button">
+                        <i class="glyphicon glyphicon-ok"></i>
+                    </button>
+                </div>
             }
         </td>
         @*RemoveFromRole*@
         <td>
             @if (userRemoveFromRoles.Any())
             {
-                <form asp-controller="Users" asp-action="RemoveFromRole" method="post">
-                    <div class="col-md-8">
-                        <input type="hidden" name="UserId" value="@user.Id" />
-                        <select name="Role" asp-items="userRemoveFromRoles" class="form-control"></select>
-                    </div>
-                    <div class="col-md-2">
-                        <button class="btn btn-sm btn-danger" type="submit" value="Remove">
-                            <i class="glyphicon glyphicon-remove"></i>
-                        </button>
-                    </div>
-                </form>
+                <div class="col-md-8">
+                    <select id="role@(user.Id)" name="Role" asp-items="userRemoveFromRoles" class="form-control"></select>
+                </div>
+                <div class="col-md-2">
+                    <button onclick="removeFromRole('@user.Id')" class="btn btn-sm btn-danger" type="button">
+                        <i class="glyphicon glyphicon-remove"></i>
+                    </button>
+                </div>
             }
         </td>
     </tr>

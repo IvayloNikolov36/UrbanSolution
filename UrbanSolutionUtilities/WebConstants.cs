@@ -42,11 +42,13 @@
 
         public const string UserAddedToRoleSuccess = "User '{0}' successfully added to role {1}.";
         public const string UserRemovedFromRoleSuccess = "User '{0}' successfully removed from role {1}.";
-        public const string UserIsNotSetToRole = "User '{0}' is not set to role {1}.";
+        public const string UserNotRemovedFromRole = "User '{0}' can't be removed from role {1} because it was not assing to this role!";
         public const string UserAlreadyInRole = "User '{0}' has been already {1}.";
+        public const string InvalidUserOrRole = "User or role is invalid!";
         public const string UserUnlocked = "User '{0}' is unlocked!";
         public const string UserLocked = "User '{0}' is locked for {1}!";
         public const string UserIsNotUnlocked = "User {0} is not unlocked! Invalid user id!";
+        public const string NoUserFound = "User is not existing!";
         public const string UserIsNotLocked = "User {0} is not locked! Invalid user id!";
         public const string LockDaysNotValid = "Given lock days value is not valid!";
 
@@ -165,6 +167,7 @@
 
         public const int IssuesOnRow = 6;
         public const int UsersOnPage = 6;
+        public const int ActivityRowsOnPage = 9;
         public const int ArticlesPageSize = 2;
         public const int EventsPageSize = 2;
 

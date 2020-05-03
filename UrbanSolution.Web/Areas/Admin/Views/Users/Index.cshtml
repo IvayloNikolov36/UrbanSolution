@@ -1,4 +1,5 @@
 ﻿@model AdminUsersListingViewModel
+@inject IAntiforgery AF
 @{
     ViewData[TitleKey] = "Users Administration";
 }
@@ -11,7 +12,7 @@
 
     <form asp-controller="Users" asp-action="Index" method="get">
         <div class="row">
-            
+
             @*Sorting*@
             <div class="col-lg-4">
                 <div class="form-inline">
@@ -28,7 +29,7 @@
                                 <option value="@kvp.Value">@kvp.Key</option>
                             }
                         }
-                    </select> 
+                    </select>
 
                     <select name="SortType" class="form-control">
                         @foreach (string sortType in Model.SortingType)
@@ -46,7 +47,7 @@
                     <input type="submit" value="Sort" class="btn btn-default" />
                 </div>
             </div>
-            
+
             @* Searching *@
             <div class="col-lg-4">
                 <div class="form-inline">
@@ -62,12 +63,12 @@
                                 <option value="@kvp.Value">@kvp.Key</option>
                             }
                         }
-                    </select> 
+                    </select>
                     <input type="text" name="SearchText" value="@Model.PagesModel.SearchText" class="form-control" placeholder="Search..." />
                     <button type="submit" value="Search" class="btn btn-default"><i class="glyphicon glyphicon-search"></i></button>
                 </div>
             </div>
-            
+
             @*Filter*@
             <div class="col-lg-4">
                 <div class="form-inline">
@@ -116,7 +117,72 @@
     </thead>
     <tbody>
         <partial name="_AdminUsersListingPartial" model="Model.TableDataModel" />
-    </tbody>   
 </table>
 
 <partial name="_PagingPartial" model="@Model.PagesModel" />
+
+@section Scripts {
+
+    <script>
+        function lockUser(userId) {
+            var selector = `#lockDays${userId}`;
+            var json = {
+                userId: userId,
+                lockDays: $(selector).find(":selected").val()
+            };
+            var url = "/Admin/Users/Lock";
+            urlPostRequest(url, json, userId);
+        }
+
+        function unlockUser(userId) {
+            var json = { userId: userId };
+            var url = "/Admin/Users/Unlock";
+            urlPostRequest(url, json, userId);            
+        }
+
+        function addToRole(userId) {
+            var selector = `#addToRole${userId}`;
+            var json = {
+                userId: userId,
+                role: $(selector).find(":selected").val()
+            };
+            var url = "/Admin/Users/AddToRole";
+            urlPostRequest(url, json, userId);
+        }
+
+        function removeFromRole(userId) {
+            var selector = `#removeFromRole${userId}`;
+            var json = {
+                userId: userId,
+                role: $(selector).find(":selected").val()
+            };
+            var url = "/Admin/Users/RemoveFromRole";
+            urlPostRequest(url, json, userId);
+        }
+
+        function urlPostRequest(url, json, userId) {
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: JSON.stringify(json),
+                contentType: 'application/json; charset=UTF-8',
+                headers: { 'X-CSRF-TOKEN': "@(AF.GetTokens(this.Context).RequestToken)" },
+                success: function (result) {
+                     if (result.redirectTo) {
+                        window.location.href = result.redirectTo;
+                     } else {
+                         selector = `#tr${userId}`;
+                         fadeInEffect(result, selector);
+                     }
+                }
+            });
+        }
+
+        function fadeInEffect(html, selector) {
+            $(selector).empty();
+            $(selector).html(html).hide().fadeIn(2500);
+        }
+
+    </script>
+
+}
