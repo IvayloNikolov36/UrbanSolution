@@ -1,77 +1,181 @@
 ﻿@model PagesModel
+@{
+    int maxButtonAfterCurrent = (Model.CurrentPage + 1 + ButtonsBeforeAndAfterCurrent);
+    int minButtonBeforeCurrent = Math.Max((Model.CurrentPage - ButtonsBeforeAndAfterCurrent), 2);
+}
 
 <ul class="pagination">
-    @* Show or Hide Button for Previous Page *@
-    <li class="@(Model.CurrentPage == 1 ?  Hide : string.Empty)">
-        <a asp-action="Index"
-           asp-route-page="@Model.PreviousPage"
-           asp-route-sortby="@Model.SortBy"
-           asp-route-sorttype="@Model.SortType"
-           asp-route-searchtype="@Model.SearchType"
-           asp-route-searchtext="@Model.SearchText"
-           asp-route-filter="@Model.Filter"
-           aria-label="Previous">
-            <span aria-hidden="true">&laquo;</span> @*&nbsp; prev*@
-        </a>
-    </li>
+    @* Enable or Disable Button for Previous Page *@
+    @if (Model.CurrentPage == 1)
+    {
+        <li class="disabled">
+            <a>
+                <span aria-hidden="true">Previous</span>
+            </a>
+        </li>
+    }
+    else
+    {
+        <li>
+            <a asp-action="Index"
+               asp-route-page="@Model.PreviousPage"
+               asp-route-sortby="@Model.SortBy"
+               asp-route-sorttype="@Model.SortType"
+               asp-route-searchtype="@Model.SearchType"
+               asp-route-searchtext="@Model.SearchText"
+               asp-route-filter="@Model.Filter">
+                <span aria-hidden="true">Previous</span>
+            </a>
+        </li>
+    }
+
+    @* Show first page button *@
+    @if (Model.CurrentPage == 1)
+    {
+        <li class="active"><a>1</a></li>
+    }
+    else
+    {
+        <li class="inactive">
+            <a asp-action="Index"
+               asp-route-page="1"
+               asp-route-sortby="@Model.SortBy"
+               asp-route-sorttype="@Model.SortType"
+               asp-route-searchtype="@Model.SearchType"
+               asp-route-searchtext="@Model.SearchText"
+               asp-route-filter="@Model.Filter">
+                1<span class="sr-only"></span>
+            </a>
+        </li>
+    }
 
     @* Show buttons before  currentPage *@
-    @for (int i = ButtonsBeforeAndAfterCurrent; i >= 1; i--)
+    @if (Model.CurrentPage > 2)
     {
-        if (Model.CurrentPage - i > 0)
+        @if (minButtonBeforeCurrent > 2)
         {
+            //show button ...
             <li class="inactive">
                 <a asp-action="Index"
-                   asp-route-page="@(Model.CurrentPage - i)"
+                   asp-route-page="@((minButtonBeforeCurrent + 1) / 2)"
                    asp-route-sortby="@Model.SortBy"
                    asp-route-sorttype="@Model.SortType"
                    asp-route-searchtype="@Model.SearchType"
                    asp-route-searchtext="@Model.SearchText"
                    asp-route-filter="@Model.Filter">
-                    @(Model.CurrentPage - i)<span class="sr-only"></span>
+                    <span aria-hidden="true">...</span>
+                </a>
+            </li>
+        }
+        @for (int i = minButtonBeforeCurrent; i <= (Model.CurrentPage - 1); i++)
+        {
+            <li class="inactive">
+                <a asp-action="Index"
+                   asp-route-page="@(i)"
+                   asp-route-sortby="@Model.SortBy"
+                   asp-route-sorttype="@Model.SortType"
+                   asp-route-searchtype="@Model.SearchType"
+                   asp-route-searchtext="@Model.SearchText"
+                   asp-route-filter="@Model.Filter">
+                    @(i)<span class="sr-only"></span>
                 </a>
             </li>
         }
     }
 
-    @* Show Current page button *@
-    <li class="active">
-        <a> @Model.CurrentPage</a>
-    </li>
+
+    @* Show Current page button  - only if it is not the first or last page*@
+    @if (Model.CurrentPage != 1 && Model.CurrentPage != Model.TotalPages)
+    {
+        <li class="active"><a>@Model.CurrentPage</a></li>
+    }
 
     @* Show buttons after currentPage *@
-    @for (int i = 1; i < ButtonsBeforeAndAfterCurrent; i++)
+    @for (int i = Model.CurrentPage + 1; i <= maxButtonAfterCurrent; i++)
     {
-        if (Model.CurrentPage + i <= Model.TotalPages)
+        if (i >= Model.TotalPages)
+        {
+            break;
+        }
+
+        if (i == maxButtonAfterCurrent)
         {
             <li class="inactive">
                 <a asp-action="Index"
-                   asp-route-page="@(Model.CurrentPage + i)"
+                   asp-route-page="@((Model.TotalPages + i) / 2)"
                    asp-route-sortby="@Model.SortBy"
                    asp-route-sorttype="@Model.SortType"
                    asp-route-searchtype="@Model.SearchType"
                    asp-route-searchtext="@Model.SearchText"
                    asp-route-filter="@Model.Filter">
-                    @(Model.CurrentPage + i)
-                    <span class="sr-only"></span>
+                    <span aria-hidden="true">...</span>
+                </a>
+            </li>
+
+            break;
+        }
+
+        <li class="inactive">
+            <a asp-action="Index"
+               asp-route-page="@(i)"
+               asp-route-sortby="@Model.SortBy"
+               asp-route-sorttype="@Model.SortType"
+               asp-route-searchtype="@Model.SearchType"
+               asp-route-searchtext="@Model.SearchText"
+               asp-route-filter="@Model.Filter">
+                @(i)<span class="sr-only"></span>
+            </a>
+        </li>
+    }
+
+    @* Show last page button *@
+    @if (Model.TotalPages != 1)
+    {
+        @if (Model.CurrentPage == Model.TotalPages)
+        {
+            <li class="active"><a>@Model.TotalPages</a></li>
+        }
+        else
+        {
+            <li class="inactive">
+                <a asp-action="Index"
+                   asp-route-page="@(Model.TotalPages)"
+                   asp-route-sortby="@Model.SortBy"
+                   asp-route-sorttype="@Model.SortType"
+                   asp-route-searchtype="@Model.SearchType"
+                   asp-route-searchtext="@Model.SearchText"
+                   asp-route-filter="@Model.Filter">
+                    @(Model.TotalPages)<span class="sr-only"></span>
                 </a>
             </li>
         }
     }
 
-    @*Show or not button for next page*@
-    <li class="@(Model.CurrentPage == Model.TotalPages ? Hide : string.Empty)">
-        <a asp-action="Index"
-           asp-route-page="@(Model.NextPage)"
-           asp-route-sortby="@Model.SortBy"
-           asp-route-sorttype="@Model.SortType"
-           asp-route-searchtype="@Model.SearchType"
-           asp-route-searchtext="@Model.SearchText"
-           asp-route-filter="@Model.Filter"
-           aria-label="Next">
-            <span aria-hidden="true"> &raquo;</span> @*next&nbsp;*@
-        </a>
-    </li>
+
+    @*Enable or Disable button for next page*@
+    @if (Model.CurrentPage == Model.TotalPages)
+    {
+        <li class="disabled">
+            <a aria-label="Next">
+                <span aria-hidden="true">Next</span>
+            </a>
+        </li>
+    }
+    else
+    {
+        <li>
+            <a asp-action="Index"
+               asp-route-page="@(Model.NextPage)"
+               asp-route-sortby="@Model.SortBy"
+               asp-route-sorttype="@Model.SortType"
+               asp-route-searchtype="@Model.SearchType"
+               asp-route-searchtext="@Model.SearchText"
+               asp-route-filter="@Model.Filter"
+               aria-label="Next">
+                <span aria-hidden="true">Next</span>
+            </a>
+        </li>
+    }
 
 </ul>
 

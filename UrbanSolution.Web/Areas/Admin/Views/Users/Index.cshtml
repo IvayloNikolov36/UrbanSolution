@@ -119,7 +119,10 @@
         <partial name="_AdminUsersListingPartial" model="Model.TableDataModel" />
 </table>
 
-<partial name="_PagingPartial" model="@Model.PagesModel" />
+@if (Model.PagesModel.TotalItems > 0)
+{
+   <partial name="_PagingPartial" model="@Model.PagesModel" />
+}
 
 @section Scripts {
 
@@ -137,7 +140,7 @@
         function unlockUser(userId) {
             var json = { userId: userId };
             var url = "/Admin/Users/Unlock";
-            urlPostRequest(url, json, userId);            
+            urlPostRequest(url, json, userId);
         }
 
         function addToRole(userId) {
