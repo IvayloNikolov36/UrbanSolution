@@ -210,7 +210,7 @@
             await Db.SaveChangesAsync();
 
             //Act
-            var result = await service.DeleteAsync(manager, issue.Id);
+            var result = await service.DeleteAsync(manager.Id, manager.ManagedRegion, issue.Id);
 
             //Assert
             result.Should().BeFalse();
@@ -247,9 +247,9 @@
             await Db.SaveChangesAsync();
 
             //Act
-            var result = await service.DeleteAsync(manager, issue.Id);
+            var result = await service.DeleteAsync(manager.Id, manager.ManagedRegion, issue.Id);
 
-            var result2 = await service.DeleteAsync(secondManager, secondIssue.Id);
+            var result2 = await service.DeleteAsync(secondManager.Id, secondManager.ManagedRegion, secondIssue.Id);
 
             //Assert
             result.Should().BeTrue();
@@ -353,11 +353,12 @@
             await Db.SaveChangesAsync();
 
             //Act
-            var resultAllRegions = (await service.AllAsync<UrbanIssuesListingServiceModel>(isApproved, RegionType.All)).ToList();
+            //TODO: change test - no has new parameters - page and takeCount
+            (int count, var resultAllRegions) = (await service.AllAsync<UrbanIssuesListingServiceModel>(isApproved, RegionType.All, 1, 5));
 
             var expectedAllRegions = await this.Db.UrbanIssues.Where(i => i.IsApproved == isApproved).ToListAsync();
 
-            var resultConcreteRegion = (await service.AllAsync<UrbanIssuesListingServiceModel>(isApproved, concreteRegion)).ToList();
+            (int countConcreteRegion, var resultConcreteRegion) = (await service.AllAsync<UrbanIssuesListingServiceModel>(isApproved, concreteRegion, 1, 5));
 
             var expectedConcreteRegion = await this.Db.UrbanIssues.Where(i => i.IsApproved == isApproved)
                 .Where(i => i.Region == concreteRegion).ToListAsync();

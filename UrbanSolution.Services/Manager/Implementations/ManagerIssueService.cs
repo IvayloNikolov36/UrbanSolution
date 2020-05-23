@@ -9,7 +9,6 @@
     using System.Threading.Tasks;
     using UrbanSolution.Models;
     using UrbanSolution.Models.Enums;
-    using UrbanSolution.Services.Models;
 
     public class ManagerIssueService : IManagerIssueService
     {
@@ -46,7 +45,6 @@
             if (pictureFile != null)
             {
                 var pictureId = await this.pictureService.UploadImageAsync(manager.Id, pictureFile);
-
                 issue.CloudinaryImageId = pictureId;
 
                 await this.pictureService.DeleteImageAsync(oldPictureId);
@@ -56,6 +54,7 @@
             issue.Description = description;
             issue.Region = region;
             issue.Type = type;
+            issue.AddressStreet = street;
             
             await this.db.SaveChangesAsync();
 
@@ -64,12 +63,16 @@
             return true;
         }
 
-        public async Task<bool> DeleteAsync(User manager, int issueId)
+        public async Task<bool> DeleteAsync(string managerId, RegionType? managerRegion, int issueId)
         {
             var issue = await this.db.FindAsync<UrbanIssue>(issueId);
-
-            var canDelete =  issue.Region == manager.ManagedRegion || manager.ManagedRegion == RegionType.All; 
-
+            if (issue == null)
+            {
+                return false;
+            }
+            
+            var canDelete =  issue.Region == managerRegion
+                || managerRegion == RegionType.All; 
             if (!canDelete)
             {
                 return false;
@@ -82,7 +85,7 @@
 
             await this.db.SaveChangesAsync();
 
-            await this.activity.WriteLogAsync(manager.Id, ManagerActivityType.DeletedIssue);
+            await this.activity.WriteLogAsync(managerId, ManagerActivityType.DeletedIssue);
 
             await this.pictureService.DeleteImageAsync(pictureId);
 
@@ -92,16 +95,19 @@
         public async Task<bool> ApproveAsync(User manager, int issueId)
         {
             var issue = await this.db.FindAsync<UrbanIssue>(issueId);
+            if (issue == null)
+            {
+                return false;
+            }
 
-            var canApprove = issue.Region == manager.ManagedRegion || manager.ManagedRegion == RegionType.All;
-
+            var canApprove = issue.Region == manager.ManagedRegion 
+                || manager.ManagedRegion == RegionType.All;
             if (!canApprove)
             {
                 return false;
             }
             
             issue.IsApproved = true;
-
             await this.db.SaveChangesAsync();
 
             await this.activity.WriteLogAsync(manager.Id, ManagerActivityType.ApprovedIssue);
@@ -109,25 +115,30 @@
             return true;
         }
 
-        public async Task<IEnumerable<TModel>> AllAsync<TModel>(
-            bool isApproved, RegionType? region)
+        public async Task<(int, IEnumerable<TModel>)> AllAsync<TModel>(
+            bool isApproved, RegionType? region, int page, int takeCount)
         {
             bool takeAllRegions = region == RegionType.All;
 
             var issues = this.db
-                .UrbanIssues
+                .UrbanIssues.AsNoTracking()
                 .Where(i => i.IsApproved == isApproved);
 
             if (!takeAllRegions)
             {
                 issues = issues.Where(i => i.Region == region);
             }
-            
-            var result = await issues
+
+            var filteredCount = await issues.CountAsync();
+
+            var issuesModel = await issues
+                .OrderByDescending(i => i.PublishedOn)
+                .Skip((page - 1) * takeCount)
+                .Take(takeCount)
                 .To<TModel>()
                 .ToListAsync();
 
-            return result;
+            return (filteredCount, issuesModel);
         }
 
         public async Task RemoveResolvedReferenceAsync(int issueId)

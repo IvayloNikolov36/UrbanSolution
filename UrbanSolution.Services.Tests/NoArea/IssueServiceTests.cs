@@ -46,7 +46,8 @@
 
             await this.Db.SaveChangesAsync();
 
-            var service = new IssueService(this.Db);
+            //TODO: rearrange test - now issueService has more parameters
+            var service = new IssueService(this.Db, null);
             //Act
             (var pagesCount, var issues) = await service
                 .AllAsync<UrbanIssuesListingServiceModel>(isApproved, rowsCount, page, region.ToString(), issueType.ToString(), sortType);
@@ -91,7 +92,8 @@
         public async Task TotalAsyncShould_ReturnsCorrectCountOf_AllApprovedAnd_CountOfAllNotApprovedIssues(bool takeApproved)
         {
             //Arrange
-            var service = new IssueService(this.Db);
+            //TODO: rearrange test - now issueService has more parameters
+            var service = new IssueService(this.Db, null);
 
             var user = UserCreator.Create();
             await this.Db.AddAsync(user);
@@ -121,7 +123,8 @@
         public async Task GetAsyncShould_ReturnsCorrectModel()
         {
             //Arrange
-            var service = new IssueService(this.Db);
+            //TODO: rearrange test - now issueService has more parameters
+            var service = new IssueService(this.Db, null);
 
             var user = UserCreator.Create();
             await this.Db.AddAsync(user);
@@ -176,7 +179,8 @@
 
             await this.Db.SaveChangesAsync();
 
-            var service = new IssueService(this.Db);
+            //TODO: rearrange test - now issueService has more parameters
+            var service = new IssueService(this.Db, null);
 
             //Act
             var resultModel = (await service.AllMapInfoDetailsAsync<IssueMapInfoBoxDetailsServiceModel>(isApprovedParam, regionParam)).ToList();

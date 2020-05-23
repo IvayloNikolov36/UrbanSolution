@@ -26,7 +26,7 @@
         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Manager <span class="caret"></span></a>
         <ul class="dropdown-menu">
             <li>
-                <a asp-area="" asp-controller="Users" asp-action="PublishIssue">
+                <a asp-area="" asp-controller="Issue" asp-action="Publish">
                     <i class="glyphicon glyphicon-send"></i> Publish issue
                 </a>
             </li>
@@ -76,7 +76,7 @@
 @if (!User.IsInRole(ManagerRole))
 {
     <li>
-        <a asp-area="" asp-controller="Users" asp-action="PublishIssue">
+        <a asp-area="" asp-controller="Issue" asp-action="Publish">
             <i class="glyphicon glyphicon-send"></i> Issue
         </a>
     </li>

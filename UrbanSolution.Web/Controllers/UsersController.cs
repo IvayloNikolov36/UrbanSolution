@@ -26,48 +26,48 @@
             this.userManager = userManager;
         }
 
-        public IActionResult PublishIssue()
-        {
-            var model = new PublishIssueViewModel();
+        //public IActionResult PublishIssue()
+        //{
+        //    var model = new PublishIssueViewModel();
 
-            this.SetModelSelectListItems(model);    
+        //    this.SetModelSelectListItems(model);    
 
-            return this.View(model);
-        }
+        //    return this.View(model);
+        //}
 
-        [HttpPost]
-        public async Task<IActionResult> PublishIssue(PublishIssueViewModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                this.SetModelSelectListItems(model);
-                return this.View(model);
-            }
+        //[HttpPost]
+        //public async Task<IActionResult> PublishIssue(PublishIssueViewModel model)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        this.SetModelSelectListItems(model);
+        //        return this.View(model);
+        //    }
 
-            var userId = this.userManager.GetUserId(User);
+        //    var userId = this.userManager.GetUserId(User);
 
-            var issueId = await this.issues.UploadAsync(userId, model.Title, model.Description, model.PictureFile, model.IssueType,model.Region, model.Address, model.Latitude, model.Longitude);
+        //    var issueId = await this.issues.UploadAsync(userId, model.Title, model.Description, model.PictureFile, model.IssueType,model.Region, model.Address, model.Latitude, model.Longitude);
 
-            return this.RedirectToAction("Details", "Issue", new { area = "", id = issueId })  //TODO: remove area
-                .WithSuccess(string.Empty, IssueUploaded);
-        }       
+        //    return this.RedirectToAction("Details", "Issue", new { area = "", id = issueId })  //TODO: remove area
+        //        .WithSuccess(string.Empty, IssueUploaded);
+        //}       
 
-        private void SetModelSelectListItems(PublishIssueViewModel model)
-        {
-            model.Regions = Enum.GetNames(typeof(RegionType)).Where(regionName => !regionName.EndsWith("All"))
-                .Select(r => new SelectListItem
-                {
-                    Text = r,
-                    Value = r
-                }).ToList();
+        //private void SetModelSelectListItems(PublishIssueViewModel model)
+        //{
+        //    model.Regions = Enum.GetNames(typeof(RegionType)).Where(regionName => !regionName.EndsWith("All"))
+        //        .Select(r => new SelectListItem
+        //        {
+        //            Text = r,
+        //            Value = r
+        //        }).ToList();
 
-            model.IssueTypes = Enum.GetNames(typeof(IssueType))
-                .Select(i => new SelectListItem
-                {
-                    Text = (Enum.Parse<IssueType>(i)).ToFriendlyName(),
-                    Value = i
-                });
-        }
+        //    model.IssueTypes = Enum.GetNames(typeof(IssueType))
+        //        .Select(i => new SelectListItem
+        //        {
+        //            Text = (Enum.Parse<IssueType>(i)).ToFriendlyName(),
+        //            Value = i
+        //        });
+        //}
     }
 
 }

@@ -30,7 +30,8 @@
             //Arrange
             var pictureService = IPictureServiceMock.New(DefaultImageId);
 
-            var service = new UserIssuesService(this.Db, pictureService.Object);
+            //TODO: move this tests in IssueServiceTests
+            var service = new IssueService(this.Db, pictureService.Object);
 
             var picFile = new Mock<IFormFile>();
 

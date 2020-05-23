@@ -18,7 +18,9 @@
         private readonly UserManager<User> userManager;
         private readonly IUserIssuesService userIssuesService;
 
-        public IssuesApiController(IIssueService issueService, UserManager<User> userManager, IUserIssuesService userIssuesService)
+        public IssuesApiController(IIssueService issueService, 
+            UserManager<User> userManager, 
+            IUserIssuesService userIssuesService)
         {
             //TODO: leave only one service (from userIssuesService move methods to issueService)
             this.userManager = userManager;
@@ -26,29 +28,29 @@
             this.issues = issueService;
         }
 
-        [HttpGet("")]
-        [Authorize]
-        public async Task<IActionResult> GetIssuesInfoBoxDetails()
-        {
-            var user = await this.userManager.GetUserAsync(this.User);
-            RegionType? region = user.ManagedRegion;
+        //[HttpGet("")]
+        //[Authorize]
+        //public async Task<IActionResult> GetIssuesInfoBoxDetails()
+        //{
+        //    var user = await this.userManager.GetUserAsync(this.User);
+        //    RegionType? region = user.ManagedRegion;
 
-            var data = await this.issues
-                .AllMapInfoDetailsAsync<IssueMapInfoBoxDetailsServiceModel>(areApproved: false, region: region);
+        //    var data = await this.issues
+        //        .AllMapInfoDetailsAsync<IssueMapInfoBoxDetailsServiceModel>(areApproved: false, region: region);
 
-            return this.Ok(data);
-        }
+        //    return this.Ok(data);
+        //}
 
-        [HttpPost("uploadImage")]
-        [Authorize]
-        public async Task<ActionResult<int>> UploadImage(IFormFile file)
-        {
-            var user = await this.userManager.GetUserAsync(this.User);
+        //[HttpPost("uploadImage")]
+        //[Authorize]
+        //public async Task<ActionResult<int>> UploadImage(IFormFile file)
+        //{
+        //    var user = await this.userManager.GetUserAsync(this.User);
 
-            var picId = await this.userIssuesService.UploadIssueImageAsync(user.Id, file);
+        //    var picId = await this.userIssuesService.UploadIssueImageAsync(user.Id, file);
 
-            return this.Ok(picId);
-        }
+        //    return this.Ok(picId);
+        //}
 
     }
 }
