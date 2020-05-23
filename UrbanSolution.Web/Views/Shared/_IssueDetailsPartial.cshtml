@@ -1,0 +1,34 @@
+﻿@model IssueDetailsViewModel
+
+    <div class="row">
+        <div class="col-md-5">
+            <div class="row">
+                <h4>
+                    <em class="text-info">
+                        <i class="glyphicon glyphicon-cloud-upload"></i> @Model.Publisher
+                    </em>
+                    <em class="text-info">
+                        <i class="glyphicon glyphicon-hourglass"></i> @Model.PublishedOn.ToShortDateString()
+                    </em>
+                </h4>
+                <h4>
+                    <em class="text-info">
+                        <i class="glyphicon glyphicon-home"></i> @Model.AddressStreet
+                    </em>
+                </h4>
+                <div>
+                    <h4>
+                        Type: <em class="text-info">@Model.Type.ToFriendlyName()</em>,
+                        Region: <em class="text-info">@Model.Region</em>
+                    </h4>
+                </div>
+
+                <em>@Model.Description</em>
+            </div>
+        </div>
+        <div class="col-md-5 .issue-thumb" >
+            <img src="@Model.PictureThumbnailUrl" alt="picture"/>
+        </div>
+    </div>
+
+

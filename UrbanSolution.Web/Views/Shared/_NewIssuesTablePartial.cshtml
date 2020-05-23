@@ -1,0 +1,51 @@
+﻿@model NewIssuesTablePartialViewModel
+
+<table class="table table-bordered table-striped table table-hover">
+    <thead>
+        <tr>
+            <th class="text-center text-info"><strong>Picture</strong></th>
+            <th class="text-center text-info"><strong>Title</strong></th>
+            <th class="text-center text-info"><strong>Description</strong></th>
+            <th class="text-center text-info"><strong>Address</strong></th>
+            <th class="text-center text-info"><strong>PublishedOn</strong></th>
+            <th class="text-center text-info"><strong>View</strong></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var issue in Model.Isssues)
+        {
+            <tr>
+                <td class=".issues-thumb .img-responsive"><img src="@issue.PictureThumbnail" alt="pic"></td>
+                <td class="text-center">@issue.Title</td>
+                <td>@issue.Description</td>
+                <td class="text-center">
+                    @(issue.AddressStreet + Environment.NewLine + issue.Region)
+                </td>
+                <td class="text-center">@issue.PublishedOn</td>
+                <td class="text-center">
+                    <a asp-area=""
+                       asp-controller="Issue"
+                       asp-action="Details"
+                       asp-route-id="@issue.Id">
+                        View
+                    </a>
+                    <a asp-area="Manager"
+                       asp-controller="UrbanIssue"
+                       asp-action="Edit"
+                       asp-route-id="@issue.Id">
+                        Edit
+                    </a>
+                    <a asp-area="Manager"
+                       asp-controller="UrbanIssue"
+                       asp-action="Delete"
+                       asp-route-id="@issue.Id">
+                        Delete
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<input type="hidden" id="pagesCount" value="@Model.PagesCount" />
+<input type="hidden" id="page" value="@Model.Page" />
