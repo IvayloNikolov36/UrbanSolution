@@ -23,6 +23,7 @@
             this.userManager = userManager;
         }
 
+        [Authorize]
         public IActionResult Index()
         {
             var model = new IssuesIndexModel();
@@ -47,6 +48,7 @@
             return this.PartialView("_IssuesListingPartial", partialModel);
         }
 
+        [Authorize]
         [ServiceFilter(typeof(ValidateIssueIdExistsAttribute))]
         public async Task<IActionResult> Details(int id)
         {            
@@ -67,5 +69,12 @@
             return this.View(issueModel);
         }
 
+        [Authorize]
+        public async Task<ActionResult> GetDetails(int id)
+        {
+            var issueDetails = await this.issues.GetAsync<IssueDetailsViewModel>(id);
+
+            return this.PartialView("_IssueDetailsPartial", issueDetails);
+        }
     }
 }

@@ -16,6 +16,7 @@
     [Authorize]
     public class UsersController : Controller
     {
+        //TODO: move all actions to IssueController
         private readonly IUserIssuesService issues;
         private readonly UserManager<User> userManager;
 

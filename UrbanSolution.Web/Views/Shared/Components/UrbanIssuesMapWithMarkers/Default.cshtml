@@ -8,50 +8,35 @@
 <script>
     var map;
     function initMap() {
-
         var myLatLng = { lat: @(Model.Latitude), lng: @(Model.Longitude) };
-
         var mapOptions = { zoom: @(Model.Zoom), center: myLatLng }
-
         map = new google.maps.Map(document.getElementById('map'), mapOptions);
 
         $.get("@Url.Action("GetIssuesInfoBoxDetails", "IssuesApi")",
             function(data, status) {
-                console.log(data);
                 var marker = [];
-                var contentString = [];
-                var infowindow = [];
                 for (var i = 0; i < data.length; i++) {
                     marker[i] = new google.maps.Marker({
                         position: { lat: parseFloat(data[i].latitude), lng: parseFloat(data[i].longitude) },
                         map: map
                     });
-                    contentString[i] = '<div id="content">' +
-                        '<div id="siteNotice">' +
-                        '</div>' +
-                        '<h1 id="firstHeading" class="firstHeading">' + data[i].title + '</h1>' +
-                        '<div id="bodyContent">' +
-                        '<div><img src="' + data[i].pictureThumbnailUrl +
-                        '"alt="Smiley face" height="90" width="90">' +
-                        '<p>' + data[i].description + '</p>' +
-                        '<a href="/issue/details/'+ data[i].id +'"><h3 id="content">Details</h3></a>' +
-                        '</div>' +
-                        '</div>';
 
-                    infowindow[i] = new google.maps.InfoWindow({
-                        content: contentString[i]
-                    });
-                    var markerValue = marker[i];
-
-                    google.maps.event.addListener(markerValue, 'mouseover', (function(currentMarker, i) {
-                        return function() {
-                            infowindow[i].open(map, marker[i]);
-                        }
-                    })(marker[i], i));
-
-                    google.maps.event.addListener(markerValue, 'mouseclick', (function (currentMarker, i) {
+                    //on marker click to open modal with issue details
+                    google.maps.event.addListener(marker[i], 'click', (function (currentMarker, i) {
                         return function () {
-                            infowindow[i].close();
+                            $('#detailsModelBody').empty();
+                            $('#issueDetailsModal').modal('show');
+                            var id = data[i].id;
+
+                            $.get(`/Issue/GetDetails/${id}`,
+                                function (html, status) {
+                                    $('#detailsModelBody').append(html);
+                                });
+
+                            $('#modalBtnMore').click(function () {
+                                var url = '/Issue/Details/' + id;
+                                window.location.href = url;
+                            });
                         }
                     })(marker[i], i));
                 }

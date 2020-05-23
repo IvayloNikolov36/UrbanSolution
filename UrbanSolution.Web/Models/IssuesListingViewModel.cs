@@ -14,6 +14,5 @@
 
         public RegionType? Region { get; set; }
 
-        public bool UseCarousel { get; set; } = false;
     }
 }

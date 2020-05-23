@@ -42,6 +42,16 @@ body {
     margin: auto 0px;
 }
 
+.issues-thumb {
+    height: 24px !important;
+    margin: auto 0px;
+}
+
+.issue-thumb {
+    height: 200px !important;
+    margin: auto 0px;
+}
+
 .picture-listing .pic-responsive {
     height: 350px !important;
     width: 450px !important;
@@ -99,7 +109,7 @@ img {
     height: 100%;
 }
 /* Optional: Makes the sample page fill the window. */
-/*deleted*/ 
+/*deleted*/
 
 .controls {
     background-color: #fff;
@@ -133,5 +143,54 @@ img {
 
 #map #infowindow-content {
     display: inline;
-    background:#4d90fe;
+    background: #4d90fe;
 }
+
+.body-content {
+    display: flex;
+    flex-direction: column;
+    min-height: 90vh;
+}
+
+.footer {
+    margin-top: auto;
+}
+
+#notifications {
+    float: right;
+    position: fixed;
+    z-index: 999;
+    top: 1em;
+    right: 0;
+    text-align: center;
+    margin: 3em;
+}
+
+.notification {
+    font-size: 1.5rem;
+    color: #ffffff;
+    text-align: right;
+    display: none;
+}
+
+.notification > span {
+    display: inline-block;
+    padding: 0.5em 2em 0.5em 2em;
+    border-radius: 10px;
+    width: 500px;
+    display: block;
+    text-align: center;
+}
+
+#loadingBox > span {
+    background: #7CB3E9;
+}
+
+#infoBox > span {
+    background: #393;
+}
+
+#errorBox > span {
+    background: #F50;
+}
+

@@ -70,15 +70,16 @@
         {
             if (!this.ModelState.IsValid)
             {
-                this.TempData.AddErrorMessage(this.ModelState.ErrorsAsString());
-                return this.Json(new { redirectTo = Url.Action(nameof(Index)) });
+                return this.Json(new
+                {
+                    errMessage = this.ModelState.ErrorsAsString()
+                });
             }
 
             User user = await this.UserManager.FindByIdAsync(model.UserId);
             if (user == null)
             {
-                this.TempData.AddErrorMessage(NoUserFound);
-                return this.Json(new { redirectTo = Url.Action(nameof(Index)) });
+                return this.Json(new { errMessage = NoUserFound });
             }
 
             User admin = await this.UserManager.GetUserAsync(this.User);
@@ -86,8 +87,10 @@
             bool isUnlocked = await this.users.UnlockAsync(admin.Id, user);
             if (!isUnlocked)
             {
-                this.TempData.AddErrorMessage(string.Format(UserIsNotUnlocked, user.UserName));
-                return this.Json(new { redirectTo = Url.Action(nameof(Index)) });
+                return this.Json(new
+                {
+                    errMessage = string.Format(UserIsNotUnlocked, user.UserName)
+                });
             }
 
             var partialViewModel = await CreatePartialViewModelAsync(model.UserId);
@@ -100,8 +103,10 @@
         {
             if (!this.ModelState.IsValid)
             {
-                this.TempData.AddErrorMessage(this.ModelState.ErrorsAsString());
-                return this.Json(new { redirectTo = Url.Action(nameof(Index)) });
+                return this.Json(new
+                {
+                    errMessage = this.ModelState.ErrorsAsString()
+                });
             }
 
             User admin = await this.UserManager.GetUserAsync(this.User);
@@ -110,8 +115,10 @@
             bool isLocked = await this.users.LockAsync(admin.Id, user, model.LockDays);
             if (!isLocked)
             {
-                this.TempData.AddErrorMessage(string.Format(UserIsNotLocked, user.UserName));
-                return this.Json(new { redirectTo = Url.Action(nameof(Index)) });
+                return this.Json(new
+                {
+                    errMessage = string.Format(UserIsNotLocked, user.UserName)
+                });
             }
 
             var partialViewModel = await CreatePartialViewModelAsync(model.UserId);
@@ -124,8 +131,10 @@
         {
             if (!this.ModelState.IsValid)
             {
-                this.TempData.AddErrorMessage(this.ModelState.ErrorsAsString());
-                return this.Json(new { redirectTo = Url.Action(nameof(Index)) });
+                return this.Json(new
+                {
+                    errMessage = this.ModelState.ErrorsAsString()
+                });
             }
 
             User admin = await this.UserManager.GetUserAsync(this.User);
@@ -134,8 +143,10 @@
             bool isSetRole = await this.users.AddToRoleAsync(admin.Id, user.Id, model.Role);
             if (!isSetRole)
             {
-                this.TempData.AddErrorMessage(string.Format(InvalidUserOrRole, user.UserName, model.Role));
-                return this.Json(new { redirectTo = Url.Action(nameof(Index)) });
+                return this.Json(new
+                {
+                    errMessage = string.Format(InvalidUserOrRole, user.UserName, model.Role)
+                });
             }
 
             var partialViewModel = await CreatePartialViewModelAsync(model.UserId);
@@ -148,8 +159,10 @@
         {
             if (!this.ModelState.IsValid)
             {
-                this.TempData.AddErrorMessage(this.ModelState.ErrorsAsString());
-                return this.Json(new { redirectTo = Url.Action(nameof(Index)) });
+                return this.Json(new
+                {
+                    errMessage = this.ModelState.ErrorsAsString()
+                });
             }
 
             User admin = await this.UserManager.GetUserAsync(this.User);
@@ -158,8 +171,10 @@
             bool isDone = await this.users.RemoveFromRoleAsync(admin.Id, user.Id, model.Role);
             if (!isDone)
             {
-                this.TempData.AddErrorMessage(string.Format(UserNotRemovedFromRole, user.UserName, model.Role));
-                return this.Json(new { redirectTo = Url.Action(nameof(Index)) });
+                return this.Json(new
+                {
+                    errMessage = string.Format(UserNotRemovedFromRole, user.UserName, model.Role)
+                });
             }
 
             var partialViewModel = await CreatePartialViewModelAsync(model.UserId);

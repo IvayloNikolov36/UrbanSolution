@@ -1,36 +1,177 @@
-﻿@model UrbanSolution.Web.Models.IssuesListingViewModel
+﻿@model UrbanSolution.Web.Areas.Manager.Models.NewIssuesIndexModel
 @{
     ViewData["Title"] = "New issues";
 }
 
 <div row class="text-info text-center">
-    <h2>@this.ViewData["Title"]</h2>
-    <hr />
+    <h3>@this.ViewData["Title"]</h3>
 </div>
 
-@if (Model.Issues.Any())
-{
-    @*issues for carousel*@
+@*Navigation Tabs*@
+<div class="row">
+    <ul class="nav nav-tabs nav-justified">
+        <li id="onMap" class="active" role="presentation"><a href="#">On Map</a></li>
+        <li id="inTable" role="presentation"><a href="#">In Table</a></li>
+    </ul>
+</div>
 
-    <div class="slick-issues row issues-listing" id="wrapper">
+<hr />
+
+@*component view with map with markers for issues location*@
+<div id="mapDiv">
+    @await Component.InvokeAsync("UrbanIssuesMapWithMarkers", Model.RegionType)
+</div>
+
+
+<div id="newIssuesTable">
+    <div id="issuesDiv">
+    </div>
+    <ul id="issuesPagination" class="pagination">
+    </ul>
+</div>
+
+
+@*issues for carousel*@
+@*<div class="slick-issues row issues-listing" id="wrapper">
         @await Html.PartialAsync("_IssuesListingPartial", Model)
-    </div>
+    </div>*@
 
-    @*component view with map with markers for issues location*@
-
-    @await Component.InvokeAsync("UrbanIssuesMapWithMarkers", Model.Region)
-}
-else
-{
-    <div row class="text-info text-center">
-        <br />
-        <h4>@NoIssuesToShow</h4>
-        <br />
+@*Modal*@
+<div class="modal fade" id="issueDetailsModal" tabindex="-1" role="dialog" aria-labelledby="largeModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">Details</h4>
+            </div>
+            <div class="modal-body">
+                <div id="detailsModelBody">
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <input id="modalIssueId" type="hidden" />
+            <button id="modalBtnMore" type="button" class="btn btn-primary">
+                Show more
+            </button>
+            @*<button id="modalBtnApprove" type="button" class="btn btn-primary">
+                Approve
+            </button>
+            <button type="button" class="btn btn-warning" onclik="editIssue()">
+                Edit
+            </button>
+            <button type="button" class="btn btn-danger" onclik="deleteIssue()">
+                Delete
+            </button>*@
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
     </div>
-}
+</div>
+
+@*<div row class="text-info text-center">
+      <br />
+      <h4>@NoIssuesToShow</h4>
+      <br />
+    </div>*@
+
 
 @section Scripts
 {
-    <partial name="_SlickCarouselIssuesListingScriptPartial" />
+    @*<partial name="_SlickCarouselIssuesListingScriptPartial" />*@
+
+    <script>
+        //On click on Table TAB
+        $('#inTable').click(function () {
+            $('#mapDiv').hide();
+            $('#newIssuesTable').show();
+
+            $('#onMap').removeClass('active');
+            $('#inTable').addClass('active');
+        })
+        //ON Click on Map TAB
+        $('#onMap').click(function () {
+            $('#mapDiv').show();
+            $('#newIssuesTable').hide();
+
+            $('#onMap').addClass('active');
+            $('#inTable').removeClass('active');
+        })
+    </script>
+
+    <script>
+        $('#inTable').click(function () {
+            //if issues has been loaded to not load them again
+            if ($('#issuesDiv').children().length == 0) {
+                loadIssues(1);
+            }
+        });
+
+        // Load Issues - page parameter is passed when pagination link is clicked
+        function loadIssues(page) {
+            $.ajax({
+                url: "/Manager/UrbanIssue/New?page=" + page,
+                type: "GET",
+                dataType: "html",
+                success: function (issuesHtml) {
+                    fadeInEffect(issuesHtml);
+                    var pagesCount = $("#pagesCount").val();
+                    var page = $("#page").val();
+
+                    createPagination(page, pagesCount);
+                }
+            });
+        }
+
+        // CREATE Pagination
+        function createPagination(page, pagesCount) {
+            $("#issuesPagination").empty();
+
+            //Show or Hide Button for Previous Page
+            if (+page !== 1) {
+                var element = `<li><a onclick="paginationLiClicked(${+page - 1})" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>`;
+                $("#issuesPagination").append(element);
+            }
+
+            //previos pages buttons
+            var i;
+            var label;
+            for (i = 5; i >= 1; i--) {
+                if (+page - i > 0) {
+                    label = +page - +i;
+                    var element = `<li class="inactive"><a onclick="paginationLiClicked(${label})">${label}<span class="sr-only"></span></a></li>`;
+                    $("#issuesPagination").append(element);
+                }
+            }
+
+            //current page button
+            $("#issuesPagination").append(`<li class="active"><a>${page}</a></li>`);
+
+            //next pages buttons
+            for (i = 1; i < 5; i++) {
+                if (+page + i <= +pagesCount) {
+                    label = +page + +i;
+                    var element = `<li class="inactive"><a onclick="paginationLiClicked(${label})">${label}<span class="sr-only"></span></a></li>`;
+                    $("#issuesPagination").append(element);
+                }
+            }
+
+            //Show or not button for next page
+            if (+page + 1 <= +pagesCount) {
+                var element = `<li><a onclick="paginationLiClicked(${+page + 1})" aria-label="Next"><span aria-hidden="true"> &raquo;</span></a></li>`;
+                $("#issuesPagination").append(element);
+            }
+        }
+
+        function paginationLiClicked(page) {
+            $("#issuesPagination").empty();
+            loadIssues(page);
+        }
+
+        function fadeInEffect(html) {
+            $("#issuesDiv").empty();
+            $("#issuesDiv").html(html).hide().fadeIn(1000);
+        }
+
+    </script>
 }
 

@@ -2,10 +2,10 @@
 
 @foreach (var user in Model.Users)
 {
-    IEnumerable<SelectListItem> userAddToRoles = user.UserNotInRoles
+    IEnumerable<SelectListItem> userAddToRoles = user.UserNotInRoles?
         .Split(new[] { ',' }).Select(r => new SelectListItem(r, r));
-    IEnumerable<SelectListItem> userRemoveFromRoles = user.UserRoles.Split(new[] { ',' })
-        .Select(r => new SelectListItem(r, r));
+    IEnumerable<SelectListItem> userRemoveFromRoles = user.UserRoles?
+        .Split(new[] { ',' }).Select(r => new SelectListItem(r, r));
 
     <tr id="tr@(user.Id)">
         <td class="text-center">@user.UserName</td>
@@ -33,7 +33,7 @@
         </td>
         @*AddToRole*@
         <td>
-            @if (userAddToRoles.Any())
+            @if (userAddToRoles != null && userAddToRoles.Any())
             {
                 <div class="form-inline text-center">
                     <select id="addToRole@(user.Id)" asp-items="userAddToRoles" class="form-control"></select>
@@ -45,7 +45,7 @@
         </td>
         @*RemoveFromRole*@
         <td>
-            @if (userRemoveFromRoles.Any())
+            @if (userRemoveFromRoles != null && userRemoveFromRoles.Any())
             {
                 <div class="col-md-8">
                     <select id="role@(user.Id)" name="Role" asp-items="userRemoveFromRoles" class="form-control"></select>

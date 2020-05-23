@@ -1,7 +1,6 @@
 ﻿namespace UrbanSolution.Web.Areas.Manager.Controllers
 {
     using Infrastructure.Extensions;
-    using Infrastructure.Filters;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Rendering;
@@ -12,8 +11,7 @@
     using UrbanSolution.Models;
     using UrbanSolution.Services.Manager;
     using UrbanSolution.Services.Manager.Models;
-    using UrbanSolution.Services.Models;
-    using UrbanSolution.Web.Models;
+    using UrbanSolution.Web.Areas.Manager.Models;
     using static UrbanSolutionUtilities.WebConstants;
 
     public class UrbanIssueController : BaseController
@@ -22,9 +20,9 @@
         private readonly IIssueService issues;
 
         public UrbanIssueController(
-            UserManager<User> userManager, 
+            UserManager<User> userManager,
             IManagerIssueService managerIssues,
-            IIssueService issues) 
+            IIssueService issues)
             : base(userManager)
         {
             this.managerIssues = managerIssues;
@@ -35,46 +33,57 @@
         {
             var manager = await this.UserManager.GetUserAsync(this.User);
 
-            RegionType? region = manager.ManagedRegion;
-
-            var issuesForRegion = await this.managerIssues
-                .AllAsync<UrbanIssuesListingServiceModel>(isApproved: false, region: region);
-
-            var model = new IssuesListingViewModel
+            var model = new NewIssuesIndexModel
             {
-                Issues = issuesForRegion,
-                Region = region,
-                UseCarousel = true
+                RegionType = manager.ManagedRegion
             };
 
             return View(model);
         }
 
         [HttpGet]
-        [ServiceFilter(typeof(ValidateIssueIdExistsAttribute))]
+        public async Task<IActionResult> New(int page = 1)
+        {
+            var manager = await this.UserManager.GetUserAsync(this.User);
+
+            RegionType? region = manager.ManagedRegion;
+
+            (int totalItems, var issues) = await this.managerIssues
+                .AllAsync<IssueTableRowViewModel>(isApproved: false, region, page, takeCount: IssuesOnTablePage);
+
+            var model = new NewIssuesTablePartialViewModel
+            {
+                Isssues = issues,
+                Page = page,
+                PagesCount = (int)Math.Ceiling((double)totalItems / IssuesOnTablePage)
+            };
+
+            return this.PartialView("_NewIssuesTablePartial", model);
+        }
+
+        [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
             var issue = await this.issues.GetAsync<UrbanIssueEditServiceViewModel>(id);
 
             this.SetModelSelectListItems(issue);
 
-            return this.View(issue);
+            return this.ViewOrNotFound(issue);
         }
 
         [HttpPost]
         public async Task<IActionResult> Edit(int id, UrbanIssueEditServiceViewModel model)
         {
-            if (!this.ModelState.IsValid)              
+            if (!this.ModelState.IsValid)
             {
                 this.SetModelSelectListItems(model);
-
                 return this.View(model);
             }
 
             var manager = await this.UserManager.GetUserAsync(User);
 
             var isUpdated = await this.managerIssues.UpdateAsync(
-                manager, model.Id, model.Title, model.Description, 
+                manager, model.Id, model.Title, model.Description,
                 model.Region, model.Type, model.AddressStreet, model.PictureFile);
 
             if (!isUpdated)
@@ -83,29 +92,26 @@
                     .WithDanger(string.Empty, CantEditIssueForAnotherRegion);
             }
 
-            return this.RedirectToAction("Details", "Issue", new {id, Area = ""})
+            return this.RedirectToAction("Details", "Issue", new { id, Area = "" })
                 .WithSuccess(string.Empty, IssueUpdateSuccess);
         }
 
         [HttpGet]
-        [ServiceFilter(typeof(ValidateIssueIdExistsAttribute))]
         public async Task<IActionResult> Delete(int id)
         {
             var manager = await this.UserManager.GetUserAsync(this.User);
 
-            var isDeleted = await this.managerIssues.DeleteAsync(manager, id);
-
+            var isDeleted = await this.managerIssues.DeleteAsync(manager.Id, manager.ManagedRegion, id);
             if (!isDeleted)
             {
                 return this.RedirectToAction("Index", "UrbanIssue", new { Area = "Manager" })
                     .WithDanger(string.Empty, CantDeleteIssueForAnotherRegion);
             }
 
-            return this.RedirectToAction("Index", "UrbanIssue", new {Area = "Manager"})
+            return this.RedirectToAction("Index", "UrbanIssue", new { Area = "Manager" })
                 .WithSuccess(string.Empty, IssueDeleteSuccess);
         }
 
-        [ServiceFilter(typeof(ValidateIssueIdExistsAttribute))]
         public async Task<IActionResult> Approve(int id)
         {
             var manager = await this.UserManager.GetUserAsync(User);

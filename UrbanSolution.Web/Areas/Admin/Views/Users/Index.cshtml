@@ -121,10 +121,12 @@
 
 @if (Model.PagesModel.TotalItems > 0)
 {
-   <partial name="_PagingPartial" model="@Model.PagesModel" />
+    <partial name="_PagingPartial" model="@Model.PagesModel" />
 }
 
 @section Scripts {
+
+    <partial name="_NotificationsScript" />
 
     <script>
         function lockUser(userId) {
@@ -171,10 +173,12 @@
                 contentType: 'application/json; charset=UTF-8',
                 headers: { 'X-CSRF-TOKEN': "@(AF.GetTokens(this.Context).RequestToken)" },
                 success: function (result) {
-                     if (result.redirectTo) {
-                        window.location.href = result.redirectTo;
+                     if (result.errMessage) {
+                         //window.location.href = result.redirectTo;
+                         notify.showError(result.errMessage);
                      } else {
                          selector = `#tr${userId}`;
+                         notify.showInfo('Successful operation!');
                          fadeInEffect(result, selector);
                      }
                 }
@@ -187,5 +191,5 @@
         }
 
     </script>
-
+ 
 }

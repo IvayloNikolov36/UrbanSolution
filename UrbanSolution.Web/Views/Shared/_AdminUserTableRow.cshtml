@@ -1,7 +1,7 @@
 ﻿@model UrbanSolution.Web.Areas.Admin.Models.AdminUserTableRowModel
 @{
-    var userAddToRoles = Model.User.UserNotInRoles.Split(new[] {','}).Select(r => new SelectListItem(r, r));
-    var userRemoveFromRoles = Model.User.UserRoles.Split(new[] {','}).Select(r => new SelectListItem(r, r));
+    var userAddToRoles = Model.User.UserNotInRoles?.Split(new[] {','}).Select(r => new SelectListItem(r, r));
+    var userRemoveFromRoles = Model.User.UserRoles?.Split(new[] {','}).Select(r => new SelectListItem(r, r));
 }
 
 <td class="text-center">@Model.User.UserName</td>
@@ -27,7 +27,7 @@
 </td>
 @*AddToRole*@
 <td>
-    @if (userAddToRoles.Any())
+    @if (userAddToRoles != null && userAddToRoles.Any())
     {
         <div class="form-inline text-center">
             <select id="addToRole@(Model.User.Id)" asp-items="userAddToRoles" class="form-control"></select>
@@ -39,7 +39,7 @@
 </td>
 @*RemoveFromRole*@
 <td>
-    @if (userRemoveFromRoles.Any())
+    @if (userRemoveFromRoles != null && userRemoveFromRoles.Any())
     {
         <div class="col-md-8">
             <select id="removeFromRole@(Model.User.Id)" asp-items="userRemoveFromRoles" class="form-control"></select>

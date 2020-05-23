@@ -5,7 +5,6 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Services;
-    using System.Collections.Generic;
     using System.Threading.Tasks;
     using UrbanSolution.Models;
     using UrbanSolution.Services.Models;
@@ -14,6 +13,7 @@
     [ApiController]
     public class IssuesApiController : ControllerBase
     {
+        //TODO: move all actions to IssueController
         private readonly IIssueService issues;
         private readonly UserManager<User> userManager;
         private readonly IUserIssuesService userIssuesService;
