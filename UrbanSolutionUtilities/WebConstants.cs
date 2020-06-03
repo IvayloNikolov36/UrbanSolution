@@ -126,9 +126,9 @@
         public const string CantViewManagersActivity = "You can't view other managers activity!";
         public const string CantEditResolved = "You can't edit resolved issue, published by another manager!";
         public const string CantDeleteResolved = "You can't delete resolved issue, published by another manager!";
-        public const string CantDeleteIssueForAnotherRegion = "You cant delete an issue which is for another region!";
+        public const string CantDeleteIssueForAnotherRegion = "You cant delete not existing or issue which is for another region!";
         public const string CantChangeIssue = "You can't approve, delete or edit issue from another region!";
-        public const string CantApproveIssueForAnotherRegion = "You can't approve issue for another region!";
+        public const string CantApproveIssueForAnotherRegion = "You can't approve issue for another region or not existing!";
         public const string CantEditIssueForAnotherRegion = "You can't edit issue for another region!";
 
         public const string CantEditAnotherBloggerArticle = "You can't edit article, published by another blog author!";
@@ -166,6 +166,7 @@
 
 
         public const int IssuesOnRow = 6;
+        public const int IssuesOnTablePage = 5;
         public const int UsersOnPage = 6;
         public const int ActivityRowsOnPage = 9;
         public const int ArticlesPageSize = 2;
@@ -234,7 +235,7 @@
         public const int ThumbnailWidth = 200;
 
         //Pagination
-        public const int ButtonsBeforeAndAfterCurrent = 5;
+        public const int ButtonsBeforeAndAfterCurrent = 6;
         public const string Hide = "hide";
 
         //User Properties for filter data

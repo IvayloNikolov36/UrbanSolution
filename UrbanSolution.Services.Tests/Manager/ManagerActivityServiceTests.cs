@@ -6,7 +6,7 @@
     using System.Linq;
     using System.Threading.Tasks;
     using UrbanSolution.Services.Manager.Implementations;
-    using UrbanSolution.Services.Manager.Models;
+    using UrbanSolution.Web.Models.Areas.Manager;
     using Xunit;
     using System;
     using UrbanSolution.Models;
@@ -32,7 +32,7 @@
             var service = new ManagerActivityService(Db);
 
             //Act
-            var result = (await service.GetAsync<ManagerActivitiesListingServiceModel>(manager.Id)).ToList();
+            var result = (await service.GetAsync<ManagerActivitiesListingModel>(manager.Id)).ToList();
 
             var expectedCount = await this.Db.ManagerLogs
                 .Where(m => m.ManagerId == manager.Id)
@@ -41,7 +41,7 @@
 
             //Assert
             result.Should().NotBeNull();
-            result.Should().AllBeOfType<ManagerActivitiesListingServiceModel>();
+            result.Should().AllBeOfType<ManagerActivitiesListingModel>();
             result.Should().BeInDescendingOrder(x => x.DateTime);
             result.Should().HaveCount(expectedCount);
         }
@@ -64,14 +64,14 @@
             var service = new ManagerActivityService(Db);
 
             //Act
-            var result = (await service.AllAsync<ManagerActivitiesListingServiceModel>()).ToList();
+            var result = (await service.AllAsync<ManagerActivitiesListingModel>()).ToList();
 
             var expectedCount = await this.Db.ManagerLogs
                 .CountAsync();
 
             //Assert
             result.Should().NotBeNull();
-            result.Should().AllBeOfType<ManagerActivitiesListingServiceModel>();
+            result.Should().AllBeOfType<ManagerActivitiesListingModel>();
             result.Should().BeInDescendingOrder(x => x.DateTime);
             result.Should().HaveCount(expectedCount);
          

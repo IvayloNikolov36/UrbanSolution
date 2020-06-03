@@ -9,7 +9,7 @@
     using System.Threading.Tasks;
     using UrbanSolution.Models.Enums;
     using UrbanSolution.Services.Admin;
-    using UrbanSolution.Services.Admin.Models;
+    using UrbanSolution.Web.Models.Areas.Admin;
     using Xunit;
 
     public class AdminActivityServiceTests : BaseServiceTest
@@ -34,7 +34,7 @@
 
             //TODO: rewrite the test - there is new parameter - page
             //Act
-            (int count, var result) = await service.AllAsync<AdminActivitiesListingServiceModel>(admin.Id, 1);
+            (int count, var result) = await service.AllAsync<AdminActivitiesListingModel>(admin.Id, 1);
 
             var expectedCount = this.Db.AdminLogs.Count();
 
@@ -44,7 +44,7 @@
                 .Select(al => al.EditedUser.UserName).ToList();
 
             //Assert
-            result.Should().BeOfType<List<AdminActivitiesListingServiceModel>>();
+            result.Should().BeOfType<List<AdminActivitiesListingModel>>();
 
             result.Should().HaveCount(expectedCount);
 

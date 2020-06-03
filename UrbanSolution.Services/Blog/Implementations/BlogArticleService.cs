@@ -1,6 +1,5 @@
 ﻿namespace UrbanSolution.Services.Blog.Implementations
 {
-    using Microsoft.AspNetCore.Http;
     using Data;
     using Html;
     using Mapping;
@@ -10,8 +9,8 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using UrbanSolution.Models;
     using static UrbanSolutionUtilities.WebConstants;
+    using Microsoft.AspNetCore.Http;
 
     public class BlogArticleService : IBlogArticleService
     {

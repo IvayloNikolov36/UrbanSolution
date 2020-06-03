@@ -2,15 +2,14 @@
 {
     using FluentAssertions;
     using Implementations;
-    using Mapping;
     using Microsoft.EntityFrameworkCore;
     using Models;
     using Seed;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using UrbanSolution.Models;
-    using UrbanSolution.Services.Manager.Models;
+    using UrbanSolution.Web.Models.Issues;
+    using UrbanSolution.Web.Models.Areas.Manager;
     using Xunit;
     using static Seed.UrbanIssueCreator;
     using static UrbanSolutionUtilities.WebConstants;
@@ -50,7 +49,7 @@
             var service = new IssueService(this.Db, null);
             //Act
             (var pagesCount, var issues) = await service
-                .AllAsync<UrbanIssuesListingServiceModel>(isApproved, rowsCount, page, region.ToString(), issueType.ToString(), sortType);
+                .AllAsync<IssuesListingModel>(isApproved, rowsCount, page, region.ToString(), issueType.ToString(), sortType);
             var result = issues.ToList();
 
             var expectedCount = await this.Db.UrbanIssues.Where(i => i.IsApproved == isApproved && i.Region == region && i.Type == issueType)
@@ -60,7 +59,7 @@
             var dbIssues = this.Db.UrbanIssues.ToList();
 
             //Assert
-            result.Should().BeOfType<List<UrbanIssuesListingServiceModel>>();
+            result.Should().BeOfType<List<IssuesListingModel>>();
 
             result.Should().HaveCount(expectedCount);
 
@@ -139,16 +138,16 @@
             await this.Db.SaveChangesAsync();
 
             //Act
-            var result = await service.GetAsync<UrbanIssueEditServiceViewModel>(issue.Id);
+            var result = await service.GetAsync<IssueEditViewModel>(issue.Id);
 
-            var secondResult = await service.GetAsync<UrbanIssueDetailsServiceModel>(secondIssue.Id);
+            var secondResult = await service.GetAsync<IssueDetailsModel>(secondIssue.Id);
 
             //Assert
-            result.Should().BeOfType<UrbanIssueEditServiceViewModel>();
+            result.Should().BeOfType<IssueEditViewModel>();
             result.Id.Should().Be(issue.Id);
             result.Publisher.Should().Match(user.UserName);
 
-            secondResult.Should().BeOfType<UrbanIssueDetailsServiceModel>();
+            secondResult.Should().BeOfType<IssueDetailsModel>();
             secondResult.Id.Should().Be(secondIssue.Id);
             secondResult.HasResolved.Should().Be(secondIssue.ResolvedIssue != null);
             secondResult.Latitude.Should().Be(secondIssue.Latitude.ToString().Replace(",", "."));
@@ -183,14 +182,14 @@
             var service = new IssueService(this.Db, null);
 
             //Act
-            var resultModel = (await service.AllMapInfoDetailsAsync<IssueMapInfoBoxDetailsServiceModel>(isApprovedParam, regionParam)).ToList();
+            var resultModel = (await service.AllMapInfoDetailsAsync<IssueMapInfoBoxModel>(isApprovedParam, regionParam)).ToList();
 
             var issuesToNotContain = this.Db.UrbanIssues.Where(i => i.IsApproved != isApprovedParam);
 
             var notContainFromAnotherRegions = this.Db.UrbanIssues.Where(i => i.Region != regionParam);
 
             //Assert
-            resultModel.Should().AllBeOfType<IssueMapInfoBoxDetailsServiceModel>();
+            resultModel.Should().AllBeOfType<IssueMapInfoBoxModel>();
 
             resultModel.Should().NotContain(issuesToNotContain);
 

@@ -11,7 +11,7 @@
     using System.Threading.Tasks;
     using UrbanSolution.Models;
     using UrbanSolution.Models.Enums;
-    using UrbanSolution.Services.Manager.Models;
+    using UrbanSolution.Web.Models.Areas.Manager;
     using UrbanSolution.Services.Manager.Implementations;
     using UrbanSolution.Services.Manager;
     using Xunit;
@@ -106,10 +106,10 @@
             var resolved = await ResolvedCreator.Create(Db);
 
             //Act
-            var result = await service.GetAsync<ResolvedIssueEditServiceModel>(resolved.Id);
+            var result = await service.GetAsync<ResolvedIssueEditModel>(resolved.Id);
 
             //Assert
-            result.Should().BeOfType<ResolvedIssueEditServiceModel>();
+            result.Should().BeOfType<ResolvedIssueEditModel>();
 
             result.Id.Should().Be(resolved.Id);
             result.CloudinaryImageId.Should().Be(resolved.CloudinaryImageId);

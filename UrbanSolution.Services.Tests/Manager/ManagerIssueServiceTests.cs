@@ -9,12 +9,12 @@
     using Moq;
     using System.Linq;
     using System.Threading.Tasks;
-    using UrbanSolution.Models;
     using UrbanSolution.Services.Manager.Implementations;
     using UrbanSolution.Models.Enums;
     using UrbanSolution.Services.Manager;
     using Xunit;
     using Seed;
+    using UrbanSolution.Web.Models.Issues;
 
     public class ManagerIssueServiceTests : BaseServiceTest
     {
@@ -354,17 +354,17 @@
 
             //Act
             //TODO: change test - no has new parameters - page and takeCount
-            (int count, var resultAllRegions) = (await service.AllAsync<UrbanIssuesListingServiceModel>(isApproved, RegionType.All, 1, 5));
+            (int count, var resultAllRegions) = (await service.AllAsync<IssuesListingModel>(isApproved, RegionType.All, 1, 5));
 
             var expectedAllRegions = await this.Db.UrbanIssues.Where(i => i.IsApproved == isApproved).ToListAsync();
 
-            (int countConcreteRegion, var resultConcreteRegion) = (await service.AllAsync<UrbanIssuesListingServiceModel>(isApproved, concreteRegion, 1, 5));
+            (int countConcreteRegion, var resultConcreteRegion) = (await service.AllAsync<IssuesListingModel>(isApproved, concreteRegion, 1, 5));
 
             var expectedConcreteRegion = await this.Db.UrbanIssues.Where(i => i.IsApproved == isApproved)
                 .Where(i => i.Region == concreteRegion).ToListAsync();
 
             //Assert
-            resultAllRegions.Should().AllBeOfType<UrbanIssuesListingServiceModel>();
+            resultAllRegions.Should().AllBeOfType<IssuesListingModel>();
             resultAllRegions.Should().HaveCount(expectedAllRegions.Count);
 
             resultConcreteRegion.Should().HaveCount(expectedConcreteRegion.Count);

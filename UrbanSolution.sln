@@ -17,7 +17,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{676B56C9
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UrbanSolution.Services.Tests", "UrbanSolution.Services.Tests\UrbanSolution.Services.Tests.csproj", "{2F48271D-D5B0-41DA-89B3-96FCDFC1588F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrbanSolutionUtilities", "UrbanSolutionUtilities\UrbanSolutionUtilities.csproj", "{19841AAA-4B46-4287-9219-EF896F665D0F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UrbanSolutionUtilities", "UrbanSolutionUtilities\UrbanSolutionUtilities.csproj", "{19841AAA-4B46-4287-9219-EF896F665D0F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrbanSolution.Web.Models", "UrbanSolution.Web.Models\UrbanSolution.Web.Models.csproj", "{07904B1E-E9D8-49CA-83D5-FD10FC1DD735}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,6 +55,10 @@ Global
 		{19841AAA-4B46-4287-9219-EF896F665D0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{19841AAA-4B46-4287-9219-EF896F665D0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{19841AAA-4B46-4287-9219-EF896F665D0F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07904B1E-E9D8-49CA-83D5-FD10FC1DD735}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07904B1E-E9D8-49CA-83D5-FD10FC1DD735}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07904B1E-E9D8-49CA-83D5-FD10FC1DD735}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07904B1E-E9D8-49CA-83D5-FD10FC1DD735}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

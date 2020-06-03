@@ -13,7 +13,7 @@
     using System.Threading.Tasks;
     using UrbanSolution.Models;
     using UrbanSolution.Services.Events.Implementations;
-    using UrbanSolution.Services.Events.Models;
+    using UrbanSolution.Web.Models.Areas.Events;
     using Xunit;
     using static UrbanSolutionUtilities.WebConstants;
 
@@ -46,14 +46,14 @@
             await this.Db.SaveChangesAsync();
 
             //Act
-            var result = (await service.AllAsync<EventsListingServiceModel>(page)).ToList();  
+            var result = (await service.AllAsync<EventsListingModel>(page)).ToList();  
 
             var expectedCount = await this.Db.Events.Skip((page - 1) * EventsPageSize)
                 .Take(EventsPageSize).CountAsync();
 
             //Assert
             result.Should().HaveCount(expectedCount);
-            result.Should().AllBeOfType<EventsListingServiceModel>();
+            result.Should().AllBeOfType<EventsListingModel>();
             result.Should().BeInDescendingOrder(x => x.Id);
         }
 
@@ -165,10 +165,10 @@
             await this.Db.SaveChangesAsync();
 
             //Act
-            var result = await service.GetAsync<EventDetailsServiceModel>(firstEvent.Id);
+            var result = await service.GetAsync<EventDetailsViewModel>(firstEvent.Id);
             
             //Assert
-            result.Should().BeOfType<EventDetailsServiceModel>();
+            result.Should().BeOfType<EventDetailsViewModel>();
             result.Id.Should().Be(eventId);
             result.Description.Should().Be(description);
         }

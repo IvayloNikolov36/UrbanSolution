@@ -9,7 +9,7 @@
     using System.Threading.Tasks;
     using UrbanSolution.Models;
     using UrbanSolution.Services.Blog.Implementations;
-    using UrbanSolution.Services.Blog.Models;
+    using UrbanSolution.Web.Models.Areas.Blog;
     using Xunit;
     using System;
     using System.Linq;
@@ -40,7 +40,7 @@
             var service = new BlogArticleService(Db, null, null);
 
             //Act
-            var result = (await service.AllAsync<BlogArticleListingServiceModel>(page)).ToList();
+            var result = (await service.AllAsync<BlogArticleListingModel>(page)).ToList();
 
             var expectedCount = this.Db.Articles
                 .Skip((page - 1) * ArticlesPageSize)
@@ -48,7 +48,7 @@
                 .Count();
 
             //Assert
-            result.Should().AllBeOfType<BlogArticleListingServiceModel>();
+            result.Should().AllBeOfType<BlogArticleListingModel>();
             result.Should().HaveCount(expectedCount);
             result.Should().BeInDescendingOrder(x => x.PublishDate);
         }
@@ -73,17 +73,17 @@
             var service = new BlogArticleService(Db, null, null);
 
             //Act
-            var result = await service.GetAsync<BlogArticleDetailsServiceModel>(secondArticle.Id);
+            var result = await service.GetAsync<ArticleDetailsModel>(secondArticle.Id);
 
-            var secondResult = await service.GetAsync<EditArticleServiceViewModel>(article.Id);
+            var secondResult = await service.GetAsync<EditArticleViewModel>(article.Id);
 
-            var thirdResult = await service.GetAsync<EditArticleServiceViewModel>(4589);
+            var thirdResult = await service.GetAsync<EditArticleViewModel>(4589);
 
             //Assert
-            result.Should().BeOfType<BlogArticleDetailsServiceModel>();
+            result.Should().BeOfType<ArticleDetailsModel>();
             Assert.Equal(secondArticle.Id, result.Id);
 
-            secondResult.Should().BeOfType<EditArticleServiceViewModel>();
+            secondResult.Should().BeOfType<EditArticleViewModel>();
             Assert.Equal(article.Id, secondResult.Id);
 
             Assert.Null(thirdResult);

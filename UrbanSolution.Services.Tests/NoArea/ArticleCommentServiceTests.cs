@@ -8,8 +8,8 @@
     using UrbanSolution.Data;
     using UrbanSolution.Models;
     using UrbanSolution.Services.Implementations;
-    using UrbanSolution.Services.Models;
     using UrbanSolution.Services.Tests.Seed;
+    using UrbanSolution.Web.Models.Comments;
     using Xunit;
     public class ArticleCommentServiceTests
     {
@@ -39,9 +39,9 @@
             var service = new ArticleCommentService(this.db);
 
             //Act
-            var result = await service.SubmitAsync<CommentListingServiceModel>(article.Id, user.Id, commentContent);
+            var result = await service.SubmitAsync<CommentListingModel>(article.Id, user.Id, commentContent);
 
-            result.Should().BeOfType<CommentListingServiceModel>();
+            result.Should().BeOfType<CommentListingModel>();
 
             result.ArticleAuthor.Should().BeEquivalentTo(user.UserName);
 
@@ -66,7 +66,7 @@
             var service = new ArticleCommentService(this.db);
 
             //Act
-            var result = await service.SubmitAsync<CommentListingServiceModel>(NotExistingArticleId, user.Id, commentContent);
+            var result = await service.SubmitAsync<CommentListingModel>(NotExistingArticleId, user.Id, commentContent);
 
             //Assert
             result.Should().BeNull();
@@ -90,10 +90,10 @@
             var service = new ArticleCommentService(this.db);
 
             //Act
-            var result = await service.GetAsync<CommentListingServiceModel>(article.Id);
+            var result = await service.GetAsync<CommentListingModel>(article.Id);
 
             //Assert
-            result.Should().BeOfType<CommentListingServiceModel>();
+            result.Should().BeOfType<CommentListingModel>();
             result.Id.Should().Be(article.Id);
 
         }
@@ -117,7 +117,7 @@
             var service = new ArticleCommentService(this.db);
 
             //Act
-            var result = (await service.AllAsync<CommentListingServiceModel>(article.Id)).ToList();
+            var result = (await service.AllAsync<CommentListingModel>(article.Id)).ToList();
 
             var expectedCommentsIds = await this.db.Comments
                 .Where(c => c.ArticleId == article.Id)
@@ -127,7 +127,7 @@
             var expectedCount = await this.db.Comments.Where(c => c.ArticleId == article.Id).CountAsync();
 
             //Assert
-            result.Should().AllBeOfType<CommentListingServiceModel>();
+            result.Should().AllBeOfType<CommentListingModel>();
 
             result.Should().HaveCount(expectedCount);
 

@@ -2,7 +2,7 @@
 {
     using Mapping;
     using Models;
-    using UrbanSolution.Models;
+    using UrbanSolution.Web.Models.Issues;
 
     public static class AutomapperInitializer
     {
@@ -13,7 +13,7 @@
             if (isInitialized) return;
 
             AutoMapperConfig.RegisterMappings(
-                typeof(UrbanIssuesListingServiceModel).Assembly,
+                typeof(IssuesListingModel).Assembly,
                 typeof(UrbanIssue).Assembly,
                 typeof(BaseServiceTest).Assembly);
 

@@ -8,7 +8,6 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using UrbanSolution.Models;
 
     public class ArticleCommentService : IArticleCommentService
     {
