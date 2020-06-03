@@ -16,8 +16,7 @@
     using Services.Mapping;
     using System;
     using UrbanSolution.Models;
-    using UrbanSolution.Services.Models;
-    using UrbanSolution.Web.Areas.Admin.Models;
+    using UrbanSolution.Web.Models.Areas.Admin;
     using static UrbanSolutionUtilities.WebConstants;
 
     public class Startup
@@ -32,8 +31,7 @@
         public void ConfigureServices(IServiceCollection services)
         {
             AutoMapperConfig.RegisterMappings(
-                typeof(AdminUsersListingViewModel).Assembly,
-                typeof(UrbanIssueDetailsServiceModel).Assembly);
+                typeof(AdminUsersListingViewModel).Assembly);
 
             services.Configure<CookiePolicyOptions>(options =>
             {

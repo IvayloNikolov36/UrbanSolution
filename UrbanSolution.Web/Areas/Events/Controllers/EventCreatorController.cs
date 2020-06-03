@@ -2,7 +2,6 @@
 {
     using Infrastructure.Extensions;
     using Infrastructure.Filters;
-    using Models;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
@@ -10,8 +9,8 @@
     using System.Threading.Tasks;
     using UrbanSolution.Models;
     using UrbanSolution.Services.Events;
-    using UrbanSolution.Services.Events.Models;
     using static UrbanSolutionUtilities.WebConstants;
+    using UrbanSolution.Web.Models.Areas.Events;
 
     [Area(EventsArea)]
     [Authorize(Roles = EventCreatorRole)]
@@ -35,7 +34,7 @@
 
         [HttpPost]
         [ValidateModelState]
-        public async Task<IActionResult> Create(EventCreateFormModel model)
+        public async Task<IActionResult> Create(EventCreateInputModel model)
         {
             var creator = await this.userManager.GetUserAsync(this.User);
 
@@ -48,7 +47,7 @@
 
         public async Task<IActionResult> Edit(int id)
         {
-            var model = await this.events.GetAsync<EventEditServiceModel>(id);
+            var model = await this.events.GetAsync<EventEditModel>(id);
 
             return this.ViewOrNotFound(model);
         }
@@ -56,7 +55,7 @@
         [HttpPost]
         [ServiceFilter(typeof(ValidateEventIdExistsAttribute))]
         [ValidateModelState]
-        public async Task<IActionResult> Edit(int id, EventEditServiceModel model)
+        public async Task<IActionResult> Edit(int id, EventEditModel model)
         {
             var user = await this.userManager.GetUserAsync(this.User);
 
@@ -74,9 +73,9 @@
                 .WithSuccess(string.Empty, EditEventSuccess); 
         }
 
-        private EventCreateFormModel GetEventDateTimeProperties()
+        private EventCreateInputModel GetEventDateTimeProperties()
         {
-            var model = new EventCreateFormModel
+            var model = new EventCreateInputModel
             {
                 StartDate = DateTime.UtcNow.AddDays(AddDays).AddMinutes(AddMinutes),
                 EndDate = DateTime.UtcNow.AddDays(AddDays).AddHours(AddHours).AddMinutes(AddMinutes)

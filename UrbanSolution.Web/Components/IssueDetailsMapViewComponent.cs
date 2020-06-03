@@ -1,10 +1,9 @@
 ﻿namespace UrbanSolution.Web.Components
 {
-    using Models;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Configuration;
-    using UrbanSolution.Services.Models;
     using static UrbanSolutionUtilities.WebConstants;
+    using UrbanSolution.Web.Models.Issues;
 
     [ViewComponent(Name = ViewComponentIssueDetailsMapName)]
     public class IssueDetailsMapViewComponent : ViewComponent
@@ -16,7 +15,7 @@
             this.configuration = configuration;
         }
 
-        public IViewComponentResult Invoke(UrbanIssueDetailsServiceModel model)
+        public IViewComponentResult Invoke(IssueDetailsModel model)
         {
             var viewModel = new MapIssueMarkerComponentViewModel
             {

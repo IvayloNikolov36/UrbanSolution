@@ -4,7 +4,6 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Rendering;
-    using UrbanSolution.Web.Areas.Admin.Models;
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
@@ -12,10 +11,10 @@
     using UrbanSolution.Services.Admin;
     using UrbanSolutionUtilities.Enums;
     using UrbanSolutionUtilities.Extensions;
-    using UrbanSolution.Web.Models;
-    using UrbanSolution.Services.Admin.Models;
     using UrbanSolution.Web.Infrastructure.Extensions;
     using static UrbanSolutionUtilities.WebConstants;
+    using UrbanSolution.Web.Models.Areas.Admin;
+    using UrbanSolution.Web.Models.Common;
 
     public class UsersController : BaseController
     {
@@ -34,7 +33,7 @@
         public async Task<IActionResult> Index(SearchSortAndFilterModel model)
         {
             (int filteredUsersCount, var modelUsers) = await this.users
-                .AllAsync<AdminUserListingServiceModel>(model.Page, model.SortBy,
+                .AllAsync<AdminUserListingModel>(model.Page, model.SortBy,
                     model.SortType, model.SearchType, model.SearchText, model.Filter);
 
             var tableDataModel = new AdminUsersListingTableModel
@@ -187,7 +186,7 @@
             return new AdminUserTableRowModel
             {
                 User = await this.users
-                    .SingleAsync<AdminUserListingServiceModel>(userId),
+                    .SingleAsync<AdminUserListingModel>(userId),
                 LockDays = this.GetDropDownLockedDaysOptions()
             };
         }

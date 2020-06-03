@@ -6,7 +6,7 @@
     using Microsoft.AspNetCore.Mvc.Filters;
     using System.Linq;
     using UrbanSolution.Models;
-    using UrbanSolution.Web.Areas.Admin.Models;
+    using UrbanSolution.Web.Models.Areas.Admin;
     using static UrbanSolutionUtilities.WebConstants;
 
     public class ValidateUserAndRoleExistsAttribute : ActionFilterAttribute

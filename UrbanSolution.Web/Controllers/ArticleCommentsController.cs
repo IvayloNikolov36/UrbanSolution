@@ -7,8 +7,7 @@
     using Services;
     using System.Threading.Tasks;
     using UrbanSolution.Models;
-    using UrbanSolution.Services.Models;
-    using UrbanSolution.Web.Models;
+    using UrbanSolution.Web.Models.Comments;
     using static UrbanSolutionUtilities.WebConstants;
 
     [ApiController]
@@ -26,26 +25,26 @@
 
         [ServiceFilter(typeof(ValidateArticleIdExistsAttribute))]
         [HttpGet("all/{id}")]
-        public async Task<ActionResult<CommentListingServiceModel>> All(int id)
+        public async Task<ActionResult<CommentListingModel>> All(int id)
         {
-            return this.Ok(await this.comments.AllAsync<CommentListingServiceModel>(id));
+            return this.Ok(await this.comments.AllAsync<CommentListingModel>(id));
         }
 
         [HttpGet("details/{id}")]
-        public async Task<ActionResult<CommentListingServiceModel>> Details(int id)
+        public async Task<ActionResult<CommentListingModel>> Details(int id)
         {
-            return this.Ok(await this.comments.GetAsync<CommentListingServiceModel>(id));
+            return this.Ok(await this.comments.GetAsync<CommentListingModel>(id));
         }
 
         [HttpPost("submit")]
         [Authorize]
-        public async Task<ActionResult<CommentListingServiceModel>> Submit(CommentSubmitModel model)
+        public async Task<ActionResult<CommentListingModel>> Submit(CommentSubmitModel model)
         {
             //TODO: check if content is empty, length... 
             var user = await this.userManager.GetUserAsync(this.User);
 
             var comment = await this.comments
-                .SubmitAsync<CommentListingServiceModel>(model.ArticleId, user.Id, model.Content);
+                .SubmitAsync<CommentListingModel>(model.ArticleId, user.Id, model.Content);
 
             if (comment == null)
             {

@@ -2,12 +2,11 @@
 {
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
-    using Models;
     using System.Threading.Tasks;
     using UrbanSolution.Models;
     using UrbanSolution.Services.Admin;
-    using UrbanSolution.Services.Admin.Models;
-    using UrbanSolution.Web.Models;
+    using UrbanSolution.Web.Models.Areas.Admin;
+    using UrbanSolution.Web.Models.Common;
     using static UrbanSolutionUtilities.WebConstants;
 
     public class ActivityController : BaseController
@@ -26,7 +25,7 @@
             var admin = await this.UserManager.GetUserAsync(this.User);
 
             (int count, var activities) = await this.activities
-                    .AllAsync<AdminActivitiesListingServiceModel>(admin.Id, page);
+                    .AllAsync<AdminActivitiesListingModel>(admin.Id, page);
 
             var model = new AdminActivityIndexModel
             {

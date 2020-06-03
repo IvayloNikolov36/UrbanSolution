@@ -3,11 +3,10 @@
     using Infrastructure.Extensions;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Configuration;
-    using Models;
     using System;
     using System.Threading.Tasks;
     using UrbanSolution.Models;
-
+    using UrbanSolution.Web.Models.Issues;
     using static UrbanSolutionUtilities.WebConstants;
     
     [ViewComponent(Name = ViewComponentUrbanIssuesMapWithMarkersName)]

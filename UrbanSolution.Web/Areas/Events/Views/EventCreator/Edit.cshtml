@@ -1,5 +1,5 @@
 ﻿@inject IConfiguration Configuration
-@model UrbanSolution.Services.Events.Models.EventEditServiceModel
+@model EventEditModel
 @{
     ViewData["Title"] = "Edit event";                                  
     var apiKey = Configuration.GetSection("Google:MapsApiKey").Value;

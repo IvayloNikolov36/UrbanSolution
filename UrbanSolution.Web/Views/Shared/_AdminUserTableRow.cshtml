@@ -1,4 +1,4 @@
-﻿@model UrbanSolution.Web.Areas.Admin.Models.AdminUserTableRowModel
+﻿@model AdminUserTableRowModel
 @{
     var userAddToRoles = Model.User.UserNotInRoles?.Split(new[] {','}).Select(r => new SelectListItem(r, r));
     var userRemoveFromRoles = Model.User.UserRoles?.Split(new[] {','}).Select(r => new SelectListItem(r, r));

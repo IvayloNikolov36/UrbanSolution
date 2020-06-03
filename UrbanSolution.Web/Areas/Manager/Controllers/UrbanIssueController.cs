@@ -10,8 +10,7 @@
     using System.Threading.Tasks;
     using UrbanSolution.Models;
     using UrbanSolution.Services.Manager;
-    using UrbanSolution.Services.Manager.Models;
-    using UrbanSolution.Web.Areas.Manager.Models;
+    using UrbanSolution.Web.Models.Areas.Manager;
     using static UrbanSolutionUtilities.WebConstants;
 
     public class UrbanIssueController : BaseController
@@ -64,7 +63,7 @@
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var issue = await this.issues.GetAsync<UrbanIssueEditServiceViewModel>(id);
+            var issue = await this.issues.GetAsync<IssueEditViewModel>(id);
 
             this.SetModelSelectListItems(issue);
 
@@ -72,7 +71,7 @@
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, UrbanIssueEditServiceViewModel model)
+        public async Task<IActionResult> Edit(int id, IssueEditViewModel model)
         {
             if (!this.ModelState.IsValid)
             {
@@ -125,7 +124,7 @@
             return this.RedirectToAction(nameof(Index)).WithSuccess(string.Empty, IssueApprovedSuccess);
         }
 
-        private void SetModelSelectListItems(UrbanIssueEditServiceViewModel model)
+        private void SetModelSelectListItems(IssueEditViewModel model)
         {
             model.Regions = Enum.GetNames(typeof(RegionType))
                 .Select(r => new SelectListItem

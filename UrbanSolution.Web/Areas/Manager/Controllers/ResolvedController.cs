@@ -4,15 +4,13 @@
     using Infrastructure.Filters;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
-    using Models;
     using UrbanSolution.Models;
     using UrbanSolution.Services.Manager;
-    using UrbanSolution.Services.Manager.Models;
     using Microsoft.AspNetCore.Authorization;
     using System.Threading.Tasks;
-    using UrbanSolution.Services.Models;
     using static UrbanSolutionUtilities.WebConstants;
-    
+    using UrbanSolution.Web.Models.Areas.Manager;
+
     public class ResolvedController : BaseController
     {
         private readonly IResolvedService resolvedService;
@@ -45,13 +43,13 @@
 
         public async Task<IActionResult> Edit(int id)
         {
-            var resolvedToEdit = await this.resolvedService.GetAsync<ResolvedIssueEditServiceModel>(id);
+            var resolvedToEdit = await this.resolvedService.GetAsync<ResolvedIssueEditModel>(id);
 
             return this.View(resolvedToEdit);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, ResolvedIssueEditServiceModel model)
+        public async Task<IActionResult> Edit(int id, ResolvedIssueEditModel model)
         {
             if (!this.ModelState.IsValid)
             {
@@ -92,7 +90,7 @@
         public async Task<IActionResult> Details(int id)
         {
             var detailsModel = await this.resolvedService
-                .GetAsync<ResolvedDetailsServiceModel>(id);           
+                .GetAsync<ResolvedDetailsModel>(id);           
 
             if (detailsModel == null)
             {

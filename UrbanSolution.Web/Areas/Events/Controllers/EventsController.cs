@@ -8,9 +8,8 @@
     using Services.Events;
     using System.Threading.Tasks;
     using UrbanSolution.Models;
-    using UrbanSolution.Services.Events.Models;
-    using UrbanSolution.Web.Areas.Events.Models;
-    using UrbanSolution.Web.Models;
+    using UrbanSolution.Web.Models.Areas.Events;
+    using UrbanSolution.Web.Models.Common;
     using static UrbanSolutionUtilities.WebConstants;
 
     [Area(EventsArea)]
@@ -29,7 +28,7 @@
         [AllowAnonymous]
         public async Task<IActionResult> Index(int page = 1)
         {
-            var allEvents = await this.events.AllAsync<EventsListingServiceModel>(page);
+            var allEvents = await this.events.AllAsync<EventsListingModel>(page);
 
             var totalEvents = await this.events.TotalCountAsync();
 
@@ -70,7 +69,7 @@
         [AllowAnonymous]
         public async Task<IActionResult> Details(int id)
         {
-            var eventModel = await this.events.GetAsync<EventDetailsServiceModel>(id);
+            var eventModel = await this.events.GetAsync<EventDetailsViewModel>(id);
 
             var user = await this.userManager.GetUserAsync(this.User);
 

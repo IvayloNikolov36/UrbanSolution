@@ -6,13 +6,12 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Rendering;
-    using Models;
     using Services;
     using System;
     using System.Linq;
     using System.Threading.Tasks;
     using UrbanSolution.Models;
-    using UrbanSolution.Services.Models;
+    using UrbanSolution.Web.Models.Issues;
     using static UrbanSolutionUtilities.WebConstants;
 
     [Authorize]
@@ -39,7 +38,7 @@
         public async Task<IActionResult> Get([FromQuery] IssuesSortAndFilterModel model)
         {
             (int pagesCount, var modelIssues) = await this.issues
-                .AllAsync<UrbanIssuesListingServiceModel>(
+                .AllAsync<IssuesListingModel>(
                 isApproved: true, model.RowsCount, model.ToPage, model.RegionFilter, model.TypeFilter, model.SortType);
 
             var partialModel = new IssuesListingViewModel
@@ -61,7 +60,7 @@
                 this.ViewData[ViewDataManagerRegionKey] = user.ManagedRegion?.ToString();
             }
 
-            var issueModel = await this.issues.GetAsync<UrbanIssueDetailsServiceModel>(id);
+            var issueModel = await this.issues.GetAsync<IssueDetailsModel>(id);
             if (issueModel == null)
             {
                 return this.RedirectToAction("Index").WithDanger(string.Empty, NoIssueInDb);
@@ -112,7 +111,7 @@
             RegionType? region = user.ManagedRegion;
 
             var data = await this.issues
-                .AllMapInfoDetailsAsync<IssueMapInfoBoxDetailsServiceModel>(areApproved: false, region: region);
+                .AllMapInfoDetailsAsync<IssueMapInfoBoxModel>(areApproved: false, region: region);
 
             return this.Ok(data);
         }

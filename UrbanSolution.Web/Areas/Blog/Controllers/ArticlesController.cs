@@ -5,13 +5,11 @@
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
-    using Models;
     using System.Threading.Tasks;
-
     using UrbanSolution.Models;
     using UrbanSolution.Services.Blog;
-    using UrbanSolution.Services.Blog.Models;
-    using UrbanSolution.Web.Models;
+    using UrbanSolution.Web.Models.Areas.Blog;
+    using UrbanSolution.Web.Models.Common;
     using static UrbanSolutionUtilities.WebConstants;
 
     [Area(BlogArea)]
@@ -33,7 +31,7 @@
         {
             var model = new ArticleListingViewModel
             {
-                Articles = await this.articles.AllAsync<BlogArticleListingServiceModel>(page),
+                Articles = await this.articles.AllAsync<BlogArticleListingModel>(page),
                 PagesModel = new PagesModel
                 {
                     TotalItems = await this.articles.TotalAsync(),
@@ -48,7 +46,7 @@
         [AllowAnonymous]
         public async Task<IActionResult> Details(int id)
         {
-            var model = await this.articles.GetAsync<BlogArticleDetailsServiceModel>(id);
+            var model = await this.articles.GetAsync<ArticleDetailsModel>(id);
 
             var user = await this.userManager.GetUserAsync(this.User);
 
@@ -64,7 +62,7 @@
 
         [HttpPost]
         [ValidateModelState]
-        public async Task<IActionResult> Create(PublishArticleFormModel model)
+        public async Task<IActionResult> Create(PublishArticleInputModel model)
         {            
             var userId = this.userManager.GetUserId(User);
 
@@ -75,7 +73,7 @@
 
         public async Task<IActionResult> Edit(int id)
         {
-            var model = await this.articles.GetAsync<EditArticleServiceViewModel>(id);
+            var model = await this.articles.GetAsync<EditArticleViewModel>(id);
 
             return this.ViewOrNotFound(model);
         }
@@ -83,7 +81,7 @@
         [ServiceFilter(typeof(ValidateArticleIdExistsAttribute))]
         [ValidateModelState]
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, EditArticleServiceViewModel model)
+        public async Task<IActionResult> Edit(int id, EditArticleViewModel model)
         {
             var user = await this.userManager.GetUserAsync(this.User);
 

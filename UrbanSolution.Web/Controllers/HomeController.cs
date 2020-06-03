@@ -1,9 +1,9 @@
-﻿using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
-using UrbanSolution.Web.Models;
-
-namespace UrbanSolution.Web.Controllers
+﻿namespace UrbanSolution.Web.Controllers
 {
+    using System.Diagnostics;
+    using Microsoft.AspNetCore.Mvc;
+    using UrbanSolution.Web.Models.Common;
+
     public class HomeController : Controller
     {
       
