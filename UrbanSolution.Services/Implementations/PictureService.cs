@@ -4,6 +4,7 @@
     using Microsoft.AspNetCore.Http;
     using System.Threading.Tasks;
     using UrbanSolution.Models;
+    using static UrbanSolutionUtilities.WebConstants;
 
     public class PictureService : IPictureService
     {
@@ -21,13 +22,17 @@
 
         public async Task<int> UploadImageAsync(string userId, IFormFile pictureFile)
         {
-            var uploadResult = await this.cloudService.UploadFormFileAsync(pictureFile);
+            var uploadResult = await this.cloudService.UploadImageAsync(pictureFile);
 
-            var cloudinaryPictureUrl = this.cloudService.GetImageUrl(uploadResult.PublicId);
+            var cloudinaryPictureUrl = this.cloudService.GetImageUrl(uploadResult.PublicId)
+                .Replace(PicUrlPrefix, string.Empty);
 
-            var cloudinaryThumbnailPictureUrl = this.cloudService.GetImageThumbnailUrl(uploadResult.PublicId);
+            var cloudinaryThumbnailPictureUrl = this.cloudService.GetImageThumbnailUrl(uploadResult.PublicId)
+                .Replace(PicUrlPrefix, string.Empty);
 
-            var pictureId = await this.pictureInfoWriter.WriteToDbAsync(userId, cloudinaryPictureUrl, cloudinaryThumbnailPictureUrl, uploadResult.PublicId, uploadResult.CreatedAt, uploadResult.Length);
+            var pictureId = await this.pictureInfoWriter
+                .WriteToDbAsync(
+                userId, cloudinaryPictureUrl, cloudinaryThumbnailPictureUrl, uploadResult.PublicId, uploadResult.CreatedAt, uploadResult.Length);
 
             return pictureId;
         }
@@ -41,7 +46,7 @@
             this.db.CloudinaryImages.Remove(pictureFromDb);
             await this.db.SaveChangesAsync();
 
-            await this.cloudService.DeleteImages(picturePublicId);
+            await this.cloudService.DeleteImagesAsync(picturePublicId);
         }
 
     }

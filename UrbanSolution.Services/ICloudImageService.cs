@@ -6,9 +6,9 @@
 
     public interface ICloudImageService
     {
-        Task<ImageUploadResult> UploadFormFileAsync(IFormFile file);
+        Task<ImageUploadResult> UploadImageAsync(IFormFile imageFile);
 
-        Task DeleteImages(params string[] publicIds);
+        Task DeleteImagesAsync(params string[] publicIds);
 
         string GetImageUrl(string imagePublicId);
 

@@ -4,6 +4,7 @@
     using System;
     using UrbanSolution.Models;
     using UrbanSolution.Services.Mapping;
+    using static UrbanSolutionUtilities.WebConstants;
 
     public class BlogArticleListingModel : IMapFrom<Article>, IHaveCustomMappings
     {
@@ -24,7 +25,8 @@
             configuration
                 .CreateMap<Article, BlogArticleListingModel>()
                 .ForMember(a => a.Author, m => m.MapFrom(a => a.Author.UserName))
-                .ForMember(a => a.PictureUrl, m => m.MapFrom(a => a.CloudinaryImage.PictureUrl));
+                .ForMember(a => a.PictureUrl, m => m
+                    .MapFrom(a => CloudPicUrlPrefix + a.CloudinaryImage.PictureUrl));
         }
     }
 }

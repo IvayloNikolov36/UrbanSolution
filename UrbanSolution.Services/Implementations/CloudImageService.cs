@@ -18,9 +18,9 @@
             this.cloudinary = cloudinary;
         }
 
-        public async Task<ImageUploadResult> UploadFormFileAsync(IFormFile file)
+        public async Task<ImageUploadResult> UploadImageAsync(IFormFile imageFile)
         {
-            using (var memoryStream = file.OpenReadStream())
+            using (var memoryStream = imageFile.OpenReadStream())
             {
                 var uploadParams = new ImageUploadParams()
                 {
@@ -39,7 +39,7 @@
             }           
         }
 
-        public async Task DeleteImages(params string[] publicIds)
+        public async Task DeleteImagesAsync(params string[] publicIds)
         {
             var delParams = new DelResParams
             {
@@ -61,7 +61,7 @@
         public string GetImageThumbnailUrl(string imagePublicId)
         {
             var pictureUrl = cloudinary.Api.UrlImgUp
-                .Transform(new Transformation().Height(200).Width(200).Crop("thumb"))
+                .Transform(new Transformation().Width(ThumbnailWidth).Height(ThumbnailHeight).Crop(CropThumb))
                 .BuildUrl(string.Format(CloudinaryGetImageUrl, imagePublicId));
 
             return pictureUrl;

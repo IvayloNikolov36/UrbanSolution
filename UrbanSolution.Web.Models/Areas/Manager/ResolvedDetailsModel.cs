@@ -4,7 +4,8 @@
     using UrbanSolution.Services.Mapping;
     using System;
     using System.Collections.Generic;    
-    using UrbanSolution.Models;  
+    using UrbanSolution.Models;
+    using static UrbanSolutionUtilities.WebConstants;
 
     public class ResolvedDetailsModel : IMapFrom<ResolvedIssue>, IHaveCustomMappings
     {
@@ -31,8 +32,10 @@
         public void CreateMappings(IProfileExpression configuration)
         {
             configuration.CreateMap<ResolvedIssue, ResolvedDetailsModel>()
-                .ForMember(x => x.IssuePictureUrl, m => m.MapFrom(r => r.UrbanIssue.CloudinaryImage.PictureUrl))
-                .ForMember(x => x.ResolvedPictureUrl, m => m.MapFrom(r => r.CloudinaryImage.PictureUrl))
+                .ForMember(x => x.IssuePictureUrl, m => m
+                    .MapFrom(r => CloudPicUrlPrefix + r.UrbanIssue.CloudinaryImage.PictureUrl))
+                .ForMember(x => x.ResolvedPictureUrl, m => m
+                    .MapFrom(r => CloudPicUrlPrefix + r.CloudinaryImage.PictureUrl))
                 .ForMember(x => x.PublisherUserName, m => m.MapFrom(r => r.Publisher.UserName));
         }
     }

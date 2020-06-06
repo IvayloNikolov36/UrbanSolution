@@ -4,6 +4,7 @@
     using UrbanSolution.Services.Mapping;
     using System;
     using UrbanSolution.Models;
+    using static UrbanSolutionUtilities.WebConstants;
 
     public class IssuesListingModel : IMapFrom<UrbanIssue>, IHaveCustomMappings
     {
@@ -25,7 +26,7 @@
 
         public string Longitude { get; set; }
 
-        public string Region { get; set; } //
+        public string Region { get; set; } 
 
         public void CreateMappings(IProfileExpression configuration)
         {
@@ -34,7 +35,8 @@
                 .ForMember(x => x.Publisher, m => m.MapFrom(u => u.Publisher.UserName))
                 .ForMember(x => x.Latitude, m => m.MapFrom(u => u.Latitude.ToString().Replace(",", ".")))
                 .ForMember(x => x.Longitude, m => m.MapFrom(u => u.Longitude.ToString().Replace(",", ".")))
-                .ForMember(x => x.IssuePictureThumbnailUrl, m => m.MapFrom(u => u.CloudinaryImage.PictureThumbnailUrl))
+                .ForMember(x => x.IssuePictureThumbnailUrl, m => m
+                    .MapFrom(u => CloudPicUrlPrefix + u.CloudinaryImage.PictureThumbnailUrl))
                 .ForMember(x => x.Region, m => m.MapFrom(u => u.Region.ToString()));
         }
     }

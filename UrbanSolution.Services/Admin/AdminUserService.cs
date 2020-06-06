@@ -184,7 +184,7 @@
                 await this.db.Database.ExecuteSqlInterpolatedAsync(
                      $"EXEC {procedureName} {userIdParam}, {roleParam}");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return false;
             }

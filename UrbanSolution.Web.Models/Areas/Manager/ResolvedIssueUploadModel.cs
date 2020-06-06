@@ -20,6 +20,7 @@
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {            
+            //TOO: extend validation to pass other picture files too
             if (!this.PictureFile.FileName.EndsWith(".jpg")
                 || PictureFile.Length > PictureUploadFileLength)
             {

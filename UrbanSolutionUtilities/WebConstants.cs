@@ -2,6 +2,17 @@
 {
     public class WebConstants
     {
+        //images
+        public const string PublicPicIdPrefix = "urban";
+        public const string CropThumb = "thumb";
+        public const string CropLimit = "limit";
+        public const int ThumbnailHeight = 200;
+        public const int ThumbnailWidth = 200;
+        //Https
+        public const string CloudPicUrlPrefix = "https://res.cloudinary.com/ivailonikolov/image/upload/"; 
+        //Http
+        public const string PicUrlPrefix = "http://res.cloudinary.com/ivailonikolov/image/upload/";
+
         public const string AdminArea = "Admin";
         public const string ManagerArea = "Manager";
         public const string BlogArea = "Blog";
@@ -226,13 +237,6 @@
         public const string UsersSearchTextKey = "UsersSearchText";
 
         public const int ShortifyStringTo = 12;
-
-        //images
-        public const string PublicPicIdPrefix = "urban";
-        public const string CropThumb = "thumb";
-        public const string CropLimit = "limit";
-        public const int ThumbnailHeight = 200;
-        public const int ThumbnailWidth = 200;
 
         //Pagination
         public const int ButtonsBeforeAndAfterCurrent = 6;

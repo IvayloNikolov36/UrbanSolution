@@ -18,7 +18,7 @@
         {
             get
             {
-                var regions = new Dictionary<string, string>();    //{ {OptionAll, null} };
+                var regions = new Dictionary<string, string>();
 
                 foreach (string region in Enum.GetNames(typeof(RegionType)))
                 {
@@ -36,7 +36,7 @@
         {
             get
             {
-                var regions = new Dictionary<string, string>(); //{ {OptionTextAllTypes, null} };
+                var regions = new Dictionary<string, string>();
 
                 foreach (string type in Enum.GetNames(typeof(IssueType)))
                     if (!regions.ContainsKey(type)) regions.Add(type, type);

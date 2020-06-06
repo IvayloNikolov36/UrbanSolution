@@ -5,6 +5,7 @@
     using System;
     using System.Linq;
     using UrbanSolution.Models;
+    using static UrbanSolutionUtilities.WebConstants;
 
     public class ArticleDetailsModel : IMapFrom<Article>, IHaveCustomMappings
     {
@@ -26,7 +27,8 @@
         {
             configuration.CreateMap<Article, ArticleDetailsModel>()
                 .ForMember(x => x.Author, m => m.MapFrom(a => a.Author.UserName))
-                .ForMember(x => x.PictureUrl, m => m.MapFrom(a => a.CloudinaryImage.PictureUrl))
+                .ForMember(x => x.PictureUrl, m => m
+                    .MapFrom(a => CloudPicUrlPrefix + a.CloudinaryImage.PictureUrl))
                 .ForMember(x => x.HasComments, m => m.MapFrom(a => a.Comments.Any()));
         }
     }

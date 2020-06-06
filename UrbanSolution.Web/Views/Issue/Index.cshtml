@@ -101,6 +101,8 @@
                 type: "GET",
                 dataType: "html",
                 success: function (issuesHtml) {
+                    console.log(issuesHtml);
+
                     fadeInEffect(issuesHtml);
                     var pagesCount = $("#pagesCount").val();
                     var page = $("#page").val();

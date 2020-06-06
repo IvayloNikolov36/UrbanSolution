@@ -4,6 +4,7 @@
     using System;
     using UrbanSolution.Models;
     using UrbanSolution.Services.Mapping;
+    using static UrbanSolutionUtilities.WebConstants;
 
     public class IssueTableRowViewModel : IMapFrom<UrbanIssue>, IHaveCustomMappings
     {
@@ -25,7 +26,7 @@
         {
             configuration.CreateMap<UrbanIssue, IssueTableRowViewModel>()
                 .ForMember(x => x.PictureThumbnail, m => m
-                    .MapFrom(u => u.CloudinaryImage.PictureThumbnailUrl))
+                    .MapFrom(u => CloudPicUrlPrefix + u.CloudinaryImage.PictureThumbnailUrl))
                 .ForMember(x => x.Region, m => m.MapFrom(u => u.Region.ToString()));
         }
     }
